@@ -1,6 +1,5 @@
 Repositorio Integrador
 
-rama Main
+rama Main para trabajar en el desarrollo
 
-rama desarrolloFront
-rama desarrolloBack
+rama produccionFront va a ser la rama protegida para entregar

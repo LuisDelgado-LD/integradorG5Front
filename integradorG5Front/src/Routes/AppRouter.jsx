@@ -2,7 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "../Pages/Home";
 import Reserva from "../Pages/Reserva";
 import Clientes from "../Pages/Clientes";
-import Navbar from "../components/Navbar";
+import Navbar from "../Components/Navbar";
 
 const AppRouter = () => {
   return (

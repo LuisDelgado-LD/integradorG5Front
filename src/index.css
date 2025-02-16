@@ -78,3 +78,25 @@
   top: 67px;
   left: 1184px;
 }
+
+.footer{
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  background-color: #606676;
+  width: 100%;
+  height: 3rem;
+  box-sizing: border-box;
+  padding: 1rem 0.5rem;
+}
+
+.footer-CopyRight{
+  vertical-align: top;
+  position: relative;
+  flex-direction: column-reverse;
+  margin: 0;
+  border: 0;
+  padding-top: 0;
+  color:#fbfbfd;
+  font-size: 1rem;
+}

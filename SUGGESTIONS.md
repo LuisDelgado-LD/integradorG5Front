@@ -36,6 +36,83 @@ Considerar estos sinónimos para entender mejor la página
 ### En caso de conflicto
 - Conversar con el usuario que modificó el archivo que provoca el conflicto y solucionar el código en el archivo, hacer el push y todos los involucrados en el repo deben inmediatamente hacer pull 
 
+#### Como puedo saber cual es el archivo que tiene conflictos
+Se debe ejecutar un 
+```git
+git status
+ ```
+
+Y fijarse en la línea que dice "Rutas no fusionadas", a continuación se da un ejemplo donde quisimos hacer un merge de la rama main en la rama HU2 y se creó un conflicto, al ejecutar git status se ve
+```git
+En la rama HU2
+Tienes rutas no fusionadas.
+  (arregla los conflictos y ejecuta "git commit"
+  (usa "git merge --abort" para abortar la fusion)
+
+Cambios a ser confirmados:
+        modificados:     src/Components/Navbar.jsx
+        renombrados:     src/App.css -> src/Styles/App.css
+        nuevos archivos: src/img/logo.png
+
+Rutas no fusionadas:
+  (usa "git add <archivo>..." para marcar una resolución)
+        modificados por ambos:  src/App.jsx
+
+Cambios no rastreados para el commit:
+  (usa "git add <archivo>..." para actualizar lo que será confirmado)
+  (usa "git restore <archivo>..." para descartar los cambios en el directorio de trabajo)
+        modificados:     src/Components/Navbar.jsx
+        modificados:     src/Styles/App.css
+
+Archivos sin seguimiento:
+  (usa "git add <archivo>..." para incluirlo a lo que será confirmado)
+        src/Pages/Productos.jsx
+        src/Styles/Productos.module.css
+
+```
+De este fragmento podemos notar varias cosas.
+- Dentro de los cambios de la fusión se incluyen los archivos src/Components/Navbar.jsx, src/img/logo.png y se movió el archivo src/App.css -> src/Styles/App.css
+- En el siguiente bloque podemos observar cual es el archivo que esta en conflicto, para este caso es src/App.jsx
+- En la sección siguiente se ve los archivos modificados que se encuentran en staging 
+- Finalmente los archivos que solo estan en el área de trabajo
+
+#### Como se que parte del archivo es la que tiene el conflicto
+Una vez que identificamos el archivo procedemos a buscar la línea que incluya <<<<<<< y >>>>>>> ambos separados por =======
+En este caso en el archivo src/App.jsx tenemos
+```git 
+<<<<<<< HEAD
+import "./App.css";
+=======
+import "./Styles/App.css";
+>>>>>>> main
+```
+
+Esto quiere decir:
+- En mi rama HU2 (la rama origen) tengo el texto
+```txt
+import "./App.css";
+```
+y en la rama que quiero incorporar (main) tengo
+```txt
+import "./Styles/App.css";
+```
+A veces solo veremos HEAD, que indica nuestra rama local, y el hash del commit que genera el conflicto.
+Para este caso es solo una línea la que tiene el conflicto, si fuesen más podriamos tener varios bloques con los simbolos <<<<<<< y >>>>>>> o varias líneas en cada uno de estos bloques.
+
+#### Como se soluciona
+Hay que corregir el conflicto y además eliminar todas las líneas que tengan los símbolos "<<<<<<<", ">>>>>>>" y "======="
+Luego hacemos un 
+```git
+git add <nombre del archivo>
+```
+Para luego hacer el commit
+```git
+git commit
+```
+
+
+
+
 ### Como puedo saber que cambios hice en un archivo desde el último commit
 Para ver todos los cambios que ha hecho a algún archivo desde el último commit basta con ejecutar
 ``` git

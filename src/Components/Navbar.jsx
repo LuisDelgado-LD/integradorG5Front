@@ -1,28 +1,24 @@
 import { Link } from "react-router-dom";
 import logo from "../img/logo.png";
+import "../index.css";
 
 const Navbar = () => {
   return (
-    <header>
-      <div>
-
-        <div>
-          <Link to="/">
-            <img src={logo} alt="Logo"/>
-          </Link>
-          <span> Mucho mas que una guarderia,un paraíso</span>
-        </div>
-
-        <div>
-          <button>
-            Crear cuenta
-          </button>
-          <button>
-            Iniciar sesión
-          </button>
+    <nav className="navbar">
+      <div className="navbar-left">
+        <Link to="/">
+          <img src={logo} alt="Pet Paradise Logo" className="logo" />
+        </Link>
+        <div className="navbar-text">
+          <h1>Pet Paradise</h1>
+          <p>Mucho más que una guardería, un paraíso.</p>
         </div>
       </div>
-    </header>
+      <div className="navbar-right">
+        <Link to="/registro" className="btn">Registrar Mascota</Link>
+        <Link to="/login" className="btn">Iniciar sesión</Link>
+      </div>
+    </nav>
   );
 };
 

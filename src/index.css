@@ -12,6 +12,10 @@
   z-index: 1000;
 }
 
+main {
+  padding-top: 151px; 
+}
+
 .logo {
   width: 151px;
   height: 151px;
@@ -79,15 +83,40 @@
   left: 1184px;
 }
 
+/* .RedesSociales img {
+  width: 30px; 
+  height: auto;
+} */
+
+/* Media query para celulares */
+@media (max-width: 768px) {
+  .footer {
+    flex-direction: column;
+    align-items: center; 
+    text-align: center;
+  }
+
+  .RedesSociales {
+    margin-top: 0.2rem; /* Espacio entre el texto y los logos */
+  }
+}
+
 .footer{
   align-items: center;
   display: flex;
   justify-content: space-between;
   background-color: #606676;
   width: 100%;
-  height: 3rem;
+  height: auto;
   box-sizing: border-box;
   padding: 1rem 0.5rem;
+}
+
+.RedesSociales{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
 }
 
 .footer-CopyRight{

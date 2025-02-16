@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import logo from "../img/logo.png";
 
 const Navbar = () => {
   return (
@@ -7,9 +8,9 @@ const Navbar = () => {
 
         <div className="flex items-center">
           <Link to="/" className="flex items-center">
-            <img src="/logo.png" alt="Logo" className="h-10 w-auto mr-2" />
-            <span className="text-lg font-bold text-gray-800"> Mucho mas que una guarderia,un paraíso</span>
+            <img src={logo} alt="Logo" className="h-10 w-auto mr-2" />
           </Link>
+          <span className="text-lg font-bold text-gray-800"> Mucho mas que una guarderia,un paraíso</span>
         </div>
 
         <div className="flex space-x-4">

@@ -3,21 +3,21 @@ import logo from "../img/logo.png";
 
 const Navbar = () => {
   return (
-    <header className="fixed top-0 left-0 w-full bg-white shadow-md z-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center h-16">
+    <header>
+      <div>
 
-        <div className="flex items-center">
-          <Link to="/" className="flex items-center">
-            <img src={logo} alt="Logo" className="h-10 w-auto mr-2" />
+        <div>
+          <Link to="/">
+            <img src={logo} alt="Logo"/>
           </Link>
-          <span className="text-lg font-bold text-gray-800"> Mucho mas que una guarderia,un paraíso</span>
+          <span> Mucho mas que una guarderia,un paraíso</span>
         </div>
 
-        <div className="flex space-x-4">
-          <button className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+        <div>
+          <button>
             Crear cuenta
           </button>
-          <button className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 transition">
+          <button>
             Iniciar sesión
           </button>
         </div>

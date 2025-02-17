@@ -7,9 +7,9 @@ const Footer = () => {
             <small>Copyright © 2025 Pet Paradise S.A</small>
         </div>
         <div className="RedesSociales">
-            <img src="../img/Facebook.png" alt="Logo-Facebook"/>
-            <img src="../img/Instagram.png" alt="Logo-Instagram"/>
-            <img src="../img/X.png" alt="Logo-X"/>
+            <img src="/img/Facebook.png" alt="Facebook Logo" />
+            <img src="/img/Instagram.png" alt="Instagram Logo" />
+            <img src="/img/X.png" alt="X Logo" />
         </div>
     </footer>
     )

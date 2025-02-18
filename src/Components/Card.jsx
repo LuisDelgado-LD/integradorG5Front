@@ -1,6 +1,5 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import "../index.css";
 
 const Card = ({ id, nombreMascota, raza, tamano }) => {
   return (

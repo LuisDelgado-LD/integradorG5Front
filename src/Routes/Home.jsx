@@ -1,29 +1,30 @@
 import { useContext } from "react";
+import { Link } from "react-router-dom";
 import Card from "../Components/Card";
 import { GlobalContext } from "../Context/utils/globalContext";
+import useScrollVisibility from "../Hooks/useScrollVisibility";
 
 const Home = () => {
   const { state } = useContext(GlobalContext);
+  const isVisible = useScrollVisibility();
 
   return (
-    <main className="home">
-      <div className="header-container">
-        <p className="header-text">Escoge la Fecha para tu peludito</p>
-        
-        <div className="date-picker-container">
-          <div className="date-picker">
-            <label className="date-label">Fecha de ingreso</label>
-            <img src="/img/Group_4.png" alt="Calendario de ingreso" className="calendar-box" />
-            <img src="/img/calendario.png" alt="Ícono calendario" className="calendar-icon" />
-          </div>
-
-          <div className="date-picker">
-            <label className="date-label">Fecha salida</label>
-            <img src="/img/Group_4.png" alt="Calendario de salida" className="calendar-box" />
-            <img src="/img/calendario.png" alt="Ícono calendario" className="calendar-icon" />
-          </div>
-
-          <img src="/img/buscar.png" alt="Botón Buscar" className="search-button" />
+    <div className={`home ${isVisible ? "visible" : "hidden"}`}>
+      <div className="category-container">
+        <h2 className="category-title">Categorías</h2>
+        <div className="category-grid">
+          <Link to="/palacio-peludo" className="category-card">
+            <img src="/img/PalacioPeludo.png" alt="Palacio Peludo" className="category-img" />
+            <p className="category-text">Palacio Peludo</p>
+          </Link>
+          <Link to="/refugio-confortable" className="category-card">
+            <img src="/img/RefugioConfortable.png" alt="Refugio Confortable" className="category-img" />
+            <p className="category-text">Refugio Confortable</p>
+          </Link>
+          <Link to="/Cueva-Acogedora" className="category-card">
+            <img src="/img/CuevaAcogedora.png" alt="Cueva Acogedora" className="category-img" />
+            <p className="category-text">Cueva Acogedora</p>
+          </Link>
         </div>
       </div>
 
@@ -33,7 +34,7 @@ const Home = () => {
           <Card key={mascota.id} {...mascota} />
         ))}
       </div>
-    </main>
+    </div>
   );
 };
 

@@ -1,4 +1,4 @@
-FROM node:20.18-alpine
+FROM node:20.18-alpine as builder
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -12,7 +12,8 @@ COPY ./ .
 
 RUN npm run build
 
-EXPOSE 5173
+FROM nginx:latest
 
-CMD ["npm", "run", "dev" ,"--", "--host"]
-#CMD [ "npm", "run", "serve", "-s", "dist" ]
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+EXPOSE 80

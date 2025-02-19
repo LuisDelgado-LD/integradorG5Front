@@ -1,11 +1,30 @@
 import { createContext, useReducer, useEffect } from "react";
-import axios from "axios";
 import PropTypes from "prop-types";
 
 export const GlobalContext = createContext();
 
 const initialState = {
   mascotas: [],
+  habitaciones: [
+    {
+      id: 1,
+      nombre: "Palacio Peludo",
+      imagen: "/img/PalacioPeludo.png",
+      ruta: "/PalacioPeludo"
+    },
+    {
+      id: 2,
+      nombre: "Refugio Confortable",
+      imagen: "/img/RefugioConfortable.png",
+      ruta: "/RefugioConfortable"
+    },
+    {
+      id: 3,
+      nombre: "Cueva Acogedora",
+      imagen: "/img/CuevaAcogedora.png",
+      ruta: "/CuevaAcogedora"
+    }
+  ]
 };
 
 const reducer = (state, action) => {
@@ -21,8 +40,9 @@ export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/api/mascotas")
-      .then(response => dispatch({ type: "SET_MASCOTAS", payload: response.data }))
+    fetch("http://localhost:8080/api/mascotas")
+      .then(response => response.json())
+      .then(data => dispatch({ type: "SET_MASCOTAS", payload: data }))
       .catch(error => console.error("Error obteniendo mascotas:", error));
   }, []);
 

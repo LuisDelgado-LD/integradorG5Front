@@ -1,22 +1,21 @@
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
 
-const Card = ({ id, nombreMascota, raza, tamano }) => {
+const Card = ({ id, nombre, imagen, ruta }) => {
   return (
     <div className="card">
-      <h3>{nombreMascota}</h3>
-      <p>Raza: {raza}</p>
-      <p>Tamaño: {tamano}</p>
-      <Link to={`/detail/${id}`} className="btn">Ver Detalle</Link>
+      <img src={imagen} alt={nombre} className="card-img" />
+      <h3 className="card-title">{nombre}</h3>
+      <Link to={ruta} className="btn">Ver más</Link>
     </div>
   );
 };
 
 Card.propTypes = {
   id: PropTypes.number.isRequired,
-  nombreMascota: PropTypes.string.isRequired,
-  raza: PropTypes.string.isRequired,
-  tamano: PropTypes.string.isRequired,
+  nombre: PropTypes.string.isRequired,
+  imagen: PropTypes.string.isRequired,
+  ruta: PropTypes.string.isRequired,
 };
 
 export default Card;

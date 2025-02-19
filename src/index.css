@@ -9,7 +9,20 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background-color: #f5f5f5;
+  background-color: #ffffff;
+  overflow: auto;
+}
+
+.category-box {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto; 
+  white-space: nowrap;
+  padding: 10px;
+}
+
+.category-box::-webkit-scrollbar {
+  display: none;
 }
 
 .layout {
@@ -94,84 +107,83 @@ body {
 }
 
 .navbar {
-  width: 100%;
-  height: 80px;
-  background: #D9D9D9;
   display: flex;
   align-items: center;
-  padding: 20px 46px;
+  justify-content: space-between;
+  background: #d9d9d9;
+  height: 70px;
+  padding: 15px 46px;
   position: fixed;
   top: 151px;
   left: 0;
+  width: 100%;
   z-index: 999;
-  justify-content: space-between;
-  transition: transform 0.3s ease-in-out;
-}
-
-.navbar.hidden {
-  transform: translateY(-600%);
-}
-
-.navbar.visible {
-  transform: translateY(0);
 }
 
 .navbar-text {
-  width: 462px;
-  height: 53px;
-  font-family: Poppins, sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
-  font-size: 26px;
+  font-size: 20px;
   line-height: 27px;
-  letter-spacing: 0%;
   color: #616676;
+  width: auto;
+  margin-right: 20px;
 }
 
 .date-picker-container {
   display: flex;
+  gap: 15px;
+}
+
+.date-picker {
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 20px;
 }
 
 .date-label {
-  width: 267px;
-  height: 52px;
-  font-family: Poppins, sans-serif;
+  font-family: "Poppins", sans-serif;
   font-weight: 500;
-  font-size: 16px;
-  line-height: 27px;
-  letter-spacing: 0%;
+  font-size: 14px;
   color: #616676;
-  text-align: left;
+  text-align: center;
+  margin-bottom: 2px;
 }
 
 .calendar-box {
-  width: 562px;
-  height: 41px;
-  background: #FFFFFF;
-  border-radius: 10px;
   display: flex;
   align-items: center;
-  justify-content: center;
-  position: relative;
-}
-
-.calendar-bg {
-  width: 100%;
-  height: 100%;
-  border-radius: 10px;
+  background: white;
+  width: 180px;
+  height: 35px;
+  border-radius: 8px;
+  padding: 5px;
 }
 
 .calendar-icon {
-  width: 24px;
-  height: 24px;
-  position: absolute;
-  right: 10px;
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}
+
+.date-input {
+  border: none;
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  color: #616676;
+  width: 100%;
+  background: transparent;
+  outline: none;
 }
 
 .search-button {
-  width: 127px;
-  height: 31px;
+  width: 100px;
+  height: 30px;
+  background: #616676;
+  color: white;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
   cursor: pointer;
 }
 
@@ -185,7 +197,7 @@ body {
   .navbar-text {
     text-align: center;
     width: auto;
-    font-size: 22px;
+    font-size: 18px;
   }
 
   .date-picker-container {
@@ -199,7 +211,7 @@ body {
   }
 
   .search-button {
-    width: 100px;
+    width: 90px;
   }
 }
 
@@ -209,15 +221,15 @@ body {
   }
 
   .navbar-text {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .date-label {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .calendar-box {
-    height: 35px;
+    height: 30px;
   }
 
   .search-button {
@@ -362,4 +374,415 @@ body {
 .visible {
   transform: translateY(0);
   transition: transform 0.3s ease-in-out;
+}
+
+.category-title {
+  width: 462px;
+  height: 53px;
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 27px;
+  color: #616676;
+  margin-left: 46px;
+}
+
+.category-box {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  gap: 20px;
+}
+
+.category-card {
+  width: 406px;
+  height: 227px;
+  background: #ffffff;
+  border: 1px solid #ccc;
+  border-radius: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  transition: transform 0.3s ease-in-out;
+}
+
+.category-card:hover {
+  transform: scale(1.05);
+}
+
+.category-img {
+  width: 406px;
+  height: 159px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  border-width: 1px;
+}
+
+.category-text {
+  font-family: Poppins, sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 27px;
+  color: #616676;
+  margin-top: 10px;
+}
+
+.category-card:nth-child(1) .category-text {
+  width: 381px;
+  height: 52px;
+  margin-left: -271px;
+}
+
+.category-card:nth-child(2) .category-text {
+  width: 381px;
+  height: 52px;
+  margin-left: -253px;
+}
+
+.category-card:nth-child(3) .category-text {
+  width: 381px;
+  height: 52px;
+  margin-left: -255px;
+}
+
+@media (max-width: 1440px) {
+  .category-container {
+    width: 95%;
+  }
+
+  .category-box {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .category-card {
+    width: 350px;
+  }
+
+  .category-img {
+    width: 350px;
+    height: 140px;
+  }
+}
+
+@media (max-width: 768px) {
+  .category-box {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .category-card {
+    width: 100%;
+    height: auto;
+  }
+
+  .category-img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+.palacio-container {
+  padding: 20px;
+}
+
+.palacio-title {
+  width: 462px;
+  height: 53px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 27px;
+  color: #616676;
+  position: absolute;
+  top: 166px;
+  left: 46px;
+}
+
+.palacio-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 60px;
+  padding: 20px;
+}
+
+.palacio-img {
+  width: 662px;
+  height: 417px;
+  border-radius: 20px;
+  border: 1px solid #9195A1;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  position: absolute;
+  top: 234px;
+  left: 46px;
+}
+
+.palacio-description {
+  width: 524px;
+  height: 209px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 27px;
+  background: white;
+  color: #616676;
+  padding: 15px;
+  border-radius: 10px;
+  position: absolute;
+  top: 234px;
+  left: 808px;
+}
+
+.palacio-services {
+  width: 524px;
+  height: 370px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 27px;
+  background: white;
+  color: #616676;
+  padding: 15px;
+  border-radius: 10px;
+  position: absolute;
+  top: 486px;
+  left: 808px;
+}
+
+.palacio-services ul {
+  list-style: none;
+  padding: 0;
+}
+
+.palacio-services ul li {
+  margin-bottom: 10px;
+}
+
+.back-home {
+  position: absolute;
+  top: 166px;
+  right: 50px;
+}
+
+.back-home img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.content {
+  flex-grow: 1;
+  padding: 20px;
+  margin-top: 220px;
+}
+
+.refugio-container, .cueva-container {
+  padding: 20px;
+}
+
+.refugio-title, .cueva-title {
+  width: 462px;
+  height: 53px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 26px;
+  line-height: 27px;
+  color: #616676;
+  position: absolute;
+  top: 166px;
+  left: 46px;
+}
+
+.refugio-content, .cueva-content {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-top: 60px;
+  padding: 20px;
+}
+
+.refugio-img, .cueva-img {
+  width: 662px;
+  height: 417px;
+  border-radius: 20px;
+  border: 1px solid #9195A1;
+  box-shadow: 0px 4px 4px 0px #00000040;
+  position: absolute;
+  top: 234px;
+  left: 46px;
+  cursor: pointer;
+}
+
+.refugio-description, .cueva-description {
+  width: 524px;
+  height: 209px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 27px;
+  background: white;
+  color: #616676;
+  padding: 15px;
+  border-radius: 10px;
+  position: absolute;
+  top: 234px;
+  left: 808px;
+}
+
+.refugio-services, .cueva-services {
+  width: 524px;
+  height: 370px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 27px;
+  background: white;
+  color: #616676;
+  padding: 15px;
+  border-radius: 10px;
+  position: absolute;
+  top: 486px;
+  left: 808px;
+}
+
+.refugio-services ul, .cueva-services ul {
+  list-style: none;
+  padding: 0;
+}
+
+.refugio-services ul li, .cueva-services ul li {
+  margin-bottom: 10px;
+}
+
+.back-home {
+  position: absolute;
+  top: 166px;
+  right: 50px;
+}
+
+.back-home img {
+  width: 50px;
+  height: 50px;
+  cursor: pointer;
+}
+
+.galeria-container {
+  text-align: center;
+  padding: 40px;
+}
+
+.galeria-container h2 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #616676;
+}
+
+.galeria-container p {
+  font-size: 18px;
+  color: #9195A1;
+  margin-top: 10px;
+}
+
+@media (max-width: 1024px) {
+  .refugio-content, .cueva-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .refugio-title, .cueva-title {
+    position: static;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .refugio-img, .cueva-img {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
+  .refugio-description, .cueva-description,
+  .refugio-services, .cueva-services {
+    position: static;
+    width: 100%;
+    height: auto;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .back-home {
+    position: static;
+    text-align: center;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .refugio-title, .cueva-title {
+    font-size: 22px;
+  }
+
+  .refugio-description, .cueva-description,
+  .refugio-services, .cueva-services {
+    font-size: 14px;
+  }
+
+  .galeria-container h2 {
+    font-size: 22px;
+  }
+
+  .galeria-container p {
+    font-size: 16px;
+  }
+}
+
+.services-title {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 26px;
+  color: #616676;
+  margin-left: 46px;
+  margin-top: 40px;
+}
+
+.services-box {
+  display: flex;
+  gap: 20px;
+  justify-content: start;
+  margin-left: 46px;
+  flex-wrap: wrap;
+}
+
+.service-card {
+  width: 268px;
+  height: 226px;
+  background: white;
+  border: 1px solid #9195A1;
+  border-radius: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+}
+
+.service-img {
+  width: 268px;
+  height: 159px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+}
+
+.service-text {
+  font-family: "Poppins", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  color: #616676;
+  margin-top: 10px;
 }

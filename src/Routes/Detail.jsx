@@ -1,6 +1,6 @@
+import { GlobalContext } from "../Context/utils/globalContext.jsx";
 import { useParams } from "react-router-dom";
 import { useContext } from "react";
-import { GlobalContext } from "../Context/utils/globalContext.jsx";
 
 const Detail = () => {
   const { id } = useParams();

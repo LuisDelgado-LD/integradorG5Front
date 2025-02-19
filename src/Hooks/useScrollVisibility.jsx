@@ -1,24 +1,18 @@
 import { useState, useEffect } from "react";
 
 const useScrollVisibility = () => {
-  const [isVisible, setIsVisible] = useState(true);
-  let lastScrollY = window.scrollY;
+  const [scrollPosition, setScrollPosition] = useState(0);
 
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > lastScrollY) {
-        setIsVisible(false);
-      } else {
-        setIsVisible(true);
-      }
-      lastScrollY = window.scrollY;
+      setScrollPosition(window.scrollY);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  return isVisible;
+  return scrollPosition;
 };
 
 export default useScrollVisibility;

@@ -12,7 +12,7 @@ const Navbar = () => {
         <div className="date-picker">
           <label className="date-label">Fecha de ingreso</label>
           <div className="calendar-box">
-            <img src="/img/calendario.png" alt="Calendario ingreso" className="calendar-icon" />
+            <img src="/img/Calendario.png" alt="Calendario ingreso" className="calendar-icon" />
             <input type="date" className="date-input" />
           </div>
         </div>
@@ -20,7 +20,7 @@ const Navbar = () => {
         <div className="date-picker">
           <label className="date-label">Fecha salida</label>
           <div className="calendar-box">
-            <img src="/img/calendario.png" alt="Calendario salida" className="calendar-icon" />
+            <img src="/img/Calendario.png" alt="Calendario salida" className="calendar-icon" />
             <input type="date" className="date-input" />
           </div>
         </div>

@@ -247,13 +247,15 @@ body {
   height: auto;
   box-sizing: border-box;
   padding: 1rem 0.5rem;
+  font-size: 0.9rem;
 }
 
 .RedesSociales {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem;
+  padding: 2rem;
+  gap: 1rem;
 }
 
 .RedesSociales img {
@@ -269,7 +271,6 @@ body {
   margin: 0;
   padding: 0; 
   color: #fbfbfd;
-  font-size: 0.8rem;
 }
 
 .footer-CopyRight img{

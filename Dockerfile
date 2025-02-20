@@ -16,4 +16,6 @@ FROM nginx:latest
 
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+COPY ./nginx.conf /etc/nginx/conf.d/api.conf
+
 EXPOSE 80

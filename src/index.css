@@ -237,27 +237,45 @@ body {
   }
 }
 
-.footer {
-  width: 100%;
-  background-color: #606676;
+.footer{
+  align-items: center;
   color: #FBFBFC;
-  text-align: center;
-  padding: 1rem 0;
-  /* position: fixed; */
-  bottom: 0;
-  left: 0;
+  display: flex;
+  justify-content: space-between;
+  background-color: #606676;
+  width: 100%;
+  height: auto;
+  box-sizing: border-box;
+  padding: 1rem 0.5rem;
 }
 
 .RedesSociales {
   display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 10px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+}
+
+.RedesSociales img {
+  width: 30px; /* Define el ancho deseado */
+  height: 30px; /* Define la altura deseada */
+  object-fit: contain;
 }
 
 .footer-CopyRight {
-  font-size: 1rem;
-  margin-top: 10px;
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+  margin: 0;
+  padding: 0; 
+  color: #fbfbfd;
+  font-size: 0.8rem;
+}
+
+.footer-CopyRight img{
+  width: 5rem; /* Define el ancho deseado */
+  height: 5rem; /* Define la altura deseada */
+  object-fit: contain;
 }
 
 .card {
@@ -362,7 +380,13 @@ body {
   }
 
   .footer {
-    font-size: 14px;
+    flex-direction: column;
+    align-items: center; 
+    text-align: center;
+  }
+
+  .RedesSociales {
+    margin-top: 0.2rem; /* Espacio entre el texto y los logos */
   }
 }
 

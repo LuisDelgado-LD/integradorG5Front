@@ -2,6 +2,7 @@ const Footer = () => {
     return (
     <footer className="footer">
         <div className="footer-CopyRight">
+            <img src="/img/ImagenFooter.png" alt="Footer Logo" />
             <small>Copyright © 2025 Pet Paradise S.A</small>
         </div>
         <div className="RedesSociales">

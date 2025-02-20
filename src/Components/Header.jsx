@@ -1,6 +1,9 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+
   return (
     <header className="header">
       <div className="header-left">
@@ -14,8 +17,21 @@ const Header = () => {
       </div>
 
       <div className="header-right">
-        <Link to="/registro" className="btn">Registrar Mascota</Link>
-        <Link to="/login" className="btn">Iniciar sesión</Link>
+        {location.pathname === "/administrador" ? (
+          <div className="admin-header">
+            <span>Bienvenido, Administrador</span>
+            <button onClick={() => navigate("/agregar-producto")} className="admin-btn">
+              Añadir Producto
+            </button>
+            <img src="/img/grupo8.png" alt="Admin" className="admin-img" />
+          </div>
+        ) : (
+          <>
+            <Link to="/registro" className="btn">Registrar Mascota</Link>
+            <Link to="/login" className="btn">Iniciar sesión</Link>
+            <Link to="/administrador" className="admin-link">Panel de Administrador</Link>
+          </>
+        )}
       </div>
     </header>
   );

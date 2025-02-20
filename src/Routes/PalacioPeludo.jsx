@@ -15,7 +15,7 @@ const PalacioPeludo = () => {
           src="/img/PalacioPeludo.png"
           alt="Palacio Peludo"
           className="palacio-img"
-          onClick={() => navigate("/Galeria2")}
+          onClick={() => navigate("/Galeria2", { state: { imagen: "/img/PalacioPeludo.png" } })}
           style={{ cursor: "pointer" }}
         />
 

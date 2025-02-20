@@ -7,6 +7,8 @@ import PalacioPeludo from "./Routes/PalacioPeludo.jsx";
 import RefugioConfortable from "./Routes/RefugioConfortable.jsx";
 import CuevaAcogedora from "./Routes/CuevaAcogedora.jsx";
 import Galeria2 from "./Routes/Galeria2.jsx";
+import Administrador from "./Routes/Administrador.jsx";
+import AgregarProducto from "./Routes/AgregarProducto.jsx";
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/RefugioConfortable" element={<RefugioConfortable />} />
           <Route path="/CuevaAcogedora" element={<CuevaAcogedora />} />
           <Route path="/Galeria2" element={<Galeria2 />} />
+          <Route path="/administrador" element={<Administrador />} />
+          <Route path="/agregar-producto" element={<AgregarProducto />} />
         </Route>
       </Routes>
     </Router>

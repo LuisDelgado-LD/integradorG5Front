@@ -509,6 +509,95 @@ body {
   }
 }
 
+.habitacion-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.habitacion-img-container {
+  position: relative;
+  max-width: 400px;
+}
+
+.back-home {
+  position: absolute;
+  top: -10px;
+  left: -10px;
+}
+
+.back-home img {
+  width: 40px;
+  height: 40px;
+}
+
+.habitacion-img {
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
+}
+
+.habitacion-img:hover {
+  transform: scale(1.05);
+}
+
+.habitacion-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.habitacion-content h2 {
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.habitacion-title,
+.habitacion-tamano,
+.habitacion-disponible,
+.habitacion-precio,
+.habitacion-descripcion {
+  font-size: 18px;
+  margin: 8px 0;
+}
+
+.servicios-container {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+  text-align: left;
+  margin-top: 20px;
+}
+
+.servicios-container h3 {
+  font-size: 22px;
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.servicio-item {
+  font-size: 16px;
+  margin: 5px 0;
+}
+
+.footer {
+  margin-top: 40px;
+  padding: 20px;
+  background-color: #4a4a4a;
+  color: white;
+  text-align: center;
+  width: 100%;
+}
+
+
 .palacio-container {
   padding: 20px;
 }

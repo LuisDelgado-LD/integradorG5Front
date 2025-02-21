@@ -6,15 +6,16 @@ export const GlobalContext = createContext();
 const initialState = {
   mascotas: [],
   habitaciones: [
-    { id: 1, nombre: "Palacio Peludo", imagen: "/img/PalacioPeludo.png", ruta: "/PalacioPeludo" },
-    { id: 2, nombre: "Refugio Confortable", imagen: "/img/RefugioConfortable.png", ruta: "/RefugioConfortable" },
-    { id: 3, nombre: "Cueva Acogedora", imagen: "/img/CuevaAcogedora.png", ruta: "/CuevaAcogedora" }
+    { id: 1, nombre: "Palacio Peludo", imagen: "/img/PalacioPeludo.png", ruta: "/PalacioPeludo", descripcion: "Un espacio amplio y lujoso diseñado para brindar a tu mascota una experiencia de realeza. Con zonas para descansar, jugar y explorar, el Palacio Peludo ofrece una comodidad total, con camas extra grandes, alfombras suaves y un ambiente relajante." },
+    { id: 2, nombre: "Refugio Confortable", imagen: "/img/RefugioConfortable.png", ruta: "/RefugioConfortable", descripcion: "Un lugar acogedor y lleno de calidez, ideal para aquellos que buscan el equilibrio entre amplitud y comodidad. El Refugio Confortable tiene todo lo necesario para que tu mascota se sienta segura y feliz." },
+    { id: 3, nombre: "Cueva Acogedora", imagen: "/img/CuevaAcogedora.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." }
   ],
   servicios: [
     { id: 1, nombre: "Masajes Relajantes", imagen: "/img/MasajesRelajantes.png" },
     { id: 2, nombre: "Peluquería y Estilismo", imagen: "/img/PeluqueríaYEstilismo.png" },
     { id: 3, nombre: "Entrenamiento Personalizado", imagen: "/img/EntrenamientoPersonalizado.png" },
-    { id: 4, nombre: "Paseos Guiados", imagen: "/img/PaseosGuiados.png" }
+    { id: 4, nombre: "Paseos Guiados", imagen: "/img/PaseosGuiados.png" },
+    { id: 5, nombre: "Psicólogo", imagen: "/img/Psicologo.png" }
   ],
   productos: [] 
 };
@@ -51,6 +52,11 @@ export const GlobalProvider = ({ children }) => {
       .then(response => response.json())
       .then(data => dispatch({ type: "SET_PRODUCTOS", payload: data }))
       .catch(error => console.error("Error obteniendo productos:", error));
+
+    /*fetch("https://petparadise.sytes.net/api/all")
+      .then(response => response.json())
+      .then(data => dispatch({ type: "SET_HABITACIONES", payload: data.content }))
+      .catch(error => console.error("Error obteniendo habitaciones:", error));*/
   }, []);
 
   return (

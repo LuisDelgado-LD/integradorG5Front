@@ -1,52 +1,63 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import { GlobalContext } from "../Context/utils/globalContext";
 
 const Form = () => {
+  const { dispatch } = useContext(GlobalContext);
   const [formData, setFormData] = useState({
-    nombreDuenio: "", apellidoDuenio: "", email: "", telefono: "", direccion: "", contrasena: "",
-    nombreMascota: "", raza: "", tamano: ""
+    tipoProducto: "",
+    nombre: "",
+    descripcion: "",
+    servicios: "",
+    imagenPrincipal: null,
+    imagenesIncluidas: []
   });
-  const [error, setError] = useState("");
-  const navigate = useNavigate(); 
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    if (e.target.name === "imagenPrincipal") {
+      setFormData({ ...formData, imagenPrincipal: e.target.files[0] });
+    } else {
+      setFormData({ ...formData, imagenesIncluidas: [...e.target.files] });
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!formData.nombreDuenio || !formData.apellidoDuenio || !formData.email ||
-        !formData.telefono || !formData.direccion || !formData.contrasena ||
-        !formData.nombreMascota || !formData.raza || !formData.tamano) {
-      setError("Todos los campos son obligatorios");
-    } else {
-      alert(`Registro exitoso de ${formData.nombreMascota}, dueño: ${formData.nombreDuenio} ${formData.apellidoDuenio}`);
-      setError("");
-   
-      navigate("/");
+    if (!formData.nombre || !formData.tipoProducto || !formData.descripcion || !formData.imagenPrincipal) {
+      alert("Todos los campos son obligatorios");
+      return;
     }
+
+    const nuevaFecha = new Date().toLocaleString();
+    dispatch({ type: "AGREGAR_PRODUCTO", payload: { ...formData, ultimaModificacion: nuevaFecha } });
+    setFormData({ tipoProducto: "", nombre: "", descripcion: "", servicios: "", imagenPrincipal: null, imagenesIncluidas: [] });
   };
 
   return (
     <form onSubmit={handleSubmit} className="form-container">
-      <h2>Información del Dueño</h2>
-      <input type="text" name="nombreDuenio" placeholder="Nombre" value={formData.nombreDuenio} onChange={handleChange} required />
-      <input type="text" name="apellidoDuenio" placeholder="Apellido" value={formData.apellidoDuenio} onChange={handleChange} required />
-      <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-      <input type="tel" name="telefono" placeholder="Teléfono" value={formData.telefono} onChange={handleChange} required />
-      <input type="text" name="direccion" placeholder="Dirección" value={formData.direccion} onChange={handleChange} required />
-      <input type="password" name="contrasena" placeholder="Contraseña" value={formData.contrasena} onChange={handleChange} required />
-      <h2>Información de la Mascota</h2>
-      <input type="text" name="nombreMascota" placeholder="Nombre de la mascota" value={formData.nombreMascota} onChange={handleChange} required />
-      <input type="text" name="raza" placeholder="Raza" value={formData.raza} onChange={handleChange} required />
-      <select name="tamano" value={formData.tamano} onChange={handleChange} required>
-        <option value="">Selecciona el tamaño</option>
-        <option value="grande">Grande</option>
-        <option value="mediano">Mediano</option>
-        <option value="pequeño">Pequeño</option>
-      </select>
-      <button type="submit">Registrar</button>
-      {error && <p className="error">{error}</p>}
+      <h3>Nuevo Producto</h3>
+      <label>Tipo de Producto</label>
+      <input type="text" name="tipoProducto" value={formData.tipoProducto} onChange={handleChange} required />
+      
+      <label>Nombre</label>
+      <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
+      
+      <label>Descripción</label>
+      <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} required />
+      
+      <label>Servicios Incluidos</label>
+      <input type="text" name="servicios" value={formData.servicios} onChange={handleChange} />
+      
+      <label>Agregar Imagen Principal</label>
+      <input type="file" name="imagenPrincipal" accept="image/*" onChange={handleFileChange} required />
+      
+      <label>Agregar Imágenes Incluidas</label>
+      <input type="file" name="imagenesIncluidas" multiple accept="image/*" onChange={handleFileChange} />
+      
+      <button type="submit" className="save-btn">Guardar</button>
     </form>
   );
 };

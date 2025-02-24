@@ -1,46 +1,40 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useContext } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import Card from "../Components/Card";
 
 const Galeria2 = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const { id } = useParams();
   const { state } = useContext(GlobalContext);
 
-  const servicios = [
-    { id: 1, nombre: "Masajes Relajantes", imagen: "/img/MasajesRelajantes.png" },
-    { id: 2, nombre: "Peluquería y Estilismo", imagen: "/img/PeluqueríaYEstilismo.png" },
-    { id: 3, nombre: "Entrenamiento Personalizado", imagen: "/img/EntrenamientoPersonalizado.png" },
-    { id: 4, nombre: "Paseos Guiados", imagen: "/img/PaseosGuiados.png" }
-  ];
+  const habitacion = state.habitaciones.find((h) => h.id === parseInt(id));
+
+  if (!habitacion) {
+    return <p>Habitación no encontrada.</p>;
+  }
 
   return (
     <div className="galeria-container">
-      <h2 className="galeria-title">Galería del producto</h2>
-      
+      <h2 className="galeria-title">Galería de {habitacion.nombre}</h2>
+
       <div className="galeria-content">
         <div className="imagen-principal">
-          <img src="/img/RefugioConfortable.png" alt="Refugio Confortable" />
+          <img src={habitacion.imagen} alt={habitacion.nombre} />
         </div>
       </div>
-      
+
       <div className="galeria-secundaria">
-        {servicios.map((servicio) => (
-          <Card key={servicio.id} nombre={servicio.nombre} imagen={servicio.imagen} ruta="/detalle-servicio" />
+        {state.habitaciones.slice(0, 4).map((item) => (
+          <Card key={item.id} nombre={item.nombre} imagen={item.imagen} ruta={`/galeria/${item.id}`} />
         ))}
       </div>
 
-      <button className="ver-mas" onClick={() => navigate("/detalle-galeria")}>
+      <button className="ver-mas" onClick={() => navigate(`/habitacion/${habitacion.id}`)}>
         Ver Más
       </button>
 
-      <img
-        src="/img/flecha.png"
-        alt="Volver"
-        className="back-arrow"
-        onClick={() => navigate(-1)}
-      />
+      <img src="/img/flecha.png" alt="Volver" className="back-arrow" onClick={() => navigate(-1)} />
     </div>
   );
 };

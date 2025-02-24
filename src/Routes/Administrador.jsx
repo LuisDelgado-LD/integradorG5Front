@@ -1,42 +1,48 @@
-import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
+import Form from "../Components/Form";
 
 const Administrador = () => {
-  const navigate = useNavigate();
   const { state } = useContext(GlobalContext);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
 
   return (
     <div className="admin-container">
-      <h2 className="admin-title">Bienvenido, Administrador</h2>
-      <button className="add-product-btn" onClick={() => navigate("/agregar-producto")}>
-        Añadir Producto
-      </button>
-      <img src="/img/Group8.png" alt="Admin Icon" className="admin-img" />
-      
-      <div className="product-list">
-        <h3>Lista de Productos</h3>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Nombre</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {state.productos.map((producto, index) => (
+      <h2 className="admin-title">Gestión de Productos</h2>
+      <table className="product-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Tipo de Producto</th>
+            <th>Última Modificación</th>
+            <th>Acción</th>
+          </tr>
+        </thead>
+        <tbody>
+          {state.productos.length > 0 ? (
+            state.productos.map((producto, index) => (
               <tr key={index}>
-                <td>{index + 1}</td>
                 <td>{producto.nombre}</td>
+                <td>{producto.tipoProducto}</td>
+                <td>{producto.ultimaModificacion}</td>
                 <td>
-                  <button className="delete-btn">Eliminar</button>
+                  <button onClick={() => eliminarProducto(producto.nombre)} className="delete-btn">🗑️</button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            ))
+          ) : (
+            <tr>
+              <td colSpan="4">No hay productos registrados</td>
+            </tr>
+          )}
+        </tbody>
+      </table>
+
+      <button className="add-product-btn" onClick={() => setMostrarFormulario(!mostrarFormulario)}>
+        Añadir Producto
+      </button>
+
+      {mostrarFormulario && <Form />}
     </div>
   );
 };

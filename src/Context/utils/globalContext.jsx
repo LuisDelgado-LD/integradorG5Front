@@ -8,14 +8,14 @@ const initialState = {
   habitaciones: [
     { id: 1, nombre: "Palacio Peludo", imagen: "/img/PalacioPeludo.png", ruta: "/PalacioPeludo", descripcion: "Un espacio amplio y lujoso diseñado para brindar a tu mascota una experiencia de realeza. Con zonas para descansar, jugar y explorar, el Palacio Peludo ofrece una comodidad total, con camas extra grandes, alfombras suaves y un ambiente relajante." },
     { id: 2, nombre: "Refugio Confortable", imagen: "/img/RefugioConfortable.png", ruta: "/RefugioConfortable", descripcion: "Un lugar acogedor y lleno de calidez, ideal para aquellos que buscan el equilibrio entre amplitud y comodidad. El Refugio Confortable tiene todo lo necesario para que tu mascota se sienta segura y feliz." },
-    { id: 3, nombre: "Cueva Acogedora", imagen: "/img/CuevaAcogedora.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." }
-  ],
-  servicios: [
-    { id: 1, nombre: "Masajes Relajantes", imagen: "/img/MasajesRelajantes.png" },
-    { id: 2, nombre: "Peluquería y Estilismo", imagen: "/img/PeluqueríaYEstilismo.png" },
-    { id: 3, nombre: "Entrenamiento Personalizado", imagen: "/img/EntrenamientoPersonalizado.png" },
-    { id: 4, nombre: "Paseos Guiados", imagen: "/img/PaseosGuiados.png" },
-    { id: 5, nombre: "Psicólogo", imagen: "/img/Psicologo.png" }
+    { id: 3, nombre: "Cueva Acogedora", imagen: "/img/CuevaAcogedora.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
+    { id: 4, nombre: "Masajes Relajantes", imagen: "/img/MasajesRelajantes.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
+    { id: 5, nombre: "Peluquería y Estilismo", imagen: "/img/PeluqueríaYEstilismo.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
+    { id: 6, nombre: "Entrenamiento Personalizado", imagen: "/img/EntrenamientoPersonalizado.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
+    { id: 7, nombre: "Paseos Guiados", imagen: "/img/PaseosGuiados.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
+    { id: 8, nombre: "Psicólogo", imagen: "/img/Psicologo.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
+    { id: 9, nombre: "Psicólogo", imagen: "/img/Psicologo.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
+    { id: 10, nombre: "Psicólogo", imagen: "/img/Psicologo.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
   ],
   productos: [] 
 };

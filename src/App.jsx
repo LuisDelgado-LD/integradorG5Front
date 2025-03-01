@@ -5,7 +5,7 @@ import Habitaciones from "./Routes/Habitaciones.jsx";
 import Registro from "./Routes/Registro.jsx";
 import Galeria2 from "./Routes/Galeria2.jsx";
 import Administrador from "./Routes/Administrador.jsx";
-import AgregarProducto from "./Routes/AgregarProducto.jsx";
+import Login from "./Routes/Login.jsx";
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
           <Route path="/registro" element={<Registro />} />
           <Route path="/Galeria/:id" element={<Galeria2 />} />
           <Route path="/administrador" element={<Administrador />} />
-          <Route path="/agregar-producto" element={<AgregarProducto />} />
+          <Route path="/login" element={<Login />} />
         </Route>
       </Routes>
     </Router>

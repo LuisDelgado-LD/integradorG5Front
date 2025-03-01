@@ -4,7 +4,6 @@ import PropTypes from "prop-types";
 export const GlobalContext = createContext();
 
 const initialState = {
-  mascotas: [],
   habitaciones: [
     { id: 1, nombre: "Palacio Peludo", imagen: "/img/PalacioPeludo.png", ruta: "/PalacioPeludo", descripcion: "Un espacio amplio y lujoso diseñado para brindar a tu mascota una experiencia de realeza. Con zonas para descansar, jugar y explorar, el Palacio Peludo ofrece una comodidad total, con camas extra grandes, alfombras suaves y un ambiente relajante." },
     { id: 2, nombre: "Refugio Confortable", imagen: "/img/RefugioConfortable.png", ruta: "/RefugioConfortable", descripcion: "Un lugar acogedor y lleno de calidez, ideal para aquellos que buscan el equilibrio entre amplitud y comodidad. El Refugio Confortable tiene todo lo necesario para que tu mascota se sienta segura y feliz." },
@@ -17,14 +16,13 @@ const initialState = {
     { id: 9, nombre: "Psicólogo", imagen: "/img/Psicologo.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
     { id: 10, nombre: "Psicólogo", imagen: "/img/Psicologo.png", ruta: "/CuevaAcogedora", descripcion: "Un pequeño paraíso para mascotas que prefieren espacios íntimos y tranquilos. La Cueva Acogedora es perfecta para dormir plácidamente, con una cama cómoda y una atmósfera cálida." },
   ],
-  productos: [] 
+  productos: [],
+  categorias: ["Básica", "Premium", "VIP"],
+  tamanos: ["Grande", "Mediano", "Pequeño"] 
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
-    case "SET_MASCOTAS":
-      return { ...state, mascotas: action.payload };
-
     case "SET_PRODUCTOS":
       return { ...state, productos: action.payload };
 
@@ -43,12 +41,7 @@ export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
 
   useEffect(() => {
-    fetch("http://localhost:8080/api/mascotas")
-      .then(response => response.json())
-      .then(data => dispatch({ type: "SET_MASCOTAS", payload: data }))
-      .catch(error => console.error("Error obteniendo mascotas:", error));
-
-    fetch("http://localhost:8080/api/productos")
+    fetch("http://localhost:5173/api/productos")
       .then(response => response.json())
       .then(data => dispatch({ type: "SET_PRODUCTOS", payload: data }))
       .catch(error => console.error("Error obteniendo productos:", error));

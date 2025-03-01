@@ -1,62 +1,61 @@
 import { useContext, useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../Context/utils/globalContext";
 
 const Home = () => {
   const { state } = useContext(GlobalContext);
-  const navigate = useNavigate();
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 6;
-  const [habitacionesAleatorias, setHabitacionesAleatorias] = useState([]);
-
-  const shuffleArray = (array) => {
-    return array
-      .map((item) => ({ ...item, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map((item) => ({ id: item.id, nombre: item.nombre, imagen: item.imagen, ruta: item.ruta }));
-  };
+  const [paginaActual, setPaginaActual] = useState(1);
+  const [indexImagen, setIndexImagen] = useState(Math.floor(Math.random() * state.habitaciones.length));
 
   useEffect(() => {
-    if (state.habitaciones.length > 0) {
-      setHabitacionesAleatorias(shuffleArray(state.habitaciones));
+    if (paginaActual === 1) {
+      const interval = setInterval(() => {
+        setIndexImagen((prevIndex) => (prevIndex + 1) % state.habitaciones.length);
+      }, 5000);
+      return () => clearInterval(interval);
     }
-  }, [currentPage, state.habitaciones]);
-
-  if (!state || !state.habitaciones) {
-    return <p>Cargando habitaciones...</p>;
-  }
-
-  const totalPages = Math.ceil(state.habitaciones.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const habitacionesPaginadas = habitacionesAleatorias.slice(startIndex, startIndex + itemsPerPage);
+  }, [paginaActual, state.habitaciones.length]);
+  const cambiarPagina = (nuevaPagina) => {
+    setPaginaActual(nuevaPagina);
+  };
 
   return (
     <div className="home">
-      <h2 className="category-title">Categorías</h2>
-      <div className="category-box">
-        {habitacionesPaginadas.map((habitacion) => (
-          <div key={habitacion.id} className="category-card" onClick={() => navigate(`/galeria/${habitacion.id}`)}>
-            <img src={habitacion.imagen} alt={habitacion.nombre} className="category-img" />
-            <p className="category-text">{habitacion.nombre}</p>
+      {state.habitaciones.length > 0 && (
+        <>
+          {paginaActual === 1 ? (
+            <div className="banner-container">
+              <img
+                src={state.habitaciones[indexImagen].imagen}
+                alt={`Habitación ${state.habitaciones[indexImagen].nombre}`}
+                className="banner-img clickable"
+                onClick={() => (window.location.href = `/galeria/${state.habitaciones[indexImagen].id}`)}
+              />
+            </div>
+          ) : (
+            <div className="habitacion-info">
+              <h2>{state.habitaciones[paginaActual - 1].nombre}</h2>
+              <img
+                src={state.habitaciones[paginaActual - 1].imagen}
+                alt={state.habitaciones[paginaActual - 1].nombre}
+                className="habitacion-img"
+              />
+              <p>{state.habitaciones[paginaActual - 1].descripcion}</p>
+            </div>
+          )}
+
+          <div className="pagination-container">
+            {state.habitaciones.map((_, index) => (
+              <button
+                key={index + 1}
+                className={`pagination-btn ${paginaActual === index + 1 ? "active" : ""}`}
+                onClick={() => cambiarPagina(index + 1)}
+              >
+                {index + 1}
+              </button>
+            ))}
           </div>
-        ))}
-      </div>
-
-      <div className="pagination">
-        <button onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))} disabled={currentPage === 1}>
-          ⬅ Anterior
-        </button>
-
-        {Array.from({ length: totalPages }, (_, i) => (
-          <button key={i + 1} onClick={() => setCurrentPage(i + 1)} className={currentPage === i + 1 ? "active" : ""}>
-            {i + 1}
-          </button>
-        ))}
-
-        <button onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))} disabled={currentPage === totalPages}>
-          Siguiente ➡
-        </button>
-      </div>
+        </>
+      )}
     </div>
   );
 };

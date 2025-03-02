@@ -4,6 +4,19 @@
   box-sizing: border-box;
 }
 
+.Auxiliares-Galeria {
+  align-items: center; 
+  display: flex;
+  justify-content: space-between;
+  box-sizing: border-box;
+}
+
+.back-arrow {
+  position: relative;
+  /* margin: auto 32px auto 4px; */
+  cursor: pointer;
+}
+
 body {
   font-family: "Poppins", sans-serif;
   display: flex;
@@ -191,37 +204,37 @@ body {
   position: relative;
   padding: 0px 0px;
   width: 100%;
+  /* text-align: center; */
+  /* padding: 40px; */
 }
 
 .galeria-title {
-  width: 562px;
-  height: 53px;
+  /* width: 562px;
+  height: 53px; */
+  flex-direction: column-reverse;
   font-family: Poppins, sans-serif;
   font-weight: 500;
   font-size: 26px;
   line-height: 27px;
   color: #616676;
-  margin-left: 2px;
+  vertical-align: top;
+  /* margin-left: 2px; */
 }
 
 .galeria-content {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  padding: 20px 0px;
+  gap: 10px 20px;
+  padding: 10px 0px;
 }
 
 .galeria-secundaria {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: repeat(2, 1fr);
-  gap: 10px;
+  gap: 10px 0px;
+  padding: 0px 5px;
   /* margin-top: -450px;  */
-}
-
-.galeria-container {
-  text-align: center;
-  padding: 40px;
 }
 
 .galeria-container h2 {
@@ -234,11 +247,6 @@ body {
   font-size: 18px;
   color: #9195a1;
   margin-top: 10px;
-}
-
-.Auxiliares-Galeria {
-  display: flex;
-  justify-content: space-between;
 }
 
 .imagen-principal {
@@ -928,15 +936,6 @@ body {
   margin-top: 10px;
 }
 
-.back-arrow {
-  position: absolute;
-  top: -20px;
-  right: 50px;
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-}
-
 .card {
   width: 268px;
   height: 226px;
@@ -984,7 +983,9 @@ body {
   border-radius: 5px;
   cursor: pointer;
   position: relative;
-  top: 20px;
+  /* top: 20px; */
+  align-self: flex-end; /* Alinea a la izquierda */
+  margin: 0px auto 8px 1110px; 
 
   .admin-container {
     text-align: center;

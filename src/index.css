@@ -145,13 +145,14 @@ body {
 
 .date-picker-container {
   display: flex;
-  gap: 15px;
+  justify-content: space-around;
+  gap: 18px;
 }
 
 .date-picker {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items:flex-start;
 }
 
 .date-label {
@@ -159,7 +160,7 @@ body {
   font-weight: 500;
   font-size: 14px;
   color: #616676;
-  text-align: center;
+  text-align: start;
   margin-bottom: 2px;
 }
 
@@ -167,7 +168,7 @@ body {
   display: flex;
   align-items: center;
   background: white;
-  width: 180px;
+  width: 200px;
   height: 35px;
   border-radius: 8px;
   padding: 5px;
@@ -908,11 +909,34 @@ body {
     cursor: pointer;
     margin-top: 10px;
   }
+
   .banner-container {
+    display: flex;
     position: relative;
     width: 100%;
     height: 400px;
     overflow: hidden;
+    justify-content: center;
+  }
+
+  .banner-container img{
+    border-radius: 20px;
+  }
+
+  .pagination-container{
+    display: flex;
+    justify-content: center;
+    width: auto;
+    height: auto;
+    margin-top: 2px;
+  }
+
+  .pagination-container button{
+    padding: 2px;
+    margin: 2px;
+    width: 22px;
+    height: 22px;
+    color: #606676;
   }
 
   .category-title {
@@ -934,12 +958,12 @@ body {
     cursor: pointer;
   }
 
-  .banner-img {
+  /* .banner-img {
     width: -1500%;
     height: 100%;
     object-fit: cover;
     transition: opacity 1s ease-in-out;
-  }
+  } */
 
 .footer {
   align-items: center;
@@ -984,7 +1008,7 @@ body {
 }
 
 @media (max-width: 1024px) {
-  .navbar {
+  /* .navbar {
     flex-direction: column;
     height: auto;
     padding: 10px;
@@ -994,15 +1018,15 @@ body {
     text-align: center;
     width: auto;
     font-size: 18px;
-  }
+  } */
 
-  .date-picker-container {
+  /* .date-picker-container {
     flex-direction: column;
     align-items: center;
     gap: 10px;
-  }
+  } */
 
-  .calendar-box {
+  /* .calendar-box {
     width: 90%;
   }
 
@@ -1068,7 +1092,7 @@ body {
     position: static;
     text-align: center;
     margin-top: 20px;
-  }
+  } */
 }
 
 @media (max-width: 768px) {
@@ -1130,11 +1154,24 @@ body {
   }
 
   .navbar {
-    padding: 10px;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    top: 8.8rem;
+    height: 5rem;
+    /* 
+    padding: 15px 46px;
+    left: 0;
+    width: 100%;
+    z-index: 999; */
   }
 
   .navbar-text {
     font-size: 16px;
+  }
+
+  .date-picker-container {
+    flex-direction: row;
   }
 
   .date-label {

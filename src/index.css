@@ -266,56 +266,6 @@ body {
   border-radius: 20px;
 }
 
-@media (max-width: 1024px) {
-  .navbar {
-    flex-direction: column;
-    height: auto;
-    padding: 10px;
-  }
-
-  .navbar-text {
-    text-align: center;
-    width: auto;
-    font-size: 18px;
-  }
-
-  .date-picker-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .calendar-box {
-    width: 90%;
-  }
-
-  .search-button {
-    width: 90px;
-  }
-}
-
-@media (max-width: 768px) {
-  .navbar {
-    padding: 10px;
-  }
-
-  .navbar-text {
-    font-size: 16px;
-  }
-
-  .date-label {
-    font-size: 12px;
-  }
-
-  .calendar-box {
-    height: 30px;
-  }
-
-  .search-button {
-    width: 80px;
-  }
-}
-
 /* .footer {
   margin-top: 40px;
   padding: 20px;
@@ -355,86 +305,6 @@ body {
 .error {
   color: red;
   font-size: 14px;
-}
-
-@media (max-width: 1024px) {
-  .navbar-text {
-    font-size: 16px;
-  }
-
-  .date-picker-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .date-box {
-    width: 100%;
-    align-items: center;
-  }
-
-  .calendar-box {
-    width: 90%;
-  }
-
-  .search-button {
-    width: 100px;
-  }
-}
-
-@media (max-width: 768px) {
-  .header {
-    height: 100px;
-    padding: 0 10px;
-  }
-
-  .logo {
-    width: 80px;
-    height: 80px;
-  }
-
-  .header-text h1 {
-    font-size: 20px;
-  }
-
-  .header-text p {
-    font-size: 14px;
-  }
-
-  .header-right {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .header-right .btn {
-    font-size: 14px;
-    padding: 6px 12px;
-  }
-
-  .navbar {
-    padding: 10px;
-  }
-
-  .date-label {
-    font-size: 14px;
-  }
-
-  .calendar-box {
-    height: 35px;
-  }
-
-  .search-button {
-    width: 80px;
-  }
-
-  .footer {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-
-  .RedesSociales {
-    margin-top: 0.2rem;
-  }
 }
 
 .hidden {
@@ -516,43 +386,6 @@ body {
   width: 381px;
   height: 52px;
   margin-left: -255px;
-}
-
-@media (max-width: 1440px) {
-  .category-container {
-    width: 95%;
-  }
-
-  .category-box {
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .category-card {
-    width: 350px;
-  }
-
-  .category-img {
-    width: 350px;
-    height: 140px;
-  }
-}
-
-@media (max-width: 768px) {
-  .category-box {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .category-card {
-    width: 100%;
-    height: auto;
-  }
-
-  .category-img {
-    width: 100%;
-    height: auto;
-  }
 }
 
 .habitacion-container {
@@ -829,68 +662,6 @@ body {
   cursor: pointer;
 }
 
-@media (max-width: 1024px) {
-  .refugio-content,
-  .cueva-content {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .refugio-title,
-  .cueva-title {
-    position: static;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .refugio-img,
-  .cueva-img {
-    position: static;
-    width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-  }
-
-  .refugio-description,
-  .cueva-description,
-  .refugio-services,
-  .cueva-services {
-    position: static;
-    width: 100%;
-    height: auto;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .back-home {
-    position: static;
-    text-align: center;
-    margin-top: 20px;
-  }
-}
-
-@media (max-width: 768px) {
-  .refugio-title,
-  .cueva-title {
-    font-size: 22px;
-  }
-
-  .refugio-description,
-  .cueva-description,
-  .refugio-services,
-  .cueva-services {
-    font-size: 14px;
-  }
-
-  .galeria-container h2 {
-    font-size: 22px;
-  }
-
-  .galeria-container p {
-    font-size: 16px;
-  }
-}
-
 .services-title {
   font-family: "Poppins", sans-serif;
   font-weight: 500;
@@ -986,7 +757,7 @@ body {
   /* top: 20px; */
   align-self: flex-end; /* Alinea a la izquierda */
   margin: 0px auto 8px 1110px; 
-
+}
   .admin-container {
     text-align: center;
     padding: 20px;
@@ -1169,7 +940,6 @@ body {
     object-fit: cover;
     transition: opacity 1s ease-in-out;
   }
-}
 
 .footer {
   align-items: center;
@@ -1212,3 +982,257 @@ body {
   height: 5rem;
   object-fit: contain;
 }
+
+@media (max-width: 1024px) {
+  .navbar {
+    flex-direction: column;
+    height: auto;
+    padding: 10px;
+  }
+
+  .navbar-text {
+    text-align: center;
+    width: auto;
+    font-size: 18px;
+  }
+
+  .date-picker-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .calendar-box {
+    width: 90%;
+  }
+
+  .search-button {
+    width: 90px;
+  }
+
+  .navbar-text {
+    font-size: 16px;
+  }
+
+  .date-picker-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .date-box {
+    width: 100%;
+    align-items: center;
+  }
+
+  .calendar-box {
+    width: 90%;
+  }
+
+  .search-button {
+    width: 100px;
+  }
+
+  .refugio-content,
+  .cueva-content {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .refugio-title,
+  .cueva-title {
+    position: static;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .refugio-img,
+  .cueva-img {
+    position: static;
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+  }
+
+  .refugio-description,
+  .cueva-description,
+  .refugio-services,
+  .cueva-services {
+    position: static;
+    width: 100%;
+    height: auto;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  .back-home {
+    position: static;
+    text-align: center;
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+
+  .header {
+    width: 100vw;
+    height: 30vh;
+    /* height: 100px;
+    padding: 0 10px; */
+  }
+
+  .galeria-content {
+    display: block;
+  }
+
+  .galeria-secundaria{
+    display: none;
+  }
+
+  .imagen-principal{
+    width: 100%;
+  }
+
+  .imagen-principal img{
+    width: 100%;
+    /* margin: 10px 0; */
+  }
+
+  .ver-mas {
+    position: relative;
+    /* top: 20px; */
+    align-self: flex-end; /* Alinea a la izquierda */
+    margin: auto 20rem; 
+  }
+
+  .header-left 
+  {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+  }
+
+  .header-text h1 {
+    font-size: 20px;
+  }
+
+  .header-text p {
+    font-size: 14px;
+  }
+
+  .header-right {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .header-right .btn {
+    font-size: 14px;
+    padding: 6px 12px;
+  }
+
+  .navbar {
+    padding: 10px;
+  }
+
+  .navbar-text {
+    font-size: 16px;
+  }
+
+  .date-label {
+    font-size: 12px;
+  }
+
+  .calendar-box {
+    height: 30px;
+  }
+
+  .search-button {
+    width: 80px;
+  }
+
+  .refugio-title,
+  .cueva-title {
+    font-size: 22px;
+  }
+
+  .refugio-description,
+  .cueva-description,
+  .refugio-services,
+  .cueva-services {
+    font-size: 14px;
+  }
+
+  .galeria-container h2 {
+    font-size: 22px;
+  }
+
+  .galeria-container p {
+    font-size: 16px;
+  }
+
+  .logo {
+    width: 80px;
+    height: 80px;
+  }
+
+  .navbar {
+    padding: 10px;
+  }
+
+  .date-label {
+    font-size: 14px;
+  }
+
+  .calendar-box {
+    height: 35px;
+  }
+
+  .search-button {
+    width: 80px;
+  }
+
+  .footer {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .RedesSociales {
+    margin-top: 0.2rem;
+  }
+
+  .category-box {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .category-card {
+    width: 100%;
+    height: auto;
+  }
+
+  .category-img {
+    width: 100%;
+    height: auto;
+  }
+}
+
+/* @media (max-width: 1440px) {
+  .category-container {
+    width: 95%;
+  }
+
+  .category-box {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .category-card {
+    width: 350px;
+  }
+
+  .category-img {
+    width: 350px;
+    height: 140px;
+  }
+} */

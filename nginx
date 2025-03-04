@@ -1,3 +1,12 @@
-location /api/ {
-    proxy_pass http://backend:8080/api
-}
+  server {
+    listen 80;
+
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://${URL_BACK}:8080/api;
+        #proxy_pass http://1.1.1.1:8080/;
+    }
+  }

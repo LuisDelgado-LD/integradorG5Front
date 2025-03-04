@@ -146,7 +146,7 @@ body {
 .date-picker-container {
   display: flex;
   justify-content: space-around;
-  gap: 18px;
+  gap: 20px;
 }
 
 .date-picker {
@@ -199,6 +199,7 @@ body {
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin: 10px 120px 0px 0px;
 }
 
 .galeria-container {
@@ -1038,11 +1039,6 @@ body {
     font-size: 16px;
   }
 
-  .date-picker-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
   .date-box {
     width: 100%;
     align-items: center;
@@ -1095,7 +1091,32 @@ body {
   } */
 }
 
-@media (max-width: 768px) {
+@media (max-width: 570px) {
+  .header-left 
+  {
+    gap: 0px;
+    padding: 0 0;
+  }
+
+  .header-text {
+    position: relative;
+    left: 1rem;
+    top: 1rem;
+    display: flex;
+    flex-direction: column;
+  }
+ 
+  .header-text h1{
+    height: 1.5rem;
+  }
+
+  .logo{
+    position: relative;
+    top: 1rem;
+  }
+}
+
+@media (max-width: 876px) {
 
   .header {
     width: 100vw;
@@ -1133,14 +1154,15 @@ body {
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
+    flex-direction: column;
   }
 
   .header-text h1 {
-    font-size: 20px;
+    font-size: 18px;
   }
 
   .header-text p {
-    font-size: 14px;
+    font-size: 12px;
   }
 
   .header-right {
@@ -1149,41 +1171,41 @@ body {
   }
 
   .header-right .btn {
-    font-size: 14px;
-    padding: 6px 12px;
+    font-size: 12px;
+    padding: 4px 8px;
   }
 
   .navbar {
-    align-items: center;
-    flex-direction: row;
-    justify-content: space-between;
-    top: 8.8rem;
-    height: 5rem;
-    /* 
-    padding: 15px 46px;
-    left: 0;
-    width: 100%;
-    z-index: 999; */
+    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    padding: 1rem 0;
+    top: 9rem;
+    height: auto; 
   }
 
   .navbar-text {
-    font-size: 16px;
+    font-size: 0.9em;
+    padding: 1rem 0px 0px 1rem;
+    vertical-align: middle;
   }
 
   .date-picker-container {
-    flex-direction: row;
+    flex-direction: column;
   }
 
   .date-label {
-    font-size: 12px;
+    font-size: 10px;
   }
 
   .calendar-box {
-    height: 30px;
+    height: 25px;
   }
 
   .search-button {
-    width: 80px;
+    margin: 0 0 0 1rem;
+    width: 60px;
   }
 
   .refugio-title,
@@ -1209,10 +1231,6 @@ body {
   .logo {
     width: 80px;
     height: 80px;
-  }
-
-  .navbar {
-    padding: 10px;
   }
 
   .date-label {

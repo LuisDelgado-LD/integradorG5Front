@@ -27,7 +27,7 @@ const Header = () => {
           </div>
         ) : (
           <>
-            <Link to="/registro" className="btn">Registrar Mascota</Link>
+            <Link to="/registro" className="btn">Crear Cuenta</Link>
             <Link to="/login" className="btn">Iniciar sesión</Link>
             <Link to="/administrador" className="admin-link">Panel de Administrador</Link>
           </>

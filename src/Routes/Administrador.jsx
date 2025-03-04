@@ -20,12 +20,17 @@ const Administrador = () => {
   const handleAgregarOEditarProducto = (formData, resetForm) => {
     const productoExistente = state.productos.find((p) => p.nombre.toLowerCase() === formData.nombre.toLowerCase());
     if (!formData.nombre || !formData.tipoProducto || !formData.descripcion || !formData.categoria) {
-      setError("❌ Todos los campos son obligatorios.");
+      alert("❌ Todos los campos son obligatorios.");
+      return;
+    }
+
+    if (!formData.categoria) {
+      alert("❌ Debes seleccionar al menos una categoría.");
       return;
     }
 
     if (!imagenes.imagenPrincipal || !imagenes.imagenSecundaria) {
-      setError("❌ Debes subir ambas imágenes.");
+      alert("❌ Debes subir ambas imágenes.");
       return;
     }
 
@@ -51,6 +56,7 @@ const Administrador = () => {
     resetForm();
     setKeyForm((prev) => prev + 1);
     setImagenes({ imagenPrincipal: null, imagenSecundaria: null });
+    alert("");
   };
 
   const handleEliminarProducto = (nombre) => {

@@ -95,15 +95,6 @@
   height: auto;
 }
 
-.registro h2{
-  display: flex;
-  flex-direction: column; /* Si deseas que los elementos estén uno debajo del otro */
-  align-items: center; /* Para centrar verticalmente también */
-  width: 100%; /* Asegúrate de que el contenedor tenga un ancho */
-  height: auto;
-  padding-left: 7em;
-}
-
 .paginacion-container{
   display: flex;
   justify-content: center;

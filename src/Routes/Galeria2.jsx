@@ -54,6 +54,7 @@ const Galeria2 = () => {
 
   return (
     <div className="galeria-container">
+
       <h2 className="galeria-title">Galería de {habitacion.nombre}</h2>
 
       <div className="galeria-grid">
@@ -89,6 +90,7 @@ const Galeria2 = () => {
 
       {/* Flecha para volver */}
       <img src="/img/flecha.png" alt="Volver" className="back-arrow" onClick={() => navigate(-1)} />
+
     </div>
   );
 };

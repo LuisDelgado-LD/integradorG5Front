@@ -21,6 +21,10 @@ jobs:
         node-version: 20.18.3
         cache: 'npm'
     - run: npm install
+    - name: Modify content to match with prod env
+      run: sed -i 's/localhost:5173/localhost/g' src/Context/utils/globalContext.jsx
+    - name: Build the page
+      run: npm run build
     - name: Login to GitHub Container Registry
       uses: docker/login-action@v3
       with:
@@ -30,7 +34,7 @@ jobs:
     - name: Build and push Docker images
       uses: docker/build-push-action@v6.15.0
       with:
-        file: Dockerfile
+        file: Dockerfile prod
         push: true
         #tags: name/app:latest,name/app:1.0.0
         tags: |

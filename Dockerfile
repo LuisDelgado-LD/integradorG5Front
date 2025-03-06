@@ -19,5 +19,8 @@ FROM nginx:latest as final
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 COPY ./nginx /etc/nginx/templates/default.conf.template
+#COPY ./nginx-ssl /etc/nginx/templates/default.conf.template
 
 EXPOSE 80
+
+

@@ -1461,3 +1461,146 @@ body {
 }
 
 /*--------------- Fin de estilos de asignacion de roles en una tabla ------------------*/
+
+
+
+
+/* Reseteo de estilos básicos */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/*Asegurar que HTML y Body ocupen toda la pantalla */
+html, body {
+  height: 100%;
+  overflow: auto; /* Permite desplazamiento en toda la página */
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4; /* Fondo general */
+}
+
+/* ============================ */
+/*  CONTENEDOR GENERAL */
+/* ============================ */
+.admin-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Ocupa toda la altura de la pantalla */
+}
+
+/*  Contenido principal con scroll interno */
+.admin-content {
+  flex: 1; /* Permite que crezca ocupando el espacio disponible */
+  overflow-y: auto; /* Permite scroll dentro de la sección */
+  padding: 20px;
+}
+
+/* ============================ */
+/*  HEADER Y NAVBAR */
+/* ============================ */
+.header {
+  background-color: #30384d;
+  color: white;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar {
+  background-color: #555;
+  padding: 10px;
+  text-align: center;
+}
+
+.navbar a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+}
+
+/* ============================ */
+/*  TABLAS Y BOTONES */
+/* ============================ */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.product-table th, .product-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
+}
+
+.product-table th {
+  background-color: #1c1c1c;
+  color: white;
+}
+
+.add-user {
+  margin-top: 20px;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.add-user:hover {
+  background-color: #0056b3;
+}
+
+/* ============================ */
+/*  FORMULARIOS Y MODALES */
+/* ============================ */
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  min-width: 400px;
+}
+
+.modal label {
+  display: block;
+  margin: 10px 0 5px;
+}
+
+.modal input, .modal select {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+/*Hacer que los formularios tengan fondo blanco */
+.form-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px #30384d;
+  max-width: 600px;
+  margin: auto;
+}
+
+/* ============================ */
+/* 📌 FOOTER */
+/* ============================ */
+.footer {
+  background-color: #898a8f; /* 🔹 Restauramos el color original */
+  color: white;
+  text-align: center;
+  padding: 15px;
+  width: 100%;
+  position: relative;
+  bottom: 0;
+}

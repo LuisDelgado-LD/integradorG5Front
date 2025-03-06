@@ -1,133 +1,170 @@
 import { useContext, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
-import DynamicForm from "../Components/DynamicForm";
 import { FaTrash, FaEdit } from "react-icons/fa";
+import { Link, Outlet } from "react-router-dom";
 
 const Administrador = () => {
   const { state, dispatch } = useContext(GlobalContext);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [productoEditado, setProductoEditado] = useState(null);
-  const [keyForm, setKeyForm] = useState(0);
-  const [imagenes, setImagenes] = useState({ imagenPrincipal: null, imagenSecundaria: null });
+  const [modalOpen, setModalOpen] = useState(false);
+  const [maestroEditado, setMaestroEditado] = useState(null);
+  const [error, setError] = useState("");
+  const [formData, setFormData] = useState({
+    nombre: "",
+    tipoProducto: "",
+    descripcion: "",
+    categoria: "",
+    imagenPrincipal: null,
+    imagenSecundaria: null,
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
 
   const handleImageChange = (e) => {
     const { name, files } = e.target;
     if (files.length > 0) {
-      setImagenes((prev) => ({ ...prev, [name]: URL.createObjectURL(files[0]) }));
+      setFormData((prev) => ({ ...prev, [name]: URL.createObjectURL(files[0]) }));
     }
   };
 
-  const handleAgregarOEditarProducto = (formData, resetForm) => {
-    const productoExistente = state.productos.find((p) => p.nombre.toLowerCase() === formData.nombre.toLowerCase());
-    if (!formData.nombre || !formData.tipoProducto || !formData.descripcion || !formData.categoria) {
-      alert("❌ Todos los campos son obligatorios.");
-      return;
-    }
+  const handleOpenModal = (maestro = null) => {
+    setMaestroEditado(maestro);
+    setModalOpen(true);
 
-    if (!formData.categoria) {
-      alert("❌ Debes seleccionar al menos una categoría.");
-      return;
-    }
-
-    if (!imagenes.imagenPrincipal || !imagenes.imagenSecundaria) {
-      alert("❌ Debes subir ambas imágenes.");
-      return;
-    }
-
-    if (!productoEditado && productoExistente) {
-      alert("❌ Producto existente.");
-      return;
-    }
-
-    const nuevoProducto = {
-      ...formData,
-      ...imagenes,
-      fechaModificacion: new Date().toLocaleString(),
-    };
-
-    if (productoEditado) {
-      dispatch({ type: "EDITAR_PRODUCTO", payload: nuevoProducto });
-      setProductoEditado(null);
+    if (maestro) {
+      setFormData({
+        nombre: maestro.nombre,
+        tipoProducto: maestro.tipoProducto,
+        descripcion: maestro.descripcion,
+        categoria: maestro.categoria,
+        imagenPrincipal: maestro.imagenPrincipal || null,
+        imagenSecundaria: maestro.imagenSecundaria || null,
+      });
     } else {
-      dispatch({ type: "AGREGAR_PRODUCTO", payload: nuevoProducto });
+      setFormData({
+        nombre: "",
+        tipoProducto: "",
+        descripcion: "",
+        categoria: "",
+        imagenPrincipal: null,
+        imagenSecundaria: null,
+      });
+    }
+  };
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+    setMaestroEditado(null);
+    setError("");
+  };
+
+  const handleSave = () => {
+    if (!formData.nombre || !formData.tipoProducto || !formData.descripcion || !formData.categoria) {
+      setError("❌ Todos los campos son obligatorios.");
+      return;
     }
 
-    setMostrarFormulario(false);
-    resetForm();
-    setKeyForm((prev) => prev + 1);
-    setImagenes({ imagenPrincipal: null, imagenSecundaria: null });
-    alert("");
+    if (!formData.imagenPrincipal || !formData.imagenSecundaria) {
+      setError("❌ Debes subir ambas imágenes.");
+      return;
+    }
+
+    if (maestroEditado) {
+      dispatch({ type: "EDITAR_MAESTRO", payload: { id: maestroEditado.id, ...formData } });
+    } else {
+      dispatch({
+        type: "AGREGAR_MAESTRO",
+        payload: { id: state.maestros.length + 1, ...formData },
+      });
+    }
+
+    handleCloseModal();
   };
 
-  const handleEliminarProducto = (nombre) => {
-    dispatch({ type: "ELIMINAR_PRODUCTO", payload: nombre });
-  };
-
-  const handleEditarProducto = (producto) => {
-    setProductoEditado(producto);
-    setMostrarFormulario(true);
+  const handleDelete = (id) => {
+    dispatch({ type: "ELIMINAR_MAESTRO", payload: id });
   };
 
   return (
     <div className="admin-container">
+      <h2>Panel de Administración</h2>
+
+      <nav className="admin-nav">
+        <Link to="/administrador/gestion-maestro">Gestión de Maestro</Link>
+        <Link to="/administrador/gestion-de-usuario">Gestión de Usuarios</Link>
+      </nav>
+
+      <Outlet />
+
       <h2>Gestión de Maestro</h2>
 
-      {state.productos.length > 0 && (
+      {state.maestros.length > 0 ? (
         <table className="product-table">
           <thead>
             <tr>
               <th>Nombre</th>
               <th>Tipo de Maestro</th>
               <th>Categoría</th>
-              <th>Última Modificación</th>
-              <th>Acción</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {state.productos.map((producto, index) => (
-              <tr key={index}>
-                <td>{producto.nombre}</td>
-                <td>{producto.tipoProducto}</td>
-                <td>{producto.categoria}</td>
-                <td>{producto.fechaModificacion}</td>
+            {state.maestros.map((maestro) => (
+              <tr key={maestro.id}>
+                <td>{maestro.nombre}</td>
+                <td>{maestro.tipoProducto}</td>
+                <td>{maestro.categoria}</td>
                 <td>
-                  <FaEdit className="edit-icon" onClick={() => handleEditarProducto(producto)} />
-                  <FaTrash className="delete-icon" onClick={() => handleEliminarProducto(producto.nombre)} />
+                  <FaEdit className="edit-icon" onClick={() => handleOpenModal(maestro)} />
+                  <FaTrash className="delete-icon" onClick={() => handleDelete(maestro.id)} />
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+      ) : (
+        <p>No hay maestros registrados.</p>
       )}
 
-      <button onClick={() => setMostrarFormulario(!mostrarFormulario)}>
-        {mostrarFormulario ? "Cerrar formulario" : "Añadir Maestro"}
-      </button>
+      <button className="add-user" onClick={() => handleOpenModal()}>➕ Añadir Maestro</button>
 
-      {mostrarFormulario && (
-        <div>
-          <DynamicForm
-            key={keyForm}
-            title={productoEditado ? "Editar Maestro" : "Nuevo Maestro"}
-            fields={[
-              { name: "nombre", label: "Nombre", type: "text", required: true, defaultValue: productoEditado?.nombre || "" },
-              { name: "tipoProducto", label: "Tipo de Maestro", type: "text", required: true, defaultValue: productoEditado?.tipoProducto || "" },
-              { name: "categoria", label: "Categoría", type: "select", options: state.categorias, required: true, defaultValue: productoEditado?.categoria || "" },
-              { name: "descripcion", label: "Descripción", type: "text", required: true, defaultValue: productoEditado?.descripcion || "" }
-            ]}
-            onSubmit={handleAgregarOEditarProducto}
-          />
+      {modalOpen && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <h2>{maestroEditado ? "Editar Maestro" : "Nuevo Maestro"}</h2>
+            {error && <p className="error-message">{error}</p>}
 
-          <div>
-            <label>Imagen Principal</label>
+            <label>Nombre:</label>
+            <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
+
+            <label>Tipo de Maestro:</label>
+            <input type="text" name="tipoProducto" value={formData.tipoProducto} onChange={handleChange} required />
+
+            <label>Categoría:</label>
+            <select name="categoria" value={formData.categoria} onChange={handleChange} required>
+              <option value="">Seleccione una categoría</option>
+              {state.categorias.map((cat, index) => (
+                <option key={index} value={cat}>{cat}</option>
+              ))}
+            </select>
+
+            <label>Descripción:</label>
+            <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} required />
+
+            <label>Imagen Principal:</label>
             <input type="file" name="imagenPrincipal" accept="image/*" onChange={handleImageChange} />
-            {imagenes.imagenPrincipal && <img src={imagenes.imagenPrincipal} alt="Imagen Principal" width="100" />}
-          </div>
+            {formData.imagenPrincipal && <img src={formData.imagenPrincipal} alt="Imagen Principal" width="100" />}
 
-          <div>
-            <label>Imagen Secundaria</label>
+            <label>Imagen Secundaria:</label>
             <input type="file" name="imagenSecundaria" accept="image/*" onChange={handleImageChange} />
-            {imagenes.imagenSecundaria && <img src={imagenes.imagenSecundaria} alt="Imagen Secundaria" width="100" />}
+            {formData.imagenSecundaria && <img src={formData.imagenSecundaria} alt="Imagen Secundaria" width="100" />}
+
+            <div className="modal-buttons">
+              <button onClick={handleSave} className="save-button">Guardar</button>
+              <button onClick={handleCloseModal} className="close-button">Cancelar</button>
+            </div>
           </div>
         </div>
       )}

@@ -1,8 +1,23 @@
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext, useState } from "react";
+import { GlobalContext } from "../Context/utils/globalContext";
 
 const Header = () => {
-  const location = useLocation();
   const navigate = useNavigate();
+  const { state, dispatch } = useContext(GlobalContext);
+  const usuario = state.usuario;
+  const [menuAbierto, setMenuAbierto] = useState(false);
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+
+  const handleLogout = () => {
+    setMostrarConfirmacion(false);
+    dispatch({ type: "LOGOUT" });
+    navigate("/");
+  };
+
+  const getInitials = (nombre, apellido) => {
+    return `${nombre?.charAt(0) || ""}${apellido?.charAt(0) || ""}`.toUpperCase();
+  };
 
   return (
     <header className="header">
@@ -17,25 +32,42 @@ const Header = () => {
       </div>
 
       <div className="header-right">
-        {location.pathname === "/administrador" ? (
-          <div className="admin-header">
-            <span>Bienvenido, Administrador</span>
-            <button onClick={() => navigate("/agregar-producto")} className="admin-btn">
-              Añadir Producto
-            </button>
-            <img src="/img/grupo8.png" alt="Admin" className="admin-img" />
+        {usuario ? (
+          <div className="user-menu">
+            <div className="user-info" onClick={() => setMenuAbierto(!menuAbierto)}>
+              <span>Bienvenido, {usuario.nombre}</span>
+              <div className="avatar">{getInitials(usuario.nombre, usuario.apellido)}</div>
+            </div>
+            {menuAbierto && (
+              <div className="dropdown-menu">
+                <Link to="/administrador" className="admin-link">Gestión de Maestro</Link>
+                <Link to="/administrador/gestion-de-usuario" className="admin-link">Gestión de Usuarios</Link>
+                <button onClick={() => setMostrarConfirmacion(true)} className="logout-btn">Cerrar sesión</button>
+              </div>
+            )}
           </div>
         ) : (
           <>
             <Link to="/registro" className="btn">Crear Cuenta</Link>
             <Link to="/login" className="btn">Iniciar sesión</Link>
-            <Link to="/administrador" className="admin-link">Panel de Administrador</Link>
-            <Link to="/administrador/gestion-de-usuario" className="admin-link">Panel de Administrador</Link>
           </>
         )}
       </div>
+
+      {mostrarConfirmacion && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <p>¿Está seguro de que desea cerrar sesión?</p>
+            <div className="modal-buttons">
+              <button onClick={handleLogout} className="btn-confirm">Sí, cerrar sesión</button>
+              <button onClick={() => setMostrarConfirmacion(false)} className="btn-cancel">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 };
 
 export default Header;
+

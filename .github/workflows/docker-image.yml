@@ -34,6 +34,7 @@ jobs:
     - name: Build and push Docker images
       uses: docker/build-push-action@v6.15.0
       with:
+        context: .
         file: Dockerfile prod
         push: true
         #tags: name/app:latest,name/app:1.0.0

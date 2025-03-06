@@ -23,19 +23,24 @@ const Habitaciones = () => {
 
   return (
     <div className="habitacion-container">
-      <div className="habitacion-img-container">
+      <div className="Auxiliares-detalle">
+        <h2>{habitacion.nombre}</h2>
         <Link to="/" className="back-home">
           <img src="/img/flecha.png" alt="Volver" />
         </Link>
-        <img className="habitacion-img" src={habitacion.imagen} alt={habitacion.nombre} onClick={() => navigate("/Galeria2")} />
       </div>
 
-      <div className="habitacion-content">
-        <h2>{habitacion.nombre}</h2>
-        <p className="habitacion-title">{habitacion.descripcion}</p>
-        <p className="habitacion-tamano"><strong>Tamaño:</strong> {habitacion.tamano}</p>
-        <p className="habitacion-disponible"><strong>Disponible:</strong> {habitacion.isDisponible ? "Sí" : "No"}</p>
-        <p className="habitacion-precio"><strong>Precio:</strong> ${habitacion.precioUnitario}</p>
+      <div className="Contenido-Container">
+        <div className="habitacion-img-container">
+          <img className="habitacion-img" src={habitacion.imagen} alt={habitacion.nombre} onClick={() => navigate("/Galeria2")} />
+        </div>
+
+        <div className="habitacion-content">
+          <p className="habitacion-title">{habitacion.descripcion}</p>
+          <p className="habitacion-tamano"><strong>Tamaño:</strong> {habitacion.tamano}</p>
+          <p className="habitacion-disponible"><strong>Disponible:</strong> {habitacion.isDisponible ? "Sí" : "No"}</p>
+          <p className="habitacion-precio"><strong>Precio:</strong> ${habitacion.precioUnitario}</p>
+        </div>
       </div>
     </div>
   );

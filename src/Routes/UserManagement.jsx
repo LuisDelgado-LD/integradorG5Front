@@ -74,8 +74,11 @@ import Modal from "../Components/Modal"; // Asegúrate de que la ruta sea correc
 
 const UserManagement = () => {
     const [users, setUsers] = useState([
-        { id: 1, name: "Nombre Completo Prueba", email: "correo@correo.com", role: "Administrador" },
-        { id: 2, name: "Nombre Completo Prueba", email: "correo@correo.com", role: "General" },
+        { id: 1, nombre: "Roger", apellido: "Mendez", correo: "correo@correo.com", rol: "Administrador", estado: "Activo" },
+        { id: 2, nombre: "Nombre", apellido: "Julian", correo: "correo@correo.com", rol: "General", estado: "Inactivo" },
+        { id: 3, nombre: "Julio Damian", apellido: "Melendez mendez", correo: "correo@correo.com", rol: "Administrador", estado: "Inactivo" },
+        { id: 4, nombre: "Ryan", apellido: "Pomalaya", correo: "correo@correo.com", rol: "Administrador", estado: "Activo" },
+        { id: 5, nombre: "Jhonatan", apellido: "Rulios", correo: "correo@correo.com", rol: "Administrador", estado: "Activo" },
     ]);
 
     const [modalOpen, setModalOpen] = useState(false);
@@ -123,9 +126,9 @@ const UserManagement = () => {
                     <tbody>
                         {users.map((user) => (
                             <tr key={user.id}>
-                                <td>{user.name}</td>
-                                <td>{user.email}</td>
-                                <td>{user.role}</td>
+                                <td>{user.nombre +" "+user.apellido}</td>
+                                <td>{user.correo}</td>
+                                <td>{user.rol}</td>
                                 <td className="actions">
                                     <button className="edit" onClick={() => handleEdit(user)}>🔄</button>
                                     <button className="delete" onClick={() => handleDeleteUser(user.id)}>🗑️</button>

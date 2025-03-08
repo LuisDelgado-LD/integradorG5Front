@@ -18,7 +18,7 @@
   box-sizing: border-box;
 }
 
-.back-home {
+/* .back-home { */
   /* position: relative;
   top: 166px;
   right: 50px; */
@@ -28,7 +28,7 @@
   position: absolute;
   top: -10px;
   left: -10px; */
-}
+/* } */
 /* 
 .back-home img {
   width: 50px;
@@ -908,15 +908,35 @@ body {
   align-self: flex-end;
   margin: 0px auto 8px 1110px; 
 } */
+
   .admin-container {
     text-align: center;
     padding: 20px;
+    position: relative;
+    top: 5em;
+    align-content: flex-start;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  .admin-container p{
+    padding: 0.5em 0.5em;
   }
 
   .admin-title {
     font-size: 24px;
     font-weight: bold;
     color: #333;
+  }
+
+  .admin-nav{ 
+    padding: 0.5em 0.5em;
+  }
+
+  .admin-nav a{ 
+    padding: 0.5em 0.5em;
   }
 
   .add-product-btn {
@@ -948,12 +968,6 @@ body {
     border: none;
     padding: 5px 10px;
     cursor: pointer;
-  }
-
-  .admin-container {
-    position: relative;
-    padding: 20px;
-    width: 100%;
   }
 
   .admin-title {
@@ -996,11 +1010,6 @@ body {
     height: 67px;
     top: 1026px;
     left: 1984px;
-  }
-
-  .admin-container {
-    text-align: center;
-    padding: 20px;
   }
 
   .admin-title {
@@ -1442,10 +1451,12 @@ body {
 
 .container {
   padding: 20px;
+  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  top: 4em;
 }
 
 .title {
@@ -1703,11 +1714,6 @@ html, body {
 /* ============================ */
 /*  CONTENEDOR GENERAL */
 /* ============================ */
-.admin-container {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh; /* Ocupa toda la altura de la pantalla */
-}
 
 /*  Contenido principal con scroll interno */
 .admin-content {

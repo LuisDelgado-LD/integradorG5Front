@@ -1,7 +1,7 @@
 import { useContext, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import { FaTrash, FaEdit } from "react-icons/fa";
-import { Link, Outlet } from "react-router-dom";
+import { Link, Outlet , useNavigate } from "react-router-dom";
 
 const Administrador = () => {
   const { state, dispatch } = useContext(GlobalContext);

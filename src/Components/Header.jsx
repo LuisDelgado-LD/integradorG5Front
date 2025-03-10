@@ -38,7 +38,7 @@ const Header = () => {
               <span>Bienvenido, {usuario.nombre}</span>
               <div className="avatar">{getInitials(usuario.nombre, usuario.apellido)}</div>
             </div>
-            {menuAbierto && usuario.role === "Administrador" && (
+            {menuAbierto && usuario(
               <div className="dropdown-menu">
                 <Link to="/administrador" className="admin-link">Gestión de Maestro</Link>
                 <Link to="/administrador/gestion-de-usuario" className="admin-link">Gestión de Usuarios</Link>

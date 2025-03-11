@@ -15,6 +15,7 @@ const Administrador = () => {
     categoria: "",
     imagenPrincipal: null,
     imagenSecundaria: null,
+    caracteristicas: [],
   });
 
   const handleChange = (e) => {
@@ -107,6 +108,7 @@ const Administrador = () => {
               <th>Nombre</th>
               <th>Tipo de Maestro</th>
               <th>Categoría</th>
+              <th>Características</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -116,6 +118,7 @@ const Administrador = () => {
                 <td>{maestro.nombre}</td>
                 <td>{maestro.tipoProducto}</td>
                 <td>{maestro.categoria}</td>
+                <td>{maestro.caracteristicas?.join(", ")}</td>
                 <td>
                   <FaEdit className="edit-icon" onClick={() => handleOpenModal(maestro)} />
                   <FaTrash className="delete-icon" onClick={() => handleDelete(maestro.id)} />
@@ -148,6 +151,26 @@ const Administrador = () => {
               {state.categorias.map((cat, index) => (
                 <option key={index} value={cat}>{cat}</option>
               ))}
+            </select>
+
+            <label>Características:</label>
+            <select
+              name="caracteristicas"
+              multiple
+              value={formData.caracteristicas || []}
+              onChange={(e) =>
+                setFormData({
+                ...formData,
+                caracteristicas: Array.from(e.target.selectedOptions, (option) => option.value),
+                })
+                }
+>
+                {state.caracteristicas.map((car, index) => (
+                <option key={index} value={car.nombre}>
+                {car.nombre}
+                </option>
+                ))}
+            
             </select>
 
             <label>Descripción:</label>

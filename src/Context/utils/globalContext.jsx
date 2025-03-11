@@ -33,6 +33,7 @@ const initialState = {
   ],
   productos: [],
   categorias: ["Básica", "Premium", "VIP"],
+  caracteristicas: [],
   tamanos: ["Grande", "Mediano", "Pequeño"],
   maestros: []
 };
@@ -60,6 +61,15 @@ const reducer = (state, action) => {
 
     case "SET_CATEGORIAS":
       return { ...state, categorias: action.payload };
+    
+    case "AGREGAR_CARACTERISTICA":
+      return { ...state, caracteristicas: [...state.caracteristicas, action.payload] };
+
+    case "EDITAR_CARACTERISTICA":
+      return {...state,caracteristicas: state.caracteristicas.map((c, i) => i === action.payload.index ? action.payload.data : c),}; 
+    
+    case "ELIMINAR_CARACTERISTICA":
+      return {...state,caracteristicas: state.caracteristicas.filter((_, i) => i !== action.payload),};
 
     case "SET_MAESTROS":
       return { ...state, maestros: action.payload };
@@ -84,9 +94,9 @@ const reducer = (state, action) => {
 };
 
 export const GlobalProvider = ({ children }) => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [state, dispatch] = useReducer(reducer, initialState);/*
 
-  /*
+  
   useEffect(() => {
     const validarToken = async () => {
       if (!state.token) return;

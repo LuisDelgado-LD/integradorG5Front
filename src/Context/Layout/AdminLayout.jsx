@@ -14,6 +14,7 @@ const AdminLayout = () => {
         <nav className="admin-nav">
           <Link to="/administrador">Gestión de Maestro</Link>
           <Link to="/administrador/gestion-de-usuario">Gestión de Usuarios</Link>
+          <Link to="/administrador/gestion-caracteristicas">Administrar Características</Link>
         </nav>
         <Outlet />
       </main>

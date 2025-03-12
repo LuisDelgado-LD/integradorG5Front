@@ -357,6 +357,13 @@ body {
   padding: 5px;
 }
 
+.react-datepicker__input-container input {
+  position: relative;
+  display: inline;
+  border-style: hidden;
+  width: 100%;
+}
+
 .calendar-icon {
   width: 20px;
   height: 20px;

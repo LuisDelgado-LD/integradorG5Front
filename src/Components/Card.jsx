@@ -1,25 +1,25 @@
 import PropTypes from "prop-types";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const Card = ({ id, nombre, imagen, ruta }) => {
   const navigate = useNavigate();
 
   const manejarClick = () => {
-    if (ruta !== "#") {
-      navigate(`/galeria/${id}`);
+    if (ruta && ruta !== "#") {
+      navigate(ruta);
+    } else {
+      navigate(`/habitacion/${id}`);
     }
   };
 
   return (
-    <div className="card">
-      <img 
-        src={imagen} 
-        alt={nombre} 
-        className="card-img clickable" 
-        onClick={manejarClick} 
+    <div className="card" onClick={manejarClick}>
+      <img
+        src={imagen}
+        alt={nombre}
+        className="card-img clickable"
       />
-      <h3 className="card-title">{nombre}</h3>
-      {ruta !== "#" && <Link to={ruta} className="btn">Ver más</Link>}
+      <h3 className="card-title">🐾 {nombre}</h3>
     </div>
   );
 };
@@ -28,7 +28,7 @@ Card.propTypes = {
   id: PropTypes.number.isRequired,
   nombre: PropTypes.string.isRequired,
   imagen: PropTypes.string.isRequired,
-  ruta: PropTypes.string.isRequired,
+  ruta: PropTypes.string
 };
 
 export default Card;

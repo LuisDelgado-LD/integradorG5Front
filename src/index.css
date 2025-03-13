@@ -1837,3 +1837,22 @@ html, body {
   position: relative;
   bottom: 0;
 }
+
+
+
+
+
+.habitacion-img {
+  width: 662px;
+  height: 417px;
+  object-fit: cover;
+  border-radius: 20px;
+  border: 1px solid #9195A1;
+  display: block;
+}
+
+.habitacion-img-container {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}

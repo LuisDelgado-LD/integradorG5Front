@@ -82,12 +82,6 @@ const Galeria2 = () => {
           <Card key={servicio.id} nombre={servicio.nombre} imagen={servicio.imagen} ruta={`/servicio/${servicio.id}`} className={`imagen${index + 1}`} />
         ))}
       </div> */}
-
-      {/* Botón Ver Más */}
-      <button className="ver-mas" onClick={() => navigate(`/habitacion/${habitacion.id}`)}>
-        Ver Más
-      </button>
-
       {/* Flecha para volver */}
       <img src="/img/flecha.png" alt="Volver" className="back-arrow" onClick={() => navigate(-1)} />
 

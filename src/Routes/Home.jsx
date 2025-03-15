@@ -13,7 +13,7 @@ const Home = () => {
   const { state, dispatch } = useContext(GlobalContext);
   const [habitaciones, setHabitaciones] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
-  const habitacionesPorPagina = 10;
+  const habitacionesPorPagina = 8;
 
   useEffect(() => {
     const pequenas = [
@@ -85,7 +85,7 @@ const Home = () => {
       <h2 className="section-title">Categoría</h2>
       <div className="card-grid">
         {categorias.map((cat, idx) => (
-          <div key={idx} className="card">
+          <div key={idx} className="card categoria">
             <img src={cat.icono} alt={cat.nombre} className="card-img" />
             <h3 className="card-title">{cat.nombre}</h3>
           </div>
@@ -96,13 +96,6 @@ const Home = () => {
       <div className="card-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
         {habitacionesPagina.map((habitacion) => (
           <Card key={habitacion.id} {...habitacion} />
-        ))}
-      </div>
-
-      <h2 className="section-title">Servicios incluidos</h2>
-      <div className="card-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
-        {serviciosAleatorios.map((servicio) => (
-          <Card key={servicio.id} {...servicio} />
         ))}
       </div>
 
@@ -120,6 +113,12 @@ const Home = () => {
         <button disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
       </div>
 
+      <h2 className="section-title">Servicios incluidos</h2>
+      <div className="card-grid" style={{ gridTemplateColumns: "repeat(3, 1fr)" }}>
+        {serviciosAleatorios.map((servicio) => (
+          <Card key={servicio.id} {...servicio} />
+        ))}
+      </div>
     </div>
   );
 };

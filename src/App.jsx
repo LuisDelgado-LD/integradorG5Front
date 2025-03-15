@@ -1,4 +1,5 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import Layout from "./Context/Layout/layout.jsx";
 import AdminLayout from "./Context/Layout/AdminLayout.jsx";
 import Home from "./Routes/Home.jsx";
@@ -12,21 +13,26 @@ import Login from "./Routes/Login.jsx";
 import PrivateRoute from "./Routes/PrivateRoute"; 
 
 function App() {
+  const [usuario, setUsuario] = useState(null);
+  useEffect(() => {
+    const storedUser = JSON.parse(localStorage.getItem("usuario")) || null;
+    setUsuario(storedUser);
+  }, []);
+
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Layout />}>
+        <Route path="/" element={!usuario ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} >
           <Route index element={<Home />} />
           <Route path="habitacion/:id" element={<Habitaciones />} />
           <Route path="registro" element={<Registro />} />
-          <Route path="galeria/:id" element={<Galeria2 />} />
-          <Route path="login" element={<Login />} />
+          <Route path="login" element={!usuario ? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} />
         </Route>
 
         <Route element={<PrivateRoute />}>
           <Route path="/administrador" element={<AdminLayout />}>
             <Route index element={<Administrador />} />
-            <Route path="/administrador/gestion-caracteristicas" element={<GestionCaracteristicas />} />
+            <Route path="gestion-caracteristicas" element={<GestionCaracteristicas />} />
             <Route path="gestion-de-usuario" element={<UserManagement />} />
           </Route>
         </Route>

@@ -1,79 +1,102 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../Context/utils/globalContext";
-import DynamicForm from "../Components/DynamicForm";
 
-/* const API_URL = "http://petparadise.sytes.net/api"; */
-
-const Login = () => {
-  const [keyForm, setKeyForm] = useState(0);
-  const [error, setError] = useState("");
+const Login = ({ setUsuario }) => {
   const { dispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
-
-  const handleLogin = async (formData, resetForm) => {
-    setError("");
-
-    if (!formData.email || !formData.password) {
-      setError("❌ Todos los campos son obligatorios.");
+  const [formData, setFormData] = useState({
+    nombre: "",
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState({});
+  useEffect(() => {
+    localStorage.removeItem("usuario");
+    localStorage.removeItem("token");
+  }, []);
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const usuarioRegistrado = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")) : null;
+    let newErrors = {};
+    if (!formData.nombre.trim()) {
+      newErrors.nombre = "El nombre es obligatorio";
+    }
+    if (
+      !usuarioRegistrado ||
+      usuarioRegistrado.email !== formData.email ||
+      usuarioRegistrado.password !== formData.password
+    ) {
+      newErrors.email = "Correo o contraseña inválidos";
+      newErrors.password = "Correo o contraseña inválidos";
+    }
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      setFormData({ nombre: "", email: "", password: "" });
       return;
     }
-
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      //conexión con backend
-      /*
-      const response = await fetch(`${API_URL}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("❌ Credenciales incorrectas.");
-      }
-
-      const data = await response.json();
-      */
-
-      const data = {
-        token: "mocked_token",
-        usuario: {
-          nombre: formData.email.split("@")[0],
-          apellido: "Usuario",
-          email: formData.email,
-          rol: "Administrador"
-        },
-      };
-
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("usuario", JSON.stringify(data.usuario));
-
-      dispatch({ type: "LOGIN", payload: { usuario: data.usuario, token: data.token } });
-
-      alert(`✅ Inicio de sesión exitoso. Bienvenido/a, ${data.usuario.nombre} ${data.usuario.apellido}`);
-      resetForm();
-      setKeyForm((prev) => prev + 1);
+    const token = "mocked_token";
+    localStorage.setItem("usuario", JSON.stringify(usuarioRegistrado));
+    localStorage.setItem("token", token);
+    setUsuario(usuarioRegistrado); 
+    dispatch({
+      type: "LOGIN",
+      payload: { usuario: usuarioRegistrado, token },
+    });
+    alert(" Inicio de sesión exitoso");
+    if (usuarioRegistrado.rol === "admin") {
+      navigate("/administrador");
+    } else {
       navigate("/");
-    } catch (error) {
-      setError(error.message);
     }
   };
 
   return (
-    <div className="login">
-      <h2>Iniciar Sesión</h2>
-      {error && <p className="error-message">{error}</p>}
-      <DynamicForm
-        key={keyForm}
-        title="Inicio de Sesión"
-        fields={[
-          { name: "email", label: "Correo Electrónico", type: "email", required: true },
-          { name: "password", label: "Contraseña", type: "password", required: true },
-        ]}
-        onSubmit={handleLogin}
-      />
+    <div className="login-container">
+      <div className="login-box">
+        <img src="/img/imagendeinicio.png" alt="Inicio" className="login-image" />
+        <h2 className="login-title">¡Bienvenido nuevamente!</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            name="nombre"
+            placeholder="Nombre"
+            value={formData.nombre}
+            onChange={handleChange}
+            className={`login-input ${errors.nombre ? "error" : ""}`}
+          />
+          {errors.nombre && <p className="error-message">{errors.nombre}</p>}
+          <input
+            type="email"
+            name="email"
+            placeholder="Correo electrónico"
+            value={formData.email}
+            onChange={handleChange}
+            className={`login-input ${errors.email ? "error" : ""}`}
+          />
+          {errors.email && <p className="error-message">{errors.email}</p>}
+          <input
+            type="password"
+            name="password"
+            placeholder="Contraseña"
+            value={formData.password}
+            onChange={handleChange}
+            className={`login-input ${errors.password ? "error" : ""}`}
+          />
+          {errors.password && <p className="error-message">{errors.password}</p>}
+          <div className="login-buttons">
+            <button type="submit" className="login-btn primary">Iniciar Sesión</button>
+            <button type="button" className="login-btn secondary" onClick={() => setFormData({ nombre: "", email: "", password: "" })}>
+              Cancelar
+            </button>
+          </div>
+        </form>
+      </div>
+      <img src="/img/imagendepie.png" alt="Pie" className="login-footer-image" />
     </div>
   );
 };

@@ -1906,3 +1906,73 @@ html, body {
 }
 
 
+/*vista de cerrar secion*/
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal {
+  background-color: white;
+  padding: 30px;
+  border-radius: 20px;
+  width: 460px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0,0,0,0.2);
+  border: 3px solid #58A5FF;
+}
+
+.modal img {
+  width: 90px;
+  margin-bottom: 20px;
+}
+
+.modal p {
+  color: #000000; 
+  font-size: 18px;
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
+.modal-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 2mm;
+}
+
+.btn-confirm {
+  background-color: #58A5FF;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-cancel {
+  background-color: #B0B0B0;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.btn-confirm:hover {
+  background-color: #3395ff;
+}
+
+.btn-cancel:hover {
+  background-color: #999999;
+}

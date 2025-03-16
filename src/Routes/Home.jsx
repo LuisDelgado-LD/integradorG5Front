@@ -15,9 +15,8 @@ const Home = () => {
   const [habitaciones, setHabitaciones] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
   const habitacionesPorPagina = 10;
-  const API_URL= "http://localhost:8080/api"
   const { categorias } = state;
-
+  const { API_URL } = state;
   useEffect(() => {
     const pequenas = [
       "Chihuahua", "Pomerania", "Yorkshire", "Pinscher", "Maltés",

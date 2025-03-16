@@ -71,7 +71,7 @@ const generarHabitacionesMock = () => {
 const initialState = {
   // usuario: JSON.parse(localStorage.getItem("usuario")) || MOCK_USER.usuario,
   // token: localStorage.getItem("token") || MOCK_USER.token,
-  // API_URL: "http://localhost/api",
+  API_URL: "http://localhost/api",
   habitaciones: generarHabitacionesMock(),
   privilegiosAlojamientos: [
     { id: 1, nombre: "Masajes Relajantes", imagen: "/img/MasajesRelajantes.png", ruta: "/CuevaAcogedora", descripcion: "Sesión de relajación para reducir el estrés y mejorar la circulación de tu mascota." },

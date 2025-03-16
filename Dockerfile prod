@@ -2,8 +2,6 @@ FROM nginx:1.27.4-alpine
 
 COPY ./dist /usr/share/nginx/html/
 
-RUN sed -i 's/API_URL:.*/API_URL:"https:\/\/petparadise.sytes.net\/api",/g' src/Context/utils/globalContext.jsx
-
 #COPY ./nginx /etc/nginx/templates/default.conf.template
 COPY ./nginx-ssl /etc/nginx/templates/default.conf.template
 

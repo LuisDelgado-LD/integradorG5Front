@@ -70,7 +70,7 @@ const Home = () => {
     // localStorage.setItem("habitacionesMock", JSON.stringify(todas));
     // setHabitaciones(mezclar(todas));
     // const habitacionesCache = {}
-    axios.get(API_URL + "/habitaciones/all?page="+paginaActual)
+    axios.get(API_URL + "/habitaciones/all")
     .then(response =>{
       // console.log("habitaciones:", response.data.totalElements);
       dispatch({ type: "SET_TOTAL_HABITACIONES", payload: response.data.totalElements });

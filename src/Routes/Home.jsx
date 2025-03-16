@@ -13,7 +13,7 @@ const Home = () => {
   const { state, dispatch } = useContext(GlobalContext);
   const [habitaciones, setHabitaciones] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
-  const habitacionesPorPagina = 8;
+  const habitacionesPorPagina = 10;
 
   useEffect(() => {
     const pequenas = [

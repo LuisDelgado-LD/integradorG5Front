@@ -24,10 +24,10 @@ const generarHabitacionesMock = () => {
   const medianas = [
     "Beagle", "Cocker", "Border Collie", "Bulldog Francés", "Schnauzer",
     "Staffordshire Bull Terrier", "Basenji", "Whippet", "Shetland Sheepdog",
-    "American Eskimo", "Shiba Inu", "Corgi", "Springer Spaniel", "Australian Shepherd", "Samoyedo"
+    "American Eskimo"
   ];
   const grandes = [
-    "Labrador", "Golden Retriever", "Pastor Alemán", "Husky Siberiano", "Rottweiler"
+    "Labrador", "Golden Retriever", "Pastor Alemán", "Husky Siberiano", "Rottweiler", "Shiba Inu", "Corgi", "Springer Spaniel", "Australian Shepherd", "Samoyedo"
   ];
 
   let todas = [];
@@ -71,8 +71,9 @@ const generarHabitacionesMock = () => {
 const initialState = {
   // usuario: JSON.parse(localStorage.getItem("usuario")) || MOCK_USER.usuario,
   // token: localStorage.getItem("token") || MOCK_USER.token,
-  API_URL: "http://localhost/api",
-  habitaciones: generarHabitacionesMock(),
+  API_URL: "http://localhost:8080/api",
+  //  habitaciones: generarHabitacionesMock(),
+  habitaciones: [],
   privilegiosAlojamientos: [
     { id: 1, nombre: "Masajes Relajantes", imagen: "/img/MasajesRelajantes.png", ruta: "/CuevaAcogedora", descripcion: "Sesión de relajación para reducir el estrés y mejorar la circulación de tu mascota." },
     { id: 2, nombre: "Peluquería y Estilismo", imagen: "/img/PeluqueríaYEstilismo.png", ruta: "/CuevaAcogedora", descripcion: "Corte y baño especializado para mantener a tu mascota limpia y con estilo." },
@@ -84,7 +85,8 @@ const initialState = {
   categorias: [],
   caracteristicas: [],
   tamanos: ["Grande", "Mediano", "Pequeño"],
-  maestros: []
+  maestros: [],
+  totalHabitaciones: 0,
 };
 
 const reducer = (state, action) => {
@@ -98,6 +100,9 @@ const reducer = (state, action) => {
       localStorage.removeItem("token");
       localStorage.removeItem("usuario");
       return { ...state, usuario: null, token: null };
+
+    case "SET_TOTAL_HABITACIONES":
+      return { ...state, totalHabitaciones: action.payload };
 
     case "SET_HABITACIONES":
       return { ...state, habitaciones: action.payload };

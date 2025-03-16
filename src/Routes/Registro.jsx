@@ -1,8 +1,10 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../Context/utils/globalContext";
+import axios from 'axios';
 
 const Registro = () => {
+  const API_URL = "http://localhost/api"
   const { dispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -45,41 +47,62 @@ const Registro = () => {
     return nuevosErrores;
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  // const handleSubmit = (e) => {
+  //   e.preventDefault();
+  //   const errores = validarFormulario();
+  //   if (Object.keys(errores).length > 0) {
+  //     setErrors(errores);
+  //     return;
+  //   }
+
+  //   const nuevoUsuario = {
+  //     nombre: formData.nombre,
+  //     apellido: formData.apellido,
+  //     email: formData.email,
+  //     telefono: formData.telefono,
+  //     direccion: formData.direccion,
+  //   };
+  //   const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
+  //   usuariosGuardados.push(nuevoUsuario);
+  //   localStorage.setItem("usuarios", JSON.stringify(usuariosGuardados));
+  //   localStorage.setItem("usuario", JSON.stringify(nuevoUsuario));
+  //   localStorage.setItem("token", "mocked_token");
+  //   dispatch({ type: "LOGIN", payload: { usuario: nuevoUsuario, token: "mocked_token" } });
+  //   alert("✅ Registro exitoso");
+  //   navigate("/");
+  // };
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+    setErrors({ ...errors, [e.target.name]: "" });
+  };
+  const registrarUsuario = (e) => {
     const errores = validarFormulario();
     if (Object.keys(errores).length > 0) {
       setErrors(errores);
       return;
     }
+    e.preventDefault();
+    axios.post(API_URL+"/auth/register", formData)
+      .then(response => {
+        // console.log('Usuario registrado exitosamente');
+        alert("✅ Registro exitoso");
+        const userdata= {"nombre": formData.nombre , "apellido": formData.apellido}
+        dispatch({ type: "LOGIN", payload: { usuario: userdata, token: response.data.accessToken } });
+        navigate("/");
+      })
+      .catch(error => {
+        console.error('Error al registrar usuario:', error);
+        alert("❌Ocurrio un error con el registro")
+      });
 
-    const nuevoUsuario = {
-      nombre: formData.nombre,
-      apellido: formData.apellido,
-      email: formData.email,
-      telefono: formData.telefono,
-      direccion: formData.direccion,
     };
-    const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
-    usuariosGuardados.push(nuevoUsuario);
-    localStorage.setItem("usuarios", JSON.stringify(usuariosGuardados));
-    localStorage.setItem("usuario", JSON.stringify(nuevoUsuario));
-    localStorage.setItem("token", "mocked_token");
-    dispatch({ type: "LOGIN", payload: { usuario: nuevoUsuario, token: "mocked_token" } });
-    alert("✅ Registro exitoso");
-    navigate("/");
-  };
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
-  };
 
   return (
     <div className="registro-page">
       <img src="/img/imagendepie.png" alt="Fondo" className="fondo-registro" />
       <div className="form-container">
         <h2 className="registro-titulo">Registrar usuario</h2>
-        <form className="formulario-registro" onSubmit={handleSubmit}>
+        <form className="formulario-registro" onSubmit={registrarUsuario}>
         <input
           type="text"
           name="nombre"
@@ -143,7 +166,7 @@ const Registro = () => {
           className={errors.confirmPassword ? "input-error" : ""}
         />
         {errors.confirmPassword && <span className="error-msg">{errors.confirmPassword}</span>}
-        <button type="submit">Registrar</button>
+        <button type="submit" >Registrar</button>
         </form>
       </div>
     </div>

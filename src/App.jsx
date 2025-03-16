@@ -22,11 +22,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={!usuario ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} >
+        <Route path="/" element={true ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : ""} />} >
           <Route index element={<Home />} />
           <Route path="habitacion/:id" element={<Habitaciones />} />
           <Route path="registro" element={<Registro />} />
-          <Route path="login" element={!usuario ? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} />
+          <Route path="login" element={true? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : ""} />} />
         </Route>
 
         <Route element={<PrivateRoute />}>

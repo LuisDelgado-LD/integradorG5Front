@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 
 export const GlobalContext = createContext();
 
-/*const API_URL = "http://petparadise.sytes.net/api";*/
 
 const MOCK_USER = {
   usuario: {
@@ -70,8 +69,9 @@ const generarHabitacionesMock = () => {
 };
 
 const initialState = {
-  usuario: JSON.parse(localStorage.getItem("usuario")) || MOCK_USER.usuario,
-  token: localStorage.getItem("token") || MOCK_USER.token,
+  // usuario: JSON.parse(localStorage.getItem("usuario")) || MOCK_USER.usuario,
+  // token: localStorage.getItem("token") || MOCK_USER.token,
+  // API_URL: "http://localhost/api",
   habitaciones: generarHabitacionesMock(),
   privilegiosAlojamientos: [
     { id: 1, nombre: "Masajes Relajantes", imagen: "/img/MasajesRelajantes.png", ruta: "/CuevaAcogedora", descripcion: "Sesión de relajación para reducir el estrés y mejorar la circulación de tu mascota." },
@@ -90,7 +90,7 @@ const initialState = {
 const reducer = (state, action) => {
   switch (action.type) {
     case "LOGIN":
-      localStorage.setItem("token", action.payload.token);
+      localStorage.setItem("token", JSON.stringify(action.payload.token));
       localStorage.setItem("usuario", JSON.stringify(action.payload.usuario));
       return { ...state, usuario: action.payload.usuario, token: action.payload.token };
 

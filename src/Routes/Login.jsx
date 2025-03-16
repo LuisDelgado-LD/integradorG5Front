@@ -1,12 +1,14 @@
 import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../Context/utils/globalContext";
+import axios from 'axios';
 
 const Login = ({ setUsuario }) => {
+  const API_URL = "http://localhost/api"
   const { dispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    nombre: "",
+    // nombre: "",
     email: "",
     password: "",
   });
@@ -23,9 +25,9 @@ const Login = ({ setUsuario }) => {
     e.preventDefault();
     const usuarioRegistrado = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")) : null;
     let newErrors = {};
-    if (!formData.nombre.trim()) {
-      newErrors.nombre = "El nombre es obligatorio";
-    }
+    // if (!formData.nombre.trim()) {
+    //   newErrors.nombre = "El nombre es obligatorio";
+    // }
     if (
       !usuarioRegistrado ||
       usuarioRegistrado.email !== formData.email ||
@@ -55,13 +57,30 @@ const Login = ({ setUsuario }) => {
     }
   };
 
+  const loginBackend = (e) => {
+    e.preventDefault();
+    console.log(formData)
+    axios.post(API_URL+"/auth/login", formData)
+    .then(response => {
+      console.log('Login exitoso', response.data);
+      alert("✅ Login exitoso");
+      dispatch({ type: "LOGIN", payload: { usuario: formData, token: response.data.accessToken } });
+      navigate("/");
+    })
+    .catch(error => {
+      console.error('Error al registrar usuario:', error);
+      alert("Ocurrio un error con el registro")
+    });
+
+  }
+
   return (
     <div className="login-container">
       <div className="login-box">
         <img src="/img/imagendeinicio.png" alt="Inicio" className="login-image" />
         <h2 className="login-title">¡Bienvenido nuevamente!</h2>
-        <form onSubmit={handleSubmit}>
-          <input
+        <form onSubmit={loginBackend}>
+          {/* <input
             type="text"
             name="nombre"
             placeholder="Nombre"
@@ -69,7 +88,7 @@ const Login = ({ setUsuario }) => {
             onChange={handleChange}
             className={`login-input ${errors.nombre ? "error" : ""}`}
           />
-          {errors.nombre && <p className="error-message">{errors.nombre}</p>}
+          {errors.nombre && <p className="error-message">{errors.nombre}</p>} */}
           <input
             type="email"
             name="email"
@@ -90,7 +109,7 @@ const Login = ({ setUsuario }) => {
           {errors.password && <p className="error-message">{errors.password}</p>}
           <div className="login-buttons">
             <button type="submit" className="login-btn primary">Iniciar Sesión</button>
-            <button type="button" className="login-btn secondary" onClick={() => setFormData({ nombre: "", email: "", password: "" })}>
+            <button type="button" className="login-btn secondary">
               Cancelar
             </button>
           </div>

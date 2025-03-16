@@ -4,7 +4,7 @@ import { GlobalContext } from "../Context/utils/globalContext";
 import axios from 'axios';
 
 const Login = ({ setUsuario }) => {
-  const API_URL = "http://localhost/api"
+  const API_URL = "https://petparadise.sytes.net/api"
   const { dispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
   const [formData, setFormData] = useState({

@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import Card from "../Components/Card";
+import axios from "axios";
 
 const mezclar = (array) => {
   return array
@@ -14,6 +15,8 @@ const Home = () => {
   const [habitaciones, setHabitaciones] = useState([]);
   const [paginaActual, setPaginaActual] = useState(1);
   const habitacionesPorPagina = 10;
+  const API_URL= "http://localhost:8080/api"
+  const { categorias } = state;
 
   useEffect(() => {
     const pequenas = [
@@ -73,12 +76,21 @@ const Home = () => {
   const inicio = (paginaActual - 1) * habitacionesPorPagina;
   const habitacionesPagina = habitaciones.slice(inicio, inicio + habitacionesPorPagina);
   const servicios = state.privilegiosAlojamientos || [];
-  const categorias = [
-    { nombre: "Básico", icono: "/img/1patita.png" },
-    { nombre: "Premium", icono: "/img/2patitas.png" },
-    { nombre: "VIP", icono: "/img/3patitas.png" },
-  ];
-
+  // const categorias = [
+  //   { nombre: "Básico", icono: "/img/1patita.png" },
+  //   { nombre: "Premium", icono: "/img/2patitas.png" },
+  //   { nombre: "VIP", icono: "/img/3patitas.png" },
+  // ];
+  useEffect(() => {
+    axios.get(API_URL + "/categorias")
+    .then(response =>{
+      console.log(response.data);
+      dispatch({ type: "SET_CATEGORIAS", payload: response.data });
+    })
+    .catch(error =>{
+      console.log(error)
+    })
+  }, []);
   return (
     <div className="home">
 
@@ -87,7 +99,7 @@ const Home = () => {
         <div className="card-grid">
           {categorias.map((cat, idx) => (
             <div key={idx} className="card categoria">
-              <img src={cat.icono} alt={cat.nombre} className="card-img" />
+              <img src={cat.imagenUrl} alt={cat.nombre} className="card-img" />
               <h3 className="card-title">{cat.nombre}</h3>
             </div>
           ))}

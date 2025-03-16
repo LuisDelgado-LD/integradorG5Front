@@ -81,7 +81,7 @@ const initialState = {
     { id: 5, nombre: "Servicio Veterinario", imagen: "/img/Psicologo.png", ruta: "/CuevaAcogedora", descripcion: "Atención médica para garantizar la salud de tu mascota durante su estadía." },
   ],
   productos: [],
-  categorias: ["Básica", "Premium", "VIP"],
+  categorias: [],
   caracteristicas: [],
   tamanos: ["Grande", "Mediano", "Pequeño"],
   maestros: []

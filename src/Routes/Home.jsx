@@ -75,16 +75,14 @@ const Home = () => {
       // console.log("habitaciones:", response.data.totalElements);
       dispatch({ type: "SET_TOTAL_HABITACIONES", payload: response.data.totalElements });
       const total =[];
-      const habitacionesCache = response.data.content.map(element => {
-        return {
-          id: element.id,
-          nombre: element.nombre,
-          imagen: "/img/PalacioPeludo.png",  // Puedes modificar según lo que necesites
-          descripcion: element.descripcion,
-          categoria: element.categoria.nombre,  // Suponiendo que la categoría tiene un campo 'nombre'
-          tipo: element.tamano
-        };
-      });
+      const habitacionesCache = response.data.content.map(element => ({
+        id: element.id,
+        nombre: element.nombre,
+        imagen: "/img/PalacioPeludo.png",
+        descripcion: element.descripcion,
+        categoria: element.categoria.nombre,
+        tipo: element.tamano
+      }));
       setHabitaciones(mezclar(habitacionesCache));
       dispatch({ type: "SET_HABITACIONES", payload: habitacionesCache });
 
@@ -101,7 +99,7 @@ const Home = () => {
   //   { nombre: "Premium", icono: "/img/2patitas.png" },
   //   { nombre: "VIP", icono: "/img/3patitas.png" },
   // ];
-  useEffect(() => {
+  useEffect(() => { // obtener categorias
     axios.get(API_URL + "/categorias")
     .then(response =>{
       console.log(response.data);

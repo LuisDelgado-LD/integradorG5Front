@@ -18,6 +18,7 @@ const Home = () => {
   const { categorias } = state;
   const { API_URL } = state;
   const {totalHabitaciones} = state;
+<<<<<<< HEAD
   useEffect(() => {
     // const pequenas = [
     //   "Chihuahua", "Pomerania", "Yorkshire", "Pinscher", "Maltés",
@@ -100,6 +101,33 @@ const Home = () => {
   //   { nombre: "VIP", icono: "/img/3patitas.png" },
   // ];
   useEffect(() => { // obtener categorias
+=======
+  const totalPaginas = Math.ceil(totalHabitaciones / habitacionesPorPagina);
+  const servicios = state.privilegiosAlojamientos || [];
+  const consultaBack = (pagina) => {
+    setPaginaActual(pagina);
+    const pageApi = pagina-1;
+      axios.get(`${API_URL}/habitaciones/all?page=${pageApi}&size=${habitacionesPorPagina}`)
+      .then(response =>{
+        console.log("habitaciones:", response.data.totalElements);
+        console.log("habitaciones:", response.data.content);
+        dispatch({ type: "SET_TOTAL_HABITACIONES", payload: response.data.totalElements });
+        const habitacionesCache = response.data.content.map(element => ({
+          id: element.id,
+          nombre: element.nombre,
+          imagen: "/img/PalacioPeludo.png",
+          descripcion: element.descripcion,
+          categoria: element.categoria.nombre,
+          tipo: element.tamano
+        }));
+        setHabitaciones(mezclar(habitacionesCache));
+        dispatch({ type: "SET_HABITACIONES", payload: habitacionesCache });
+  
+      })
+  }
+  useEffect(() => { // obtener categorias y habitaciones
+    consultaBack(paginaActual);
+>>>>>>> d9994b6ba099fe9c9cf5f887e9d08798ba7cc0b9
     axios.get(API_URL + "/categorias")
     .then(response =>{
       console.log(response.data);
@@ -113,26 +141,24 @@ const Home = () => {
   // const cambiarPagina = (pagina) => {
   //   setPaginaActual(pagina);
   // };
-  const handleCambiarPagina = (nuevaPagina) => {
-    const pageApi = nuevaPagina-1;
-    axios.get(API_URL + "/habitaciones/all?page=" + pageApi)
-      .then(response => {
-        dispatch({ type: "SET_TOTAL_HABITACIONES", payload: response.data.totalElements });
-        const habitacionesCache = response.data.content.map(element => ({
-          id: element.id,
-          nombre: element.nombre,
-          imagen: "/img/PalacioPeludo.png",
-          descripcion: element.descripcion,
-          categoria: element.categoria.nombre,
-          tipo: element.tamano
-        }));
-        setHabitaciones(mezclar(habitacionesCache));
-        dispatch({ type: "SET_HABITACIONES", payload: habitacionesCache });
-        setPaginaActual(nuevaPagina);
-      })
-      .catch(error => console.log(error));
-  console.log(habitaciones)
-  };
+  // const handleCambiarPagina = (nuevaPagina) => {
+  //     .then(response => {
+  //       dispatch({ type: "SET_TOTAL_HABITACIONES", payload: response.data.totalElements });
+  //       const habitacionesCache = response.data.content.map(element => ({
+  //         id: element.id,
+  //         nombre: element.nombre,
+  //         imagen: "/img/PalacioPeludo.png",
+  //         descripcion: element.descripcion,
+  //         categoria: element.categoria.nombre,
+  //         tipo: element.tamano
+  //       }));
+  //       setHabitaciones(mezclar(habitacionesCache));
+  //       dispatch({ type: "SET_HABITACIONES", payload: habitacionesCache });
+  //       setPaginaActual(nuevaPagina);
+  //     })
+  //     .catch(error => console.log(error));
+  // console.log(habitaciones)
+  // };
 
   return (
     <div className="home">
@@ -158,12 +184,12 @@ const Home = () => {
         </div>
 
         <div className="paginacion-container">
-          <button disabled={paginaActual === 1} onClick={() => handleCambiarPagina(paginaActual - 1)}>Anterior</button>
+          <button disabled={paginaActual === 1} onClick={() => consultaBack(paginaActual - 1)}>Anterior</button>
           {/* <button disabled={paginaActual === 1} onClick={cambiarPagina(paginaActual - 1)}>Anterior</button> */}
           <span style={{ margin: "0 10px" }}>
             Página {paginaActual} de {totalPaginas}
           </span>
-          <button disabled={paginaActual === totalPaginas} onClick={() => handleCambiarPagina(paginaActual + 1)}>Siguiente</button>
+          <button disabled={paginaActual === totalPaginas} onClick={() => consultaBack(paginaActual + 1)}>Siguiente</button>
           {/* <button disabled={paginaActual === 1} onClick={cambiarPagina(paginaActual + 1)}>Siguiente</button> */}
         </div>
       </div>

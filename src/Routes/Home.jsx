@@ -19,17 +19,15 @@ const Home = () => {
   const { API_URL } = state;
   const {totalHabitaciones} = state;
   const totalPaginas = Math.ceil(totalHabitaciones / habitacionesPorPagina);
-  const inicio = (paginaActual - 1) * habitacionesPorPagina;
-  // const habitacionesPagina = habitaciones.slice(inicio, inicio + habitacionesPorPagina);
   const servicios = state.privilegiosAlojamientos || [];
   const consultaBack = (pagina) => {
     setPaginaActual(pagina);
     const pageApi = pagina-1;
-      axios.get(`${API_URL}/habitaciones/all?page=${pageApi}&size${habitacionesPorPagina}`)
+      axios.get(`${API_URL}/habitaciones/all?page=${pageApi}&size=${habitacionesPorPagina}`)
       .then(response =>{
-        // console.log("habitaciones:", response.data.totalElements);
+        console.log("habitaciones:", response.data.totalElements);
+        console.log("habitaciones:", response.data.content);
         dispatch({ type: "SET_TOTAL_HABITACIONES", payload: response.data.totalElements });
-        const total =[];
         const habitacionesCache = response.data.content.map(element => ({
           id: element.id,
           nombre: element.nombre,
@@ -43,7 +41,7 @@ const Home = () => {
   
       })
   }
-  useEffect(() => { // obtener categorias
+  useEffect(() => { // obtener categorias y habitaciones
     consultaBack(paginaActual);
     axios.get(API_URL + "/categorias")
     .then(response =>{

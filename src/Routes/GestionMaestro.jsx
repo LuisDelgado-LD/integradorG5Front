@@ -50,9 +50,9 @@ const GestionMaestro = () => {
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Tipo</th>
+              <th>Tipo de Maestro</th>
               <th>Última Modificación</th>
-              <th>Acción</th>
+              <th>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -62,8 +62,8 @@ const GestionMaestro = () => {
                 <td>{maestro.tipo}</td>
                 <td>{maestro.fechaModificacion}</td>
                 <td>
-                  <FaEdit className="edit-icon" onClick={() => handleEditarMaestro(maestro)} />
-                  <FaTrash className="delete-icon" onClick={() => handleEliminarMaestro(maestro.nombre)} />
+                  <img src="/img/editar.png" alt="Editar" onClick={() => handleEditarMaestro(maestro)} style={{ cursor: "pointer", width: "20px", marginRight: "10px" }} />
+                  <img src="/img/papelera.png" alt="Eliminar" onClick={() => handleEliminarMaestro(maestro.nombre)} style={{ cursor: "pointer", width: "20px" }} />
                 </td>
               </tr>
             ))}
@@ -71,22 +71,40 @@ const GestionMaestro = () => {
         </table>
       )}
 
-      <button onClick={() => setMostrarFormulario(!mostrarFormulario)}>
-        {mostrarFormulario ? "Cerrar formulario" : "Añadir Maestro"}
+      <button onClick={() => setMostrarFormulario(!mostrarFormulario)} style={{ display: "flex", alignItems: "center", gap: "8px", marginTop: "20px" }}>
+        <img src="/img/mas.png" alt="Añadir" style={{ width: "24px" }} />
+        Añadir Maestro
       </button>
 
       {mostrarFormulario && (
-        <DynamicForm
-          key={keyForm}
-          title={maestroEditado ? "Editar Maestro" : "Nuevo Maestro"}
-          fields={[
-            { name: "nombre", label: "Nombre", type: "text", required: true, defaultValue: maestroEditado?.nombre || "" },
-            { name: "tipo", label: "Tipo de Maestro", type: "text", required: true, defaultValue: maestroEditado?.tipo || "" },
-            { name: "descripcion", label: "Descripción", type: "text", required: true, defaultValue: maestroEditado?.descripcion || "" }
-          ]}
-          onSubmit={handleAgregarOEditarMaestro}
-        />
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <DynamicForm
+              key={keyForm}
+              title={maestroEditado ? "Editar Maestro" : "Gestión de Maestros"}
+              fields={[
+                { name: "tipo", label: "Tipo de Maestro", type: "select", required: true, options: ["Categoría", "Producto"], defaultValue: maestroEditado?.tipo || "" },
+                { name: "nombre", label: "Nombre del Maestro", type: "text", required: true, defaultValue: maestroEditado?.nombre || "" },
+                { name: "descripcion", label: "Añade la descripción del maestro", type: "text", required: true, defaultValue: maestroEditado?.descripcion || "" },
+                { name: "caracteristicas", label: "Características Incluidas", type: "select", required: false, options: state.caracteristicas.map((c) => c.nombre), defaultValue: maestroEditado?.caracteristicas || [] },
+              ]}
+              onSubmit={handleAgregarOEditarMaestro}
+            />
+            <div style={{ textAlign: "center", marginTop: "20px" }}>
+              <button style={{ display: "flex", alignItems: "center", gap: "8px", margin: "0 auto" }}>
+                <img src="/img/mas.png" alt="Agregar Imagen" style={{ width: "24px" }} />
+                Agregar Imagen Principal
+              </button>
+              <button className="save-button" style={{ marginTop: "16px" }}>
+                Guardar
+              </button>
+              <img src="/img/flecha.png" alt="Cerrar" onClick={() => setMostrarFormulario(false)} style={{ cursor: "pointer", marginTop: "20px", width: "30px" }} />
+            </div>
+          </div>
+        </div>
       )}
+
+      <img src="/img/imagendeinicio.png" alt="Fondo" style={{ width: "100%", marginTop: "2rem" }} />
     </div>
   );
 };

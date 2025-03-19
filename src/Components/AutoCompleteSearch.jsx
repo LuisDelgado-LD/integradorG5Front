@@ -3,9 +3,35 @@ import Select from "react-select";
 
 const options = [
   { value: "chihuahua", label: "Chihuahua" },
-  { value: "poodle", label: "Poodle" },
-  { value: "bulldog", label: "Bulldog" },
-  { value: "golden", label: "Golden Retriever" },
+  { value: "pomerania", label: "Pomerania" },
+  { value: "yorkshire", label: "Yorkshire" },
+  { value: "pinscher", label: "Pinscher" },
+  { value: "beagle", label: "Beagle" },
+  { value: "basenji", label: "Basenji" },
+  { value: "cocker", label: "Cocker" },
+  { value: "schnauzer", label: "Schnauzer" },
+  { value: "whippet", label: "Whippet" },
+  { value: "labrador", label: "Labrador" },
+  { value: "maltes", label: "Maltés" },
+  { value: "pequines", label: "Pekinés" },
+  { value: "papillon", label: "Papillón" },
+  { value: "shetland_sheepdog", label: "Shetland Sheepdog" },
+  { value: "border_collie", label: "Border Collie" },
+  { value: "shiba_inu", label: "Shiba Inu" },
+  { value: "american_eskimo", label: "American Eskimo" },
+  { value: "staffordshire_bull_terrier", label: "Staffordshire Bull Terrier" },
+  { value: "pastor_aleman", label: "Pastor Alemán" },
+  { value: "husky_siberiano", label: "Husky Siberiano" },
+  { value: "shih_tzu", label: "Shih Tzu" },
+  { value: "bichon_frise", label: "Bichón Frisé" },
+  { value: "toy_poodle", label: "Toy Poodle" },
+  { value: "bulldog_frances", label: "Bulldog Francés" },
+  { value: "springer_spaniel", label: "Springer Spaniel" },
+  { value: "corgi", label: "Corgi" },
+  { value: "australian_shepherd", label: "Australian Shepherd" },
+  { value: "samoyedo", label: "Samoyedo" },
+  { value: "golden_retriever", label: "Golden Retriever" },
+  { value: "rottweiler", label: "Rottweiler" }
 ];
 
 const AutocompleteSearch = ({ onSelect }) => {
@@ -27,7 +53,7 @@ const AutocompleteSearch = ({ onSelect }) => {
         noOptionsMessage={() => "No hay opciones disponibles"}
         styles={customStyles}
       />
-      {selectedOption && (
+      {(
         <button style={styles.searchButton}>Buscar</button>
       )}
     </div>
@@ -78,7 +104,7 @@ const styles = {
       ...base,
       padding: "10px",
       fontSize: "16px",
-      backgroundColor: isSelected ? "#3372BD" : isFocused ? "#2261AC" : "white",
+      backgroundColor: isSelected ? "#5572BD" : isFocused ? "#4461AC" : "white",
       color: isSelected ? "white" : "black",
       cursor: "pointer",
     }),

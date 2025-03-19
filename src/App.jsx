@@ -8,6 +8,7 @@ import Registro from "./Routes/Registro.jsx";
 import Galeria2 from "./Routes/Galeria2.jsx";
 import Administrador from "./Routes/Administrador.jsx";
 import GestionCaracteristicas from "./Routes/GestionCaracteristicas.jsx";
+import GestionServicios from "./Routes/GestionServicios.jsx";
 import UserManagement from "./Routes/UserManagement.jsx";
 import Login from "./Routes/Login.jsx";
 import PrivateRoute from "./Routes/PrivateRoute"; 
@@ -25,6 +26,7 @@ function App() {
         <Route path="/" element={!usuario ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} >
           <Route index element={<Home />} />
           <Route path="habitacion/:id" element={<Habitaciones />} />
+          <Route path="galeria/:id" element={<Galeria2 />} />
           <Route path="registro" element={<Registro />} />
           <Route path="login" element={!usuario ? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} />
         </Route>
@@ -34,6 +36,7 @@ function App() {
             <Route index element={<Administrador />} />
             <Route path="gestion-caracteristicas" element={<GestionCaracteristicas />} />
             <Route path="gestion-de-usuario" element={<UserManagement />} />
+            <Route path="gestion-de-servicios" element={<GestionServicios />} />
           </Route>
         </Route>
       </Routes>

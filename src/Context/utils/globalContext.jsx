@@ -87,6 +87,7 @@ const initialState = {
   tamanos: ["Grande", "Mediano", "Pequeño"],
   maestros: [],
   totalHabitaciones: 0,
+  categoria: "",
 };
 
 const reducer = (state, action) => {

@@ -35,19 +35,61 @@ const iconosCaracteristicas = {
 const Habitaciones = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { state } = useContext(GlobalContext);
   const [habitacion, setHabitacion] = useState(null);
+  const [categoria, setCategoria] = useState(null);
 
+//   const navigate = useNavigate();
+//   const { state } = useContext(GlobalContext);
+//   const [habitacion, setHabitacion] = useState(null);
+
+//   useEffect(() => {
+//     const encontrada = state.habitaciones.find((h) => h.id === parseInt(id));
+//     setHabitacion(encontrada);
+//   }, [id, state.habitaciones]);
+
+//   if (!habitacion) return <p>Cargando habitación...</p>;
+
+//   const categoria = habitacion.categoria;
+//   const descripcion = descripcionesCategoria[categoria];
+//   const caracteristicas = caracteristicasPorCategoria[categoria] || [];
   useEffect(() => {
-    const encontrada = state.habitaciones.find((h) => h.id === parseInt(id));
-    setHabitacion(encontrada);
-  }, [id, state.habitaciones]);
+    axios.get(`${API_URL}/habitaciones/${id}`)
+    .then(response => {
+      console.log("habitacion:", response.data.content);
+      const habitacion = response.data.content.map(element => ({
+        id: element.id,
+        nombre: element.nombre,
+        imagen: "/img/PalacioPeludo.png",
+        descripcion: element.descripcion,
+        categoria: element.categoria.nombre,
+        caracteristicas: element.caracteristicas, // posiblemente haya que mapear
+        tipo: element.tamano,
+      }));
+      setHabitacion(habitacion);
+    })
+    .catch(error => console.log(error));
+    axios.get(`${API_URL}/categorias/${id}`)
+    .then(response => {
+      console.log("categoria:", response.data.content);
+      const categoria = response.data.content.map(element => ({
+        nombre: element.nombre,
+        icono: element.imagenUrl,
+        cantidad: element.cantidad
+      }));
+      setCategoria(categoria);
+    })
+}, []);
 
-  if (!habitacion) return <p>Cargando habitación...</p>;
-
-  const categoria = habitacion.categoria;
-  const descripcion = descripcionesCategoria[categoria];
-  const caracteristicas = caracteristicasPorCategoria[categoria] || [];
+// variables usadas
+//{habitacion.imagen} alt={habitacion.nombre}
+//habitacion.id
+//iconosCategoria
+//iconoPatita
+//{descripcion}
+// caracteristicas.map((car, idx) => (
+//   <div key={idx} >
+//     <img src={iconosCaracteristicas[car]} alt={car} width="32" />
+//     <span style={{ fontWeight: 500 }}>{car.charAt(0).toUpperCase() + car.slice(1)}</span>
 
   return (
     <div className="habitacion-container" style={{ padding: "20px" }}>
@@ -73,11 +115,12 @@ const Habitaciones = () => {
         </div>
         <div style={{ marginTop: "1cm", textAlign: "left" }}>
           <p className="habitacion-categoria">
-            <strong>Categoría:</strong> {categoria}
-            {Array.from({ length: iconosCategoria[categoria] || 0 }).map((_, i) => (
+            <strong>Categoría:</strong> {categoria.nombre}
+            {/* {Array.from({ length: iconosCategoria[categoria] || 0 }).map((_, i) => ( */}
+            {Array.from({ length: categoria.cantidad }).map((_, i) => (
               <img
                 key={i}
-                src={iconoPatita}
+                src={categoria.icono}
                 alt="Patita"
                 style={{ width: "20px", marginLeft: "5px" }}
               />
@@ -90,9 +133,10 @@ const Habitaciones = () => {
         <div style={{ marginTop: "1cm", textAlign: "left" }}>
           <p><strong>Características:</strong></p>
           <div style={{ display: "flex", gap: "1cm", flexWrap: "wrap" }}>
-            {caracteristicas.map((car, idx) => (
-              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <img src={iconosCaracteristicas[car]} alt={car} width="32" />
+            {/* {caracteristicas.map((car, idx) => ( */}
+            {caracteristicas.map((e, id) => (
+              <div key={id} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                <img src={e.icono} alt={e.nombre} width="32" />
                 <span style={{ fontWeight: 500 }}>{car.charAt(0).toUpperCase() + car.slice(1)}</span>
               </div>
             ))}

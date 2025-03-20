@@ -19,8 +19,6 @@ const Home = () => {
   const { API_URL } = state;
   const {totalHabitaciones} = state;
   const totalPaginas = Math.ceil(totalHabitaciones / habitacionesPorPagina);
-  const inicio = (paginaActual - 1) * habitacionesPorPagina;
-  // const habitacionesPagina = habitaciones.slice(inicio, inicio + habitacionesPorPagina);
   const servicios = state.privilegiosAlojamientos || [];
   const consultaBack = (pagina) => {
     setPaginaActual(pagina);

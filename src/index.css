@@ -47,6 +47,25 @@
   cursor: pointer;
 } */
 
+.Imagen-footer {
+  position:relative;  /*O absolute si prefieres */
+  bottom: 0; /* Mejor que top: 65em */
+  width: 100%;
+  text-align: center; /* Centra la imagen horizontalmente */
+  top: 25em;
+  object-fit: cover;
+  aspect-ratio: 5/3;
+}
+
+.Imagen-footer img{
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: auto;
+  display: block; /* Elimina espacios extra */
+  margin: 0 auto; /* Centrado horizontal */
+}
+
 .login{
   display: flex;
   flex-direction: column;

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-
+import SoloEscritorio from "../Components/SoloEscritorio";
 const GestionMaestro = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modoEdicion, setModoEdicion] = useState(false);
@@ -56,86 +56,88 @@ const GestionMaestro = () => {
   };
 
   return (
-    <div className="gestion-maestro-page">
-      <div className="container-gestion">
-        <h2 className="titulo-gestion">Gestión de Maestro</h2>
+    <SoloEscritorio>
+      <div className="gestion-maestro-page">
+        <div className="container-gestion">
+          <h2 className="titulo-gestion">Gestión de Maestro</h2>
 
-        <table className="tabla-maestros">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Tipo de Maestro</th>
-              <th>Última Modificación</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {maestros.map((m) => (
-              <tr key={m.id}>
-                <td>{m.nombre}</td>
-                <td>{m.tipo}</td>
-                <td>{new Date().toLocaleDateString()}</td>
-                <td className="acciones">
-                  <span className="icono" onClick={() => abrirEditar(m)}>🖊️</span>
-                  <span className="icono" onClick={() => eliminarMaestro(m.id)}>🗑️</span>
-                </td>
+          <table className="tabla-maestros">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Tipo de Maestro</th>
+                <th>Última Modificación</th>
+                <th>Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="boton-aniadir-container">
-        <button className="btn-aniadir" onClick={abrirCrear}>
-          ➕ Añadir Maestro
-        </button>
-      </div>
-
-      {modalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <span className="cerrar-modal" onClick={() => setModalOpen(false)}>×</span>
-            <h3>{modoEdicion ? "Editar Maestro" : "Registrar Maestro"}</h3>
-            <form onSubmit={handleGuardar}>
-              <select name="tipo" value={formData.tipo} onChange={handleChange} required>
-                <option value="">Selecciona tipo</option>
-                <option value="Categoría">Categoría</option>
-                <option value="Producto">Producto</option>
-              </select>
-
-              <input
-                type="text"
-                name="nombre"
-                placeholder="Nombre del maestro"
-                value={formData.nombre}
-                onChange={handleChange}
-                required
-              />
-
-              <textarea
-                name="descripcion"
-                placeholder="Añade la descripción del maestro"
-                value={formData.descripcion}
-                onChange={handleChange}
-                required
-              />
-
-              {formData.tipo === "Producto" && (
-                <button type="button" className="btn-agregar-imagenes">
-                  Agregar Imágenes Incluidas
-                </button>
-              )}
-
-              <button type="submit" className="btn-guardar">Guardar</button>
-            </form>
-          </div>
+            </thead>
+            <tbody>
+              {maestros.map((m) => (
+                <tr key={m.id}>
+                  <td>{m.nombre}</td>
+                  <td>{m.tipo}</td>
+                  <td>{new Date().toLocaleDateString()}</td>
+                  <td className="acciones">
+                    <span className="icono" onClick={() => abrirEditar(m)}>🖊️</span>
+                    <span className="icono" onClick={() => eliminarMaestro(m.id)}>🗑️</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
-      )}
 
-      <div className="imagen-pie">
-        <img src="/img/imagendepie.png" alt="Imagen Pie" />
+        <div className="boton-aniadir-container">
+          <button className="btn-aniadir" onClick={abrirCrear}>
+            ➕ Añadir Maestro
+          </button>
+        </div>
+
+        {modalOpen && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <span className="cerrar-modal" onClick={() => setModalOpen(false)}>×</span>
+              <h3>{modoEdicion ? "Editar Maestro" : "Registrar Maestro"}</h3>
+              <form onSubmit={handleGuardar}>
+                <select name="tipo" value={formData.tipo} onChange={handleChange} required>
+                  <option value="">Selecciona tipo</option>
+                  <option value="Categoría">Categoría</option>
+                  <option value="Producto">Producto</option>
+                </select>
+
+                <input
+                  type="text"
+                  name="nombre"
+                  placeholder="Nombre del maestro"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  required
+                />
+
+                <textarea
+                  name="descripcion"
+                  placeholder="Añade la descripción del maestro"
+                  value={formData.descripcion}
+                  onChange={handleChange}
+                  required
+                />
+
+                {formData.tipo === "Producto" && (
+                  <button type="button" className="btn-agregar-imagenes">
+                    Agregar Imágenes Incluidas
+                  </button>
+                )}
+
+                <button type="submit" className="btn-guardar">Guardar</button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <div className="imagen-pie">
+          <img src="/img/imagendepie.png" alt="Imagen Pie" />
+        </div>
       </div>
-    </div>
+    </SoloEscritorio>
   );
 };
 

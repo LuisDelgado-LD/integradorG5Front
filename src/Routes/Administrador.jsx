@@ -1,198 +1,135 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
-import { FaTrash, FaEdit } from "react-icons/fa";
-import { Link, Outlet , useNavigate } from "react-router-dom";
+import Card from "../Components/Card";
+import SoloEscritorio from "../Components/SoloEscritorio";
 
-const Administrador = () => {
+const mezclar = (array) => {
+  return array
+    .map((item) => ({ item, sort: Math.random() }))
+    .sort((a, b) => a.sort - b.sort)
+    .map(({ item }) => item);
+};
+
+const Home = () => {
   const { state, dispatch } = useContext(GlobalContext);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [maestroEditado, setMaestroEditado] = useState(null);
-  const [error, setError] = useState("");
-  const [formData, setFormData] = useState({
-    nombre: "",
-    tipoProducto: "",
-    descripcion: "",
-    categoria: "",
-    imagenPrincipal: null,
-    imagenSecundaria: null,
-    caracteristicas: [],
-  });
+  const [habitaciones, setHabitaciones] = useState([]);
+  const [paginaActual, setPaginaActual] = useState(1);
+  const habitacionesPorPagina = 8;
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    const pequenas = [
+      "Chihuahua", "Pomerania", "Yorkshire", "Pinscher", "Maltés",
+      "Pekinés", "Papillón", "Shih Tzu", "Bichón Frisé", "Toy Poodle"
+    ];
+    const medianas = [
+      "Beagle", "Cocker", "Border Collie", "Bulldog Francés", "Schnauzer",
+      "Staffordshire Bull Terrier", "Basenji", "Whippet", "Shetland Sheepdog",
+      "American Eskimo", "Shiba Inu", "Corgi", "Springer Spaniel", "Australian Shepherd", "Samoyedo"
+    ];
+    const grandes = [
+      "Labrador", "Golden Retriever", "Pastor Alemán", "Husky Siberiano", "Rottweiler"
+    ];
 
-  const handleImageChange = (e) => {
-    const { name, files } = e.target;
-    if (files.length > 0) {
-      setFormData((prev) => ({ ...prev, [name]: URL.createObjectURL(files[0]) }));
-    }
-  };
+    let todas = [];
 
-  const handleOpenModal = (maestro = null) => {
-    setMaestroEditado(maestro);
-    setModalOpen(true);
-
-    if (maestro) {
-      setFormData({
-        nombre: maestro.nombre,
-        tipoProducto: maestro.tipoProducto,
-        descripcion: maestro.descripcion,
-        categoria: maestro.categoria,
-        imagenPrincipal: maestro.imagenPrincipal || null,
-        imagenSecundaria: maestro.imagenSecundaria || null,
+    pequenas.forEach((nombre, i) => {
+      todas.push({
+        id: i + 1,
+        nombre,
+        imagen: "/img/PalacioPeludo.png",
+        descripcion: "Espacio acogedor ideal para razas pequeñas.",
+        categoria: "Básico",
+        tipo: "Pequeña"
       });
-    } else {
-      setFormData({
-        nombre: "",
-        tipoProducto: "",
-        descripcion: "",
-        categoria: "",
-        imagenPrincipal: null,
-        imagenSecundaria: null,
+    });
+
+    medianas.forEach((nombre, i) => {
+      todas.push({
+        id: i + 11,
+        nombre,
+        imagen: "/img/RefugioConfortable.png",
+        descripcion: "Ideal para razas medianas con energía y curiosidad.",
+        categoria: "Premium",
+        tipo: "Mediana"
       });
-    }
-  };
+    });
 
-  const handleCloseModal = () => {
-    setModalOpen(false);
-    setMaestroEditado(null);
-    setError("");
-  };
-
-  const handleSave = () => {
-    if (!formData.nombre || !formData.tipoProducto || !formData.descripcion || !formData.categoria) {
-      setError("❌ Todos los campos son obligatorios.");
-      return;
-    }
-
-    if (!formData.imagenPrincipal || !formData.imagenSecundaria) {
-      setError("❌ Debes subir ambas imágenes.");
-      return;
-    }
-
-    if (maestroEditado) {
-      dispatch({ type: "EDITAR_MAESTRO", payload: { id: maestroEditado.id, ...formData } });
-    } else {
-      dispatch({
-        type: "AGREGAR_MAESTRO",
-        payload: { id: state.maestros.length + 1, ...formData },
+    grandes.forEach((nombre, i) => {
+      todas.push({
+        id: i + 26,
+        nombre,
+        imagen: "/img/CuevaAcogedora.png",
+        descripcion: "Amplio y cómodo para razas grandes.",
+        categoria: "VIP",
+        tipo: "Grande"
       });
-    }
+    });
 
-    handleCloseModal();
-  };
+    localStorage.setItem("habitacionesMock", JSON.stringify(todas));
+    setHabitaciones(mezclar(todas));
+    dispatch({ type: "SET_HABITACIONES", payload: todas });
+  }, []);
 
-  const handleDelete = (id) => {
-    dispatch({ type: "ELIMINAR_MAESTRO", payload: id });
-  };
+  const totalPaginas = Math.ceil(habitaciones.length / habitacionesPorPagina);
+  const inicio = (paginaActual - 1) * habitacionesPorPagina;
+  const habitacionesPagina = habitaciones.slice(inicio, inicio + habitacionesPorPagina);
+  const servicios = state.privilegiosAlojamientos || [];
+  const categorias = [
+    { nombre: "Básico", icono: "/img/1patita.png" },
+    { nombre: "Premium", icono: "/img/2patitas.png" },
+    { nombre: "VIP", icono: "/img/3patitas.png" },
+  ];
 
   return (
-    <div className="admin-container">
-      <h2>Panel de Administración</h2>
+    <SoloEscritorio>
+      <div className="home">
 
-      <nav className="admin-nav">
-        <Link to="/administrador/gestion-maestro">Gestión de Maestro</Link>
-        <Link to="/administrador/gestion-de-usuario">Gestión de Usuarios</Link>
-      </nav>
-
-      <Outlet />
-
-      <h2>Gestión de Maestro</h2>
-
-      {state.maestros.length > 0 ? (
-        <table className="product-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Tipo de Maestro</th>
-              <th>Categoría</th>
-              <th>Características</th>
-              <th>Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {state.maestros.map((maestro) => (
-              <tr key={maestro.id}>
-                <td>{maestro.nombre}</td>
-                <td>{maestro.tipoProducto}</td>
-                <td>{maestro.categoria}</td>
-                <td>{maestro.caracteristicas?.join(", ")}</td>
-                <td>
-                  <FaEdit className="edit-icon" onClick={() => handleOpenModal(maestro)} />
-                  <FaTrash className="delete-icon" onClick={() => handleDelete(maestro.id)} />
-                </td>
-              </tr>
+        <div style={{ marginBottom: "3cm" }}>
+          <h2 className="section-title">Categoría</h2>
+          <div className="card-grid">
+            {categorias.map((cat, idx) => (
+              <div key={idx} className="card categoria">
+                <img src={cat.icono} alt={cat.nombre} className="card-img" />
+                <h3 className="card-title">{cat.nombre}</h3>
+              </div>
             ))}
-          </tbody>
-        </table>
-      ) : (
-        <p>No hay maestros registrados.</p>
-      )}
-
-      <button className="add-user" onClick={() => handleOpenModal()}>➕ Añadir Maestro</button>
-
-      {modalOpen && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <h2>{maestroEditado ? "Editar Maestro" : "Nuevo Maestro"}</h2>
-            {error && <p className="error-message">{error}</p>}
-
-            <label>Nombre:</label>
-            <input type="text" name="nombre" value={formData.nombre} onChange={handleChange} required />
-
-            <label>Tipo de Maestro:</label>
-            <input type="text" name="tipoProducto" value={formData.tipoProducto} onChange={handleChange} required />
-
-            <label>Categoría:</label>
-            <select name="categoria" value={formData.categoria} onChange={handleChange} required>
-              <option value="">Seleccione una categoría</option>
-              {state.categorias.map((cat, index) => (
-                <option key={index} value={cat}>{cat}</option>
-              ))}
-            </select>
-
-            <label>Características:</label>
-            <select
-              name="caracteristicas"
-              multiple
-              value={formData.caracteristicas || []}
-              onChange={(e) =>
-                setFormData({
-                ...formData,
-                caracteristicas: Array.from(e.target.selectedOptions, (option) => option.value),
-                })
-                }
->
-                {state.caracteristicas.map((car, index) => (
-                <option key={index} value={car.nombre}>
-                {car.nombre}
-                </option>
-                ))}
-            
-            </select>
-
-            <label>Descripción:</label>
-            <textarea name="descripcion" value={formData.descripcion} onChange={handleChange} required />
-
-            <label>Imagen Principal:</label>
-            <input type="file" name="imagenPrincipal" accept="image/*" onChange={handleImageChange} />
-            {formData.imagenPrincipal && <img src={formData.imagenPrincipal} alt="Imagen Principal" width="100" />}
-
-            <label>Imagen Secundaria:</label>
-            <input type="file" name="imagenSecundaria" accept="image/*" onChange={handleImageChange} />
-            {formData.imagenSecundaria && <img src={formData.imagenSecundaria} alt="Imagen Secundaria" width="100" />}
-
-            <div className="modal-buttons">
-              <button onClick={handleSave} className="save-button">Guardar</button>
-              <button onClick={handleCloseModal} className="close-button">Cancelar</button>
-            </div>
           </div>
         </div>
-      )}
-    </div>
+
+        <div style={{ marginBottom: "3cm" }}>
+          <h2 className="section-title">Habitaciones</h2>
+          <div className="card-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
+            {habitacionesPagina.map((habitacion) => (
+              <Card key={habitacion.id} {...habitacion} />
+            ))}
+          </div>
+
+          <div className="paginacion-container">
+            <button disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
+            <span style={{ margin: "0 10px" }}>
+              Página {paginaActual} de {totalPaginas}
+            </span>
+            <button disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
+          </div>
+        </div>
+
+        <div>
+          <h2 className="section-title">Servicios incluidos</h2>
+          <div style={{
+            display: "flex",
+            overflowX: "auto",
+            gap: "20px",
+            padding: "10px 0"
+          }}>
+            {servicios.map((servicio) => (
+              <Card key={servicio.id} {...servicio} />
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </SoloEscritorio>
   );
 };
 
-export default Administrador;
+export default Home;

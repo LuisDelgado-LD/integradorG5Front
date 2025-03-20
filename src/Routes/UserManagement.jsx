@@ -69,8 +69,9 @@
 
 // export default UserManagement;
 
-import { useState, useEffect } from "react"; 
+import { useState, useEffect } from "react";
 import Modal from "../Components/Modal";
+import SoloEscritorio from "../Components/SoloEscritorio"; 
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
@@ -133,57 +134,59 @@ const UserManagement = () => {
   };
 
   return (
-    <div className="user-management-page">
-      <div className="container">
-        <h2 className="title">Gestión Permisos de Usuarios</h2>
+    <SoloEscritorio> 
+      <div className="user-management-page">
+        <div className="container">
+          <h2 className="title">Gestión Permisos de Usuarios</h2>
 
-        <label>Filtrar por rol:</label>
-        <select onChange={(e) => setFilterRole(e.target.value)}>
-          <option value="">Todos</option>
-          <option value="Administrador">Administrador</option>
-          <option value="General">General</option>
-        </select>
+          <label>Filtrar por rol:</label>
+          <select onChange={(e) => setFilterRole(e.target.value)}>
+            <option value="">Todos</option>
+            <option value="Administrador">Administrador</option>
+            <option value="General">General</option>
+          </select>
 
-        <div className="table-container">
-          <table className="user-table">
-            <thead>
-              <tr>
-                <th>Nombre Completo Usuario</th>
-                <th>Correo</th>
-                <th>Rol</th>
-                <th>Estado</th>
-                <th>Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.nombre} {user.apellido}</td>
-                  <td>{user.correo}</td>
-                  <td>{user.rol}</td>
-                  <td>{user.estado}</td>
-                  <td className="actions">
-                    <button className="edit" onClick={() => handleEdit(user)}>🖊️</button>
-                    <button className="delete" onClick={() => handleDeleteUser(user.id)}>🗑️</button>
-                  </td>
+          <div className="table-container">
+            <table className="user-table">
+              <thead>
+                <tr>
+                  <th>Nombre Completo Usuario</th>
+                  <th>Correo</th>
+                  <th>Rol</th>
+                  <th>Estado</th>
+                  <th>Acciones</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {filteredUsers.map((user) => (
+                  <tr key={user.id}>
+                    <td>{user.nombre} {user.apellido}</td>
+                    <td>{user.correo}</td>
+                    <td>{user.rol}</td>
+                    <td>{user.estado}</td>
+                    <td className="actions">
+                      <button className="edit" onClick={() => handleEdit(user)}>🖊️</button>
+                      <button className="delete" onClick={() => handleDeleteUser(user.id)}>🗑️</button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          <button className="add-user" onClick={handleAddUser}>➕ Añadir Usuario</button>
+
+          {modalOpen && (
+            <Modal
+              isOpen={modalOpen}
+              onClose={() => setModalOpen(false)}
+              onSave={handleSave}
+              initialData={selectedUser}
+            />
+          )}
         </div>
-
-        <button className="add-user" onClick={handleAddUser}>➕ Añadir Usuario</button>
-
-        {modalOpen && (
-          <Modal
-            isOpen={modalOpen}
-            onClose={() => setModalOpen(false)}
-            onSave={handleSave}
-            initialData={selectedUser}
-          />
-        )}
       </div>
-    </div>
+    </SoloEscritorio>
   );
 };
 

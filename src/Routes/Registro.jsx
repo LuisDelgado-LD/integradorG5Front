@@ -59,6 +59,9 @@ const Registro = () => {
       email: formData.email,
       telefono: formData.telefono,
       direccion: formData.direccion,
+      password: formData.password,
+      rol: "General",
+      estado: "Inactivo",
     };
     const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
     usuariosGuardados.push(nuevoUsuario);

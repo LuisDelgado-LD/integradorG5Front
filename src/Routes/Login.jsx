@@ -21,35 +21,37 @@ const Login = ({ setUsuario }) => {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    const usuarioRegistrado = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")) : null;
+  
+    const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
+    const usuarioRegistrado = usuariosGuardados.find(
+      (u) => u.email === formData.email && u.password === formData.password
+    );
+  
     let newErrors = {};
     if (!formData.nombre.trim()) {
       newErrors.nombre = "El nombre es obligatorio";
     }
-    if (
-      !usuarioRegistrado ||
-      usuarioRegistrado.email !== formData.email ||
-      usuarioRegistrado.password !== formData.password
-    ) {
+    if (!usuarioRegistrado) {
       newErrors.email = "Correo o contraseña inválidos";
       newErrors.password = "Correo o contraseña inválidos";
     }
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       setFormData({ nombre: "", email: "", password: "" });
       return;
     }
+  
     const token = "mocked_token";
     localStorage.setItem("usuario", JSON.stringify(usuarioRegistrado));
     localStorage.setItem("token", token);
-    setUsuario(usuarioRegistrado); 
-    dispatch({
-      type: "LOGIN",
-      payload: { usuario: usuarioRegistrado, token },
-    });
-    alert(" Inicio de sesión exitoso");
-    if (usuarioRegistrado.rol === "admin") {
-      navigate("/administrador");
+    setUsuario(usuarioRegistrado);
+    dispatch({ type: "LOGIN", payload: { usuario: usuarioRegistrado, token } });
+  
+    alert("✅ Inicio de sesión exitoso");
+  
+    if (usuarioRegistrado.rol === "Administrador") {
+      navigate("/admin-home");
     } else {
       navigate("/");
     }

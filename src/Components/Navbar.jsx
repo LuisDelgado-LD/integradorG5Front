@@ -93,11 +93,12 @@ import AutocompleteSearch from "../Components/AutoCompleteSearch";
 const Navbar = () => {
   registerLocale("es", es);
   const location = useLocation();
-  if (location.pathname !== "/") return null;
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(null);
   const [selectedBreed, setSelectedBreed] = useState(null);
+  
+  if (location.pathname !== "/") return null;
 
   return (
     <nav className="navbar">

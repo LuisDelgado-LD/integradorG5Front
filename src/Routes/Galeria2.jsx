@@ -1,90 +1,140 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
-import Card from "../Components/Card";
-
-// const Galeria2 = () => {
-//   const navigate = useNavigate();
-//   const { id } = useParams();
-//   const { state } = useContext(GlobalContext);
-
-//   const habitacion = state.habitaciones.find((h) => h.id === parseInt(id));
-
-//   if (!habitacion) {
-//     return <p>Habitación no encontrada.</p>;
-//   }
-
-//   return (
-//     <div className="galeria-container">
-//       <h2 className="galeria-title">Galería de {habitacion.nombre}</h2>
-
-//       <div className="galeria-content">
-//         <div className="imagen-principal">
-//           <img src={habitacion.imagen} alt={habitacion.nombre} />
-//         </div>
-//       </div>
-
-//       <div className="galeria-secundaria">
-//           {state.privilegiosAlojamientos.slice(0, 4).map((servicio) => (
-//     <Card key={servicio.id} nombre={servicio.nombre} imagen={servicio.imagen} ruta={`/servicio/${servicio.id}`} />
-//       ))}
-//       </div>
-
-//       <button className="ver-mas" onClick={() => navigate(`/habitacion/${habitacion.id}`)}>
-//         Ver Más
-//       </button>
-
-//       <img src="/img/flecha.png" alt="Volver" className="back-arrow" onClick={() => navigate(-1)} />
-//     </div>
-//   );
-// };
-
-// export default Galeria2;
 
 const Galeria2 = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { state } = useContext(GlobalContext);
 
+  useEffect(() => {
+    document.body.style.overflow = "hidden"; 
+
+    return () => {
+      document.body.style.overflow = "auto";
+    };
+  }, []);
+
   const habitacion = state.habitaciones.find((h) => h.id === parseInt(id));
+
+  const imagenes = [
+    "/img/galeria1.png",
+    "/img/galeria2.png",
+    "/img/galeria3.png",
+    "/img/galeria4.png"
+  ];
 
   if (!habitacion) {
     return <p>Habitación no encontrada.</p>;
   }
 
   return (
-    <div className="galeria-container">
+    <div
+      className="galeria-container"
+      style={{
+        position: "fixed",
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: "100vw",
+        height: "100vh",
+        zIndex: 1000,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
 
-      <h2 className="galeria-title">Galería de {habitacion.nombre}</h2>
+      <div
+        style={{
+          position: "absolute",
+          inset: -400,
+          backgroundImage: `url(${habitacion.imagen})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: 1,
+        }}
+      ></div>
 
-      <div className="galeria-grid">
-        <div class="imagen-1 app-img-wrapper">
-          <a href="#" className="app-img-link"> <img className="app-img" src={habitacion.imagen} alt={habitacion.nombre} />
-            <h2 class="app-img-text">{habitacion.nombre}</h2>
-          </a>
-        </div>
-        {state.privilegiosAlojamientos.slice(0, 4).map((servicio, index) => (
-          <div class={`imagen-${index + 2} app-img-wrapper`}>
-            <a href="#" className="app-img-link"> <img className="app-img" src={servicio.imagen} alt={servicio.nombre} />
-              <h2 class="app-img-text">{servicio.nombre}</h2>
-            </a>
+      <div
+        style={{
+          position: "absolute",
+          inset: -400,
+          backgroundColor: "rgba(0, 0, 0, 0.6)",
+          zIndex: 2,
+        }}
+      ></div>
+
+      <img
+        src="/img/flecha.png"
+        alt="Volver"
+        onClick={() => navigate(`/habitacion/${habitacion.id}`)}
+        style={{
+          position: "absolute",
+          top: "20px",
+          right: "30px",
+          cursor: "pointer",
+          width: "40px",
+          zIndex: 4,
+        }}
+      />
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "40px",
+          padding: "40px",
+        }}
+      >
+        <h2 style={{ color: "white", textAlign: "center", fontSize: "28px" }}>
+          Galería de {habitacion.nombre}
+        </h2>
+
+        <div style={{ display: "flex", gap: "60px", alignItems: "center" }}>
+          <div>
+            <img
+              src={habitacion.imagen}
+              alt={habitacion.nombre}
+              style={{
+                width: "600px",
+                height: "400px",
+                borderRadius: "20px",
+                objectFit: "cover",
+              }}
+            />
           </div>
-          // <img className={`imagen-${index + 2} app-img-link`}  src={servicio.imagen} alt={servicio.nombre} />
-        ))}
-      </div>
 
-      {/* <div className="galeria-grid">
-        <div className="imagen-side">
-          <img src={habitacion.imagen} alt={habitacion.nombre} />
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              width: "260px",
+            }}
+          >
+            {imagenes.map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={`Miniatura ${idx + 1}`}
+                style={{
+                  width: "100%",
+                  height: "120px",
+                  objectFit: "cover",
+                  borderRadius: "12px",
+                }}
+                draggable={false}
+              />
+            ))}
+          </div>
         </div>
-
-        {state.privilegiosAlojamientos.slice(0, 4).map((servicio, index) => (
-          <Card key={servicio.id} nombre={servicio.nombre} imagen={servicio.imagen} ruta={`/servicio/${servicio.id}`} className={`imagen${index + 1}`} />
-        ))}
-      </div> */}
-      {/* Flecha para volver */}
-      <img src="/img/flecha.png" alt="Volver" className="back-arrow" onClick={() => navigate(-1)} />
-
+      </div>
     </div>
   );
 };

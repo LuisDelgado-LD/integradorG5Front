@@ -59,6 +59,7 @@ const Header = () => {
       {mostrarConfirmacion && (
         <div className="modal-overlay">
           <div className="modal">
+          <img src="img/campana.png" alt="Campana"/>
             <p>¿Está seguro de que desea cerrar sesión?</p>
             <div className="modal-buttons">
               <button onClick={handleLogout} className="btn-confirm">Sí, cerrar sesión</button>

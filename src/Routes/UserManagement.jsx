@@ -169,6 +169,9 @@ const UserManagement = () => {
                 onSave={handleSave} 
                 initialData={selectedUser} 
             />
+
+            <img src="/img/imagendepie.png" alt={cat.nombre} className="card-img" />
+
         </div>
     );
 };

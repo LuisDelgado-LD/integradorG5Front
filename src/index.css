@@ -1276,6 +1276,15 @@ body {
 }
 
 @media (max-width: 570px) {
+
+  .admin-container {
+    display: none;
+  }
+
+  .footer{
+    top: 20em;
+  }
+
   .header{
     padding: 0.2em 0.5em;
   }
@@ -1319,6 +1328,10 @@ body {
 }
 
 @media (max-width: 899px) {
+
+  .admin-container {
+    display: none;
+  }
 
   .home{
     position: relative;
@@ -1459,6 +1472,7 @@ body {
     position: relative;
     text-align: center;
     width: 100%;
+    top: 44em;
   }
 
   .RedesSociales {
@@ -1594,6 +1608,11 @@ body {
 }
 
 @media (max-width: 600px) {
+
+  .admin-container {
+    display: none;
+  }
+
   .user-table th,
   .user-table td {
     padding: 8px;
@@ -1708,6 +1727,11 @@ body {
 
 /* 🟢 Diseño responsive */
 @media (max-width: 768px) {
+
+  .admin-container {
+    display: none;
+  }
+
   .galeria-grid {
     grid-template-columns: 1fr 1fr; 
     grid-template-rows: 1.4fr 0.8fr 0.8fr; 

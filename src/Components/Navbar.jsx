@@ -83,7 +83,7 @@
 // export default Navbar;
 
 
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import React, { useState } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -93,12 +93,26 @@ import AutocompleteSearch from "../Components/AutoCompleteSearch";
 const Navbar = () => {
   registerLocale("es", es);
   const location = useLocation();
+  const navigate = useNavigate();
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(null);
   const [selectedBreed, setSelectedBreed] = useState(null);
   
   if (location.pathname !== "/") return null;
+
+  const handleEndDateChange = (date) => {
+    setEndDate(date);
+
+    if (startDate && date) {
+      // Convertir fechas a formato YYYY-MM-DD para la URL
+      const formattedStart = startDate.toISOString().split("T")[0];
+      const formattedEnd = date.toISOString().split("T")[0];
+
+      // Redirigir a /search con los parámetros de búsqueda
+      navigate(`/busqueda?fecha_ingreso=${formattedStart}&fecha_salida=${formattedEnd}`);
+    }
+  };
 
   return (
     <nav className="navbar">
@@ -130,7 +144,8 @@ const Navbar = () => {
               locale={es}
               minDate={startDate}
               selected={endDate}
-              onChange={setEndDate}
+//              onChange={setEndDate}
+              onChange={handleEndDateChange}
             />
           </div>
         </div>

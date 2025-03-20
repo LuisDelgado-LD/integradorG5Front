@@ -76,7 +76,6 @@ const Registro = () => {
 
   return (
     <div className="registro-page">
-      <img src="/img/imagendepie.png" alt="Fondo" className="fondo-registro" />
       <div className="form-container">
         <h2 className="registro-titulo">Registrar usuario</h2>
         <form className="formulario-registro" onSubmit={handleSubmit}>
@@ -146,6 +145,7 @@ const Registro = () => {
         <button type="submit">Registrar</button>
         </form>
       </div>
+      <img src="/img/imagendepie.png" alt="Fondo" className="fondo-registro" />
     </div>
   );
 };

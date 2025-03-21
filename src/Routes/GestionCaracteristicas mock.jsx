@@ -1,27 +1,11 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import axios from 'axios';
 
 const GestionCaracteristicas = () => {
-  // const { state, dispatch } = useContext(GlobalContext);
-  const { state } = useContext(GlobalContext);
-  const { API_URL } = state;
-  const [caracteristicas, setCaracteristicas] = useState([]);
+  const { state, dispatch } = useContext(GlobalContext);
   const [formData, setFormData] = useState({ nombre: "", icono: "" });
-  const formDataBackend = new FormData();
   const [editando, setEditando] = useState(null);
-  useEffect(() => {
-    axios.get(`{API_URL}/caracteristicas`)
-    .then((response) => {
-      console.log("caracteristicas:", response.data.content);
-      setCaracteristicas(response.data.content);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-
-  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -31,37 +15,16 @@ const GestionCaracteristicas = () => {
     if (!formData.nombre || !formData.icono) return alert("❌ Campos requeridos");
   
     if (editando !== null) {
-      // formDataBackend.append(formData.icono);
-      console.log("Post edit caracteristica",formData);
-      formDataBackend.append(formData);
-      axios.post(`${API_URL}/caracteristicas/${editando}`, {
-        formDataBackend, 
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-      }
-      ).then((response) => {
-        console.log("caracteristicas:", response.data.content);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      dispatch({ 
+        type: "EDITAR_CARACTERISTICA", 
+        payload: { index: editando, data: formData } // <- Aquí estás enviando el objeto con nombre e ícono
+      });
       setEditando(null);
     } else {
-      console.log("Post nueva caracteristica",formData);
-      formDataBackend.append(formData);
-      axios.post(`${API_URL}/caracteristicas/`, {
-        formDataBackend, 
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-      }
-      ).then((response) => {
-        console.log("caracteristicas:", response.data.content);
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      dispatch({ 
+        type: "AGREGAR_CARACTERISTICA", 
+        payload: formData // <- Aquí es donde se guarda { nombre: "Wifi", icono: "url..." }
+      });
     }
   
     setFormData({ nombre: "", icono: "" }); // reset
@@ -69,18 +32,11 @@ const GestionCaracteristicas = () => {
 
   const handleEdit = (index) => {
     setEditando(index);
-    setFormData(caracteristicas[index]);
+    setFormData(state.caracteristicas[index]);
   };
 
   const handleDelete = (index) => {
-    // dispatch({ type: "ELIMINAR_CARACTERISTICA", payload: index });
-    axios.post(`${API_URL}/caracteristicas/${index}`)
-    .then((response) => {
-      console.log("caracteristicas:", response.data.content);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+    dispatch({ type: "ELIMINAR_CARACTERISTICA", payload: index });
   };
 
   return (
@@ -95,7 +51,7 @@ const GestionCaracteristicas = () => {
           onChange={handleChange}
         />
         <input
-          type="file"
+          type="text"
           name="icono"
           placeholder="URL del ícono"
           value={formData.icono}
@@ -111,7 +67,7 @@ const GestionCaracteristicas = () => {
         <button onClick={handleSave}>{editando !== null ? "Actualizar" : "Guardar"}</button>
       </div>
       <ul>
-        {caracteristicas.map((car, i) => (
+        {state.caracteristicas.map((car, i) => (
           <li key={i}>
             <img src={car.icono} alt={car.nombre} style={{ width: "30px" }} />
             {car.nombre}

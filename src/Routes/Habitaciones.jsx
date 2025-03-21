@@ -33,6 +33,8 @@ const iconosCaracteristicas = {
 };
 
 const Habitaciones = () => {
+  const { state } = useContext(GlobalContext);
+  const { API_URL } = state;
   const { id } = useParams();
   const navigate = useNavigate();
   const [habitacion, setHabitacion] = useState(null);

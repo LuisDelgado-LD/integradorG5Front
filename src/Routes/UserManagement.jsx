@@ -1,90 +1,34 @@
-// import { useState } from "react";
-
-// const UserManagement = () => {
-//     const [users, setUsers] = useState([
-//         { id: 1, name: "Nombre Completo Prueba", email: "correo@correo.com", role: "Administrador" },
-//         { id: 2, name: "Nombre Completo Prueba", email: "correo@correo.com", role: "General" },
-//     ]);
-    
-//     const [editingUser, setEditingUser] = useState(null);
-
-//     const handleEdit = (user) => {
-//         setEditingUser(user);
-//     };
-
-//     const handleClose = () => {
-//         setEditingUser(null);
-//     };
-
-//     return (
-//         <div className="container">
-//             <h2 className="title">Gestión Permisos de Usuarios</h2>
-//             <div className="table-container">
-//                 <table className="user-table">
-//                     <thead>
-//                         <tr>
-//                             <th>Nombre Completo Usuario</th>
-//                             <th>Correo</th>
-//                             <th>Rol</th>
-//                             <th>Acciones</th>
-//                         </tr>
-//                     </thead>
-//                     <tbody>
-//                         {users.map((user) => (
-//                             <tr key={user.id}>
-//                                 <td>{user.name}</td>
-//                                 <td>{user.email}</td>
-//                                 <td>{user.role}</td>
-//                                 <td className="actions">
-//                                     <button className="edit" onClick={() => handleEdit(user)}>🔄</button>
-//                                     <button className="delete">🗑</button>
-//                                 </td>
-//                             </tr>
-//                         ))}
-//                     </tbody>
-//                 </table>
-//             </div>
-//             <button className="add-user">➕ Añadir Usuario</button>
-            
-//             {editingUser && (
-//                 <div className="modal">
-//                     <div className="modal-content">
-//                         <h3>Editar Usuario</h3>
-//                         <label>Nombre</label>
-//                         <input type="text" value={editingUser.name} readOnly />
-//                         <label>Correo</label>
-//                         <input type="email" value={editingUser.email} readOnly />
-//                         <label>Rol</label>
-//                         <select defaultValue={editingUser.role}>
-//                             <option value="Administrador">Administrador</option>
-//                             <option value="General">General</option>
-//                         </select>
-//                         <button onClick={handleClose}>Cerrar</button>
-//                     </div>
-//                 </div>
-//             )}
-//         </div>
-//     );
-// };
-
-// export default UserManagement;
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../Components/Modal"; // Asegúrate de que la ruta sea correcta
+import axios from "axios"
 
 const UserManagement = () => {
-    // Estado para almacenar los usuarios con datos mockeados
-    const [users, setUsers] = useState([
-        { id: 1, nombre: "Roger", apellido: "Mendez", correo: "correo@correo.com", rol: "Administrador", estado: "Activo" },
-        { id: 2, nombre: "Nombre", apellido: "Julian", correo: "correo@correo.com", rol: "General", estado: "Inactivo" },
-        { id: 3, nombre: "Julio Damian", apellido: "Melendez Mendez", correo: "correo@correo.com", rol: "Administrador", estado: "Inactivo" },
-        { id: 4, nombre: "Ryan", apellido: "Pomalaya", correo: "correo@correo.com", rol: "Administrador", estado: "Activo" },
-        { id: 5, nombre: "Jhonatan", apellido: "Rulios", correo: "correo@correo.com", rol: "Administrador", estado: "Activo" }
-    ]);
     
+    const { state } = useContext(GlobalContext);
+    const { API_URL } = state;
+    const [users, setUsers] = useState([]);
+    // Estado para almacenar los usuarios con datos mockeados
+    // const [users, setUsers] = useState([
+    //     { id: 1, nombre: "Roger", apellido: "Mendez", email: "email@email.com", rol: "Administrador", estado: "Activo" },
+    //     { id: 2, nombre: "Nombre", apellido: "Julian", email: "email@email.com", rol: "General", estado: "Inactivo" },
+    //     { id: 3, nombre: "Julio Damian", apellido: "Melendez Mendez", email: "email@email.com", rol: "Administrador", estado: "Inactivo" },
+    //     { id: 4, nombre: "Ryan", apellido: "Pomalaya", email: "email@email.com", rol: "Administrador", estado: "Activo" },
+    //     { id: 5, nombre: "Jhonatan", apellido: "Rulios", email: "email@email.com", rol: "Administrador", estado: "Activo" }
+    // ]);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedUser, setSelectedUser] = useState(null);
     const [filterRole, setFilterRole] = useState("");
+    useEffect(() => {
+        axios.get(`${API_URL}/${ENDPOINT_TODOS_LOS_USUARIOS}`)
+        .then((response)=>{
+            console.log(response.data)
+            setUsers(response.data)
+        })
+        .catch((error)=>{
+            console.log(error)
+        })
+    }),[];
+    
 
     // Filtrar usuarios por rol (Administrador / General)
     const filteredUsers = filterRole
@@ -112,10 +56,28 @@ const UserManagement = () => {
     // Función para guardar cambios (Agregar o Editar usuario) - Modo Mock
     const handleSave = (userData) => {
         if (selectedUser) {
-            setUsers(users.map(user => (user.id === selectedUser.id ? { ...user, ...userData } : user)));
+            // setUsers(users.map(user => (user.id === selectedUser.id ? { ...user, ...userData } : user)));
+            axios.post(`${URL_ENDPOINT}/${selectedUser.id}`, userData)
+            .then((response)=>{
+                console.log(response.data)
+                setUsers(users.map(user => (user.id === selectedUser.id ? { ...user, ...userData } : user)));
+            })
+            .catch((error)=>{
+                console.log(error)
+            })
+            
         } else {
-            const newUser = { id: users.length + 1, ...userData, rol: "General" };
-            setUsers([...users, newUser]);
+            // const newUser = { id: users.length + 1, ...userData, rol: "General" };
+            // setUsers([...users, newUser]);
+            userData = {...userData, telefono: "12345667890", direccion: "gaviotas la casas"}
+            axios.post(`${API_URL}/auth/register`, userData)
+            .then((response)=>{
+                console.log(response.data)
+                setUsers([...users, { id: users.length + 1, ...userData }]);
+            })
+            .catch((error)=> {
+                console.log(error)
+            })
         }
         setModalOpen(false);
     };
@@ -138,7 +100,7 @@ const UserManagement = () => {
                     <thead>
                         <tr>
                             <th>Nombre Completo Usuario</th>
-                            <th>Correo</th>
+                            <th>email</th>
                             <th>Rol</th>
                             <th>Acciones</th>
                         </tr>
@@ -147,7 +109,7 @@ const UserManagement = () => {
                         {filteredUsers.map((user) => (
                             <tr key={user.id}>
                                 <td>{user.nombre + " " + user.apellido}</td>
-                                <td>{user.correo}</td>
+                                <td>{user.email}</td>
                                 <td>{user.rol}</td>
                                 <td className="actions">
                                     <button className="edit" onClick={() => handleEdit(user)}>🔄</button>

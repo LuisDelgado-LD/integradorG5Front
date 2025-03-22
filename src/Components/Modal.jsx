@@ -7,9 +7,9 @@ export default function Modal({ isOpen, onClose, onSave, initialData }) {
     initialData || {
       nombre: "",
       apellido: "",
-      correo: "",
+      email: "",
       rol: "General",
-      estado: "Inactivo",
+      // estado: "Inactivo",
     }
   );
 
@@ -49,11 +49,11 @@ export default function Modal({ isOpen, onClose, onSave, initialData }) {
             />
           </label>
           <label>
-            Correo electrónico:
+            email electrónico:
             <input
-              type="correo"
-              name="correo"
-              value={formData.correo}
+              type="email"
+              name="email"
+              value={formData.email}
               onChange={handleChange}
               required
             />
@@ -65,13 +65,13 @@ export default function Modal({ isOpen, onClose, onSave, initialData }) {
               <option value="General">General</option>
             </select>
           </label>
-          <label>
+          {/* <label>
             Estado:
             <select name="rol" value={formData.estado} onChange={handleChange}>
               <option value="Activo">Activo</option>
               <option value="Inactivo">Inactivo</option>
             </select>
-          </label>
+          </label> */}
           <button type="submit" className="save-button">Guardar</button>
           <button type="button" className="close-button" onClick={onClose}>Cancelar</button>
         </form>

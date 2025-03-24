@@ -3,8 +3,6 @@ import PropTypes from "prop-types";
 
 export const GlobalContext = createContext();
 
-/*const API_URL = "http://petparadise.sytes.net/api";*/
-
 const MOCK_USER = {
   usuario: {
     nombre: "Mileidy",
@@ -84,7 +82,11 @@ const initialState = {
   categorias: ["Básica", "Premium", "VIP"],
   caracteristicas: [],
   tamanos: ["Grande", "Mediano", "Pequeño"],
-  maestros: []
+  maestros: [],
+
+  // 🆕 NUEVO: fechas seleccionadas desde el navbar
+  fechaInicio: null,
+  fechaFin: null
 };
 
 const reducer = (state, action) => {
@@ -99,6 +101,13 @@ const reducer = (state, action) => {
       localStorage.removeItem("usuario");
       return { ...state, usuario: null, token: null };
 
+    case "SET_FECHAS":
+      return {
+        ...state,
+        fechaInicio: action.payload.fechaInicio,
+        fechaFin: action.payload.fechaFin
+      };
+
     case "SET_HABITACIONES":
       return { ...state, habitaciones: action.payload };
 
@@ -110,7 +119,7 @@ const reducer = (state, action) => {
 
     case "SET_CATEGORIAS":
       return { ...state, categorias: action.payload };
-    
+
     case "AGREGAR_CARACTERISTICA":
       return { ...state, caracteristicas: [...state.caracteristicas, action.payload] };
 

@@ -96,13 +96,12 @@ const Navbar = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { state, dispatch } = useContext(GlobalContext);
+  const usuario = state.usuario;
 
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
   const [selectedBreed, setSelectedBreed] = useState(null);
   const [resultado, setResultado] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [puedeReservar, setPuedeReservar] = useState(false);
   const [habitacionesDisponibles, setHabitacionesDisponibles] = useState([]);
 
   if (location.pathname !== "/") return null;
@@ -118,19 +117,14 @@ const Navbar = () => {
     const inicio = new Date(start);
     const fin = new Date(end);
 
-    for (let f of ocupadas) {
+    return ocupadas.every(f => {
       const ocupada = new Date(f);
-      if (ocupada >= inicio && ocupada <= fin) {
-        return false;
-      }
-    }
-    return true;
+      return ocupada < inicio || ocupada > fin;
+    });
   };
 
   const buscarDisponibilidad = () => {
-    setLoading(true);
     setResultado(null);
-    setPuedeReservar(false);
     setHabitacionesDisponibles([]);
 
     setTimeout(() => {
@@ -138,38 +132,26 @@ const Navbar = () => {
       const fin = endDate ? new Date(endDate) : null;
 
       if (selectedBreed && !inicio && !fin) {
-        const ocupadas = fechasOcupadas[selectedBreed.value] || [];
-
-        if (ocupadas.length === 0) {
-          setResultado(`✅ La habitación ${selectedBreed.label} está disponible en general.`);
-        } else {
-          setResultado(`❌ La habitación ${selectedBreed.label} tiene fechas ya reservadas.`);
-        }
-
-        setLoading(false);
+        setResultado(fechasOcupadas[selectedBreed.value]?.length 
+          ? `❌ La habitación ${selectedBreed.label} tiene fechas reservadas.`
+          : `✅ La habitación ${selectedBreed.label} está disponible en general.`);
         return;
       }
 
       if (!selectedBreed && inicio && fin) {
-        const disponibles = state.habitaciones.filter((habitacion) =>
-          esDisponible(habitacion.id, inicio, fin)
-        );
+        const disponibles = state.habitaciones.filter(h => esDisponible(h.id, inicio, fin));
 
-        if (disponibles.length > 0) {
+        if (disponibles.length) {
           setResultado("✅ Habitaciones disponibles:");
           setHabitacionesDisponibles(disponibles);
         } else {
           setResultado("❌ No hay habitaciones disponibles en estas fechas.");
         }
-
-        setLoading(false);
         return;
       }
 
       if (selectedBreed && inicio && fin) {
-        const disponible = esDisponible(selectedBreed.value, inicio, fin);
-
-        if (disponible) {
+        if (esDisponible(selectedBreed.value, inicio, fin)) {
           setResultado(`✅ ¡La habitación ${selectedBreed.label} está disponible!`);
           dispatch({
             type: "SET_RESERVA",
@@ -180,22 +162,22 @@ const Navbar = () => {
               fechaFin: endDate.toISOString(),
             },
           });
-          setPuedeReservar(true);
         } else {
           setResultado(`❌ La habitación ${selectedBreed.label} no está disponible en esas fechas.`);
         }
-
-        setLoading(false);
         return;
       }
 
       setResultado("❌ Por favor selecciona al menos una habitación o un rango de fechas.");
-      setLoading(false);
     }, 1000);
   };
 
-  const irADetalle = (id) => {
-    navigate(`/habitacion/${id}`);
+  const reservar = () => {
+    if (!usuario) {
+      navigate("/login", { state: { mensaje: "Debes iniciar sesión para reservar. Si no tienes cuenta, regístrate aquí." } });
+      return;
+    }
+    navigate(`/reserva/${selectedBreed?.value}`);
   };
 
   return (
@@ -203,38 +185,15 @@ const Navbar = () => {
       <p className="navbar-text">Escoge la Fecha para tu peludito</p>
 
       <div className="date-picker-container">
-        <div className="date-picker">
-          <label className="date-label">Fecha de ingreso</label>
-          <div className="calendar-box">
-            <img src="/img/Calendario.png" alt="Ingreso" className="calendar-icon" />
-            <DatePicker
-              withPortal
-              minDate={new Date()}
-              dateFormat="dd/MM/yyyy"
-              locale={es}
-              selected={startDate}
-              onChange={(date) => {
-                setStartDate(date);
-                setEndDate(null);
-              }}
-            />
-          </div>
-        </div>
-
-        <div className="date-picker">
-          <label className="date-label">Fecha de salida</label>
-          <div className="calendar-box">
-            <img src="/img/Calendario.png" alt="Salida" className="calendar-icon" />
-            <DatePicker
-              withPortal
-              dateFormat="dd/MM/yyyy"
-              locale={es}
-              minDate={startDate}
-              selected={endDate}
-              onChange={setEndDate}
-            />
-          </div>
-        </div>
+        <DatePicker
+          withPortal minDate={new Date()} dateFormat="dd/MM/yyyy" locale={es}
+          selected={startDate} onChange={date => { setStartDate(date); setEndDate(null); }}
+          placeholderText="Fecha de ingreso"
+        />
+        <DatePicker
+          withPortal minDate={startDate} dateFormat="dd/MM/yyyy" locale={es}
+          selected={endDate} onChange={setEndDate} placeholderText="Fecha de salida"
+        />
       </div>
 
       <AutocompleteSearch onSelect={setSelectedBreed} />
@@ -243,32 +202,23 @@ const Navbar = () => {
         Buscar Disponibilidad
       </button>
 
-      {loading && <p style={{ marginTop: "10px" }}>🔍 Buscando disponibilidad...</p>}
-
-      {!loading && resultado && (
-        <pre style={{ marginTop: "10px", fontWeight: "bold", whiteSpace: "pre-wrap", color: resultado.includes("✅") ? "green" : "red" }}>
-          {resultado}
-        </pre>
-      )}
-
-      {puedeReservar && (
-        <button
-          onClick={() => alert("🎉 Reserva guardada. Puedes continuar luego o ir a detalles.")}
-          style={styles.botonReserva}
-        >
-          Guardar Reserva
-        </button>
-      )}
+      {resultado && <p style={{ marginTop: "10px", color: resultado.includes("✅") ? "green" : "red" }}>{resultado}</p>}
 
       {habitacionesDisponibles.length > 0 && (
         <div style={styles.sidebar}>
-          {habitacionesDisponibles.map((h) => (
-            <div key={h.id} style={styles.card} onClick={() => irADetalle(h.id)}>
+          {habitacionesDisponibles.map(h => (
+            <div key={h.id} style={styles.card} onClick={() => navigate(`/habitacion/${h.id}`)}>
               <img src="/img/iconoPatita.png" alt="patita" style={styles.cardImg} />
               <h3 style={styles.cardTitle}>{h.nombre}</h3>
             </div>
           ))}
         </div>
+      )}
+
+      {selectedBreed && resultado?.includes("✅") && (
+        <button onClick={reservar} style={styles.botonReserva}>
+          Reservar ahora
+        </button>
       )}
     </nav>
   );
@@ -276,58 +226,27 @@ const Navbar = () => {
 
 const styles = {
   botonBuscar: {
-    marginTop: "10px",
-    backgroundColor: "#30384D",
-    color: "#fff",
-    padding: "10px 20px",
-    borderRadius: "6px",
-    border: "none",
-    cursor: "pointer",
+    marginTop: "10px", backgroundColor: "#30384D", color: "#fff",
+    padding: "10px 20px", borderRadius: "6px", border: "none", cursor: "pointer"
   },
   botonReserva: {
-    marginTop: "10px",
-    backgroundColor: "#28a745",
-    color: "#fff",
-    padding: "10px 20px",
-    borderRadius: "6px",
-    border: "none",
-    cursor: "pointer",
+    marginTop: "10px", backgroundColor: "#28a745", color: "#fff",
+    padding: "10px 20px", borderRadius: "6px", border: "none", cursor: "pointer"
   },
   sidebar: {
-    maxHeight: "400px",
-    overflowY: "auto",
-    padding: "10px",
-    border: "1px solid #ccc",
-    borderRadius: "10px",
-    marginTop: "20px",
-    width: "250px",
-    marginLeft: "auto",
-    marginRight: "auto",
-    backgroundColor: "#f8f8f8",
-    boxShadow: "0 0 10px rgba(0,0,0,0.1)",
+    maxHeight: "400px", overflowY: "auto", padding: "10px",
+    border: "1px solid #ccc", borderRadius: "10px", marginTop: "20px",
+    width: "250px", marginLeft: "auto", marginRight: "auto",
+    backgroundColor: "#f8f8f8", boxShadow: "0 0 10px rgba(0,0,0,0.1)"
   },
   card: {
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    cursor: "pointer",
-    marginBottom: "15px",
-    padding: "10px",
-    borderRadius: "8px",
-    backgroundColor: "#fff",
-    boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-    transition: "transform 0.2s",
+    display: "flex", flexDirection: "column", alignItems: "center",
+    cursor: "pointer", marginBottom: "15px", padding: "10px",
+    borderRadius: "8px", backgroundColor: "#fff",
+    boxShadow: "0 2px 4px rgba(0,0,0,0.1)", transition: "transform 0.2s"
   },
-  cardImg: {
-    width: "50px",
-    height: "50px",
-    marginBottom: "10px",
-  },
-  cardTitle: {
-    fontSize: "16px",
-    color: "#30384D",
-    textAlign: "center",
-  },
+  cardImg: { width: "50px", height: "50px", marginBottom: "10px" },
+  cardTitle: { fontSize: "16px", color: "#30384D", textAlign: "center" }
 };
 
 export default Navbar;

@@ -4,7 +4,7 @@ const SoloEscritorio = ({ children }) => {
   if (esMovil) {
     return (
       <div className="bloqueo-movil">
-        <p>🚫 Esta página no está disponible para móviles.</p>
+        <p> Esta página no está disponible para móviles.</p>
       </div>
     );
   }

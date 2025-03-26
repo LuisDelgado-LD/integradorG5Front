@@ -30,7 +30,8 @@ const iconosCaracteristicas = {
 const Habitaciones = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { state } = useContext(GlobalContext);
+  const { state, dispatch } = useContext(GlobalContext);
+  const usuario = state.usuario;
   const [habitacion, setHabitacion] = useState(null);
   const [esFavorito, setEsFavorito] = useState(false);
   const [fechaInicio, setFechaInicio] = useState(null);
@@ -41,12 +42,11 @@ const Habitaciones = () => {
     const encontrada = state.habitaciones.find((h) => h.id === parseInt(id));
     setHabitacion(encontrada);
 
-    const ocupadas = [
+    setFechasOcupadas([
       new Date("2025-03-22"),
       new Date("2025-03-23"),
       new Date("2025-03-24"),
-    ];
-    setFechasOcupadas(ocupadas);
+    ]);
 
     const favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
     setEsFavorito(favoritos.includes(parseInt(id)));
@@ -55,179 +55,71 @@ const Habitaciones = () => {
   const toggleFavorito = () => {
     const favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
     const idHabitacion = parseInt(id);
-    let nuevosFavoritos;
+    const nuevosFavoritos = favoritos.includes(idHabitacion)
+      ? favoritos.filter((favId) => favId !== idHabitacion)
+      : [...favoritos, idHabitacion];
 
-    if (favoritos.includes(idHabitacion)) {
-      nuevosFavoritos = favoritos.filter((favId) => favId !== idHabitacion);
-      setEsFavorito(false);
-    } else {
-      nuevosFavoritos = [...favoritos, idHabitacion];
-      setEsFavorito(true);
-    }
-
+    setEsFavorito(!esFavorito);
     localStorage.setItem("favoritos", JSON.stringify(nuevosFavoritos));
   };
 
-  const rangoValido = () => {
-    if (!fechaInicio || !fechaFin) return false;
-    let current = new Date(fechaInicio);
-    while (current <= fechaFin) {
-      const ocupado = fechasOcupadas.some(
-        (fecha) => fecha.toDateString() === current.toDateString()
-      );
-      if (ocupado) return false;
-      current.setDate(current.getDate() + 1);
-    }
-    return true;
-  };
-
   const reservar = () => {
-    if (!rangoValido()) {
-      alert("❌ Las fechas seleccionadas no están disponibles.");
+    if (!usuario) {
+      navigate("/login", { state: { mensaje: "Debes iniciar sesión para reservar." } });
       return;
     }
-    alert(`✅ Reserva confirmada del ${fechaInicio.toLocaleDateString()} al ${fechaFin.toLocaleDateString()}`);
+
+    if (!fechaInicio || !fechaFin) {
+      alert("❌ Debes seleccionar una fecha válida.");
+      return;
+    }
+
+    dispatch({
+      type: "SET_RESERVA",
+      payload: {
+        habitacionId: habitacion.id,
+        habitacionNombre: habitacion.nombre,
+        fechaInicio: fechaInicio.toISOString(),
+        fechaFin: fechaFin.toISOString(),
+      },
+    });
+
+    navigate(`/reserva/${habitacion.id}`);
   };
 
   if (!habitacion) return <p>Cargando habitación...</p>;
 
-  const categoria = habitacion.categoria;
-  const descripcion = descripcionesCategoria[categoria];
-  const caracteristicas = caracteristicasPorCategoria[categoria] || [];
-
   return (
     <div className="habitacion-container" style={{ padding: "20px" }}>
-      <div className="Auxiliares-detalle">
-        <h2>{habitacion.nombre}</h2>
-        <button className="back-home" onClick={() => navigate("/")}>
-          <img src="/img/flecha.png" alt="Volver" />
-        </button>
+      <h2>{habitacion.nombre}</h2>
+      <button className="back-home" onClick={() => navigate("/")}>
+        <img src="/img/flecha.png" alt="Volver" />
+      </button>
+
+      <div>
+        <img className="habitacion-img" src={habitacion.imagen} alt={habitacion.nombre} style={{ width: "100%" }} />
+        <button className="ver-mas" onClick={() => navigate(`/galeria/${habitacion.id}`)}>Ver más</button>
       </div>
 
-      <div className="Contenido-Container">
-        <div
-          className="habitacion-img-container"
-          style={{
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <div style={{ position: "relative" }}>
-            <img
-              className="habitacion-img"
-              src={habitacion.imagen}
-              alt={habitacion.nombre}
-              style={{ width: "100%", borderRadius: "10px" }}
-            />
-            <img
-              src={esFavorito ? "/img/corazon_lleno.png" : "/img/corazon_vacio.png"}
-              alt="Favorito"
-              onClick={toggleFavorito}
-              style={{
-                position: "absolute",
-                top: "10px",
-                right: "10px",
-                width: "30px",
-                height: "30px",
-                cursor: "pointer",
-              }}
-            />
-          </div>
+      <p><strong>Categoría:</strong> {habitacion.categoria}</p>
+      <p><strong>Descripción:</strong> {descripcionesCategoria[habitacion.categoria]}</p>
 
-          <button
-            className="ver-mas"
-            onClick={() => navigate(`/galeria/${habitacion.id}`)}
-            style={{ marginTop: "1cm" }}
-          >
-            Ver más
-          </button>
-        </div>
+      <p><strong>Características:</strong></p>
+      <ul>
+        {caracteristicasPorCategoria[habitacion.categoria].map((car, index) => (
+          <li key={index}>
+            <img src={iconosCaracteristicas[car]} alt={car} width="24" /> {car}
+          </li>
+        ))}
+      </ul>
 
-        <div style={{ marginTop: "1cm", textAlign: "left" }}>
-          <p className="habitacion-categoria">
-            <strong>Categoría:</strong> {categoria}
-            {Array.from({ length: iconosCategoria[categoria] || 0 }).map((_, i) => (
-              <img
-                key={i}
-                src={iconoPatita}
-                alt="Patita"
-                style={{ width: "20px", marginLeft: "5px" }}
-              />
-            ))}
-          </p>
+      <p><strong>Selecciona tu rango de fechas:</strong></p>
+      <DatePicker selected={fechaInicio} onChange={setFechaInicio} placeholderText="Fecha de inicio" />
+      <DatePicker selected={fechaFin} onChange={setFechaFin} placeholderText="Fecha de fin" />
 
-          <p className="habitacion-title" style={{ marginTop: "1cm" }}>
-            <strong>Descripción:</strong> {descripcion}
-          </p>
-
-          {/* DISPONIBILIDAD Y RESERVA - debajo de descripción, 5mm */}
-          <div style={{ marginTop: "5mm" }}>
-            <p><strong>Disponibilidad:</strong> Esta habitación no está disponible en las fechas marcadas.</p>
-
-            <div style={{ display: "flex", gap: "20px", alignItems: "center", marginTop: "10px" }}>
-              <div>
-                <label><strong>Desde:</strong></label><br />
-                <DatePicker
-                  selected={fechaInicio}
-                  onChange={(date) => setFechaInicio(date)}
-                  selectsStart
-                  startDate={fechaInicio}
-                  endDate={fechaFin}
-                  excludeDates={fechasOcupadas}
-                  placeholderText="Selecciona fecha de inicio"
-                />
-              </div>
-
-              <div>
-                <label><strong>Hasta:</strong></label><br />
-                <DatePicker
-                  selected={fechaFin}
-                  onChange={(date) => setFechaFin(date)}
-                  selectsEnd
-                  startDate={fechaInicio}
-                  endDate={fechaFin}
-                  minDate={fechaInicio}
-                  excludeDates={fechasOcupadas}
-                  placeholderText="Selecciona fecha de fin"
-                />
-              </div>
-            </div>
-
-            <button
-              onClick={reservar}
-              disabled={!fechaInicio || !fechaFin}
-              style={{
-                marginTop: "20px",
-                padding: "10px 20px",
-                backgroundColor: "#30384D",
-                color: "#fff",
-                border: "none",
-                borderRadius: "10px",
-                cursor: "pointer",
-              }}
-            >
-              Reservar
-            </button>
-          </div>
-        </div>
-
-        {/* CARACTERÍSTICAS - al final */}
-        <div style={{ marginTop: "1cm", textAlign: "left" }}>
-          <p><strong>Características:</strong></p>
-          <div style={{ display: "flex", gap: "1cm", flexWrap: "wrap" }}>
-            {caracteristicas.map((car, idx) => (
-              <div key={idx} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <img src={iconosCaracteristicas[car]} alt={car} width="32" />
-                <span style={{ fontWeight: 500 }}>
-                  {car.charAt(0).toUpperCase() + car.slice(1)}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <button onClick={reservar} disabled={!fechaInicio || !fechaFin} style={{ backgroundColor: "#30384D", color: "white" }}>
+        Reservar ahora
+      </button>
     </div>
   );
 };

@@ -1,29 +1,13 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
-import axios from "axios";
 
 const Galeria2 = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { state } = useContext(GlobalContext);
-  const { API_URL } = state;
-  const [habitacion, setHabitacion] = useState(null);
 
   useEffect(() => {
-    axios.get(`${API_URL}/habitaciones/${id}`)
-    .then((response) => {
-      console.log("habitacion:", response.data.content);
-      const habitacion = response.data.content.map((element) => ({
-        nombre: element.nombre,
-        imagenPrincipal: element.imagenes[0],
-        imagenes: element.imagenes.slice(1)
-      }));
-      setHabitacion(habitacion);
-    })
-    .catch((error) => console.log(error));
-
-
     document.body.style.overflow = "hidden"; 
 
     return () => {
@@ -31,14 +15,14 @@ const Galeria2 = () => {
     };
   }, []);
 
-  // const habitacion = state.habitaciones.find((h) => h.id === parseInt(id));
+  const habitacion = state.habitaciones.find((h) => h.id === parseInt(id));
 
-  // const imagenes = [
-  //   "/img/galeria1.png",
-  //   "/img/galeria2.png",
-  //   "/img/galeria3.png",
-  //   "/img/galeria4.png"
-  // ];
+  const imagenes = [
+    "/img/galeria1.png",
+    "/img/galeria2.png",
+    "/img/galeria3.png",
+    "/img/galeria4.png"
+  ];
 
   if (!habitacion) {
     return <p>Habitación no encontrada.</p>;
@@ -66,7 +50,7 @@ const Galeria2 = () => {
         style={{
           position: "absolute",
           inset: -400,
-          backgroundImage: `url(${habitacion.imagenPrincipal})`,
+          backgroundImage: `url(${habitacion.imagen})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           zIndex: 1,
@@ -85,7 +69,7 @@ const Galeria2 = () => {
       <img
         src="/img/flecha.png"
         alt="Volver"
-        onClick={() => navigate(`/habitacion/${id}`)}
+        onClick={() => navigate(`/habitacion/${habitacion.id}`)}
         style={{
           position: "absolute",
           top: "20px",
@@ -115,7 +99,7 @@ const Galeria2 = () => {
         <div style={{ display: "flex", gap: "60px", alignItems: "center" }}>
           <div>
             <img
-              src={habitacion.imagenPrincipal.url}
+              src={habitacion.imagen}
               alt={habitacion.nombre}
               style={{
                 width: "600px",
@@ -134,10 +118,10 @@ const Galeria2 = () => {
               width: "260px",
             }}
           >
-            {habitacion.imagenes.map((img, idx) => (
+            {imagenes.map((img, idx) => (
               <img
                 key={idx}
-                src={img.url}
+                src={img}
                 alt={`Miniatura ${idx + 1}`}
                 style={{
                   width: "100%",

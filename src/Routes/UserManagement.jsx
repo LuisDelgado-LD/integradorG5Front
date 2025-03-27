@@ -161,10 +161,6 @@ const UserManagement = () => {
 
             {/* Botón para agregar usuario */}
             <button className="add-user" onClick={handleAddUser}>➕ Añadir Usuario</button>
-            
-            <div className="Imagen-footer">
-                <img src="/img/imagendepie.png" alt="fondo-perritos" className="card-img" />
-            </div>
                 
             {/* Modal para edición/creación */}
             <Modal 
@@ -173,6 +169,10 @@ const UserManagement = () => {
                 onSave={handleSave} 
                 initialData={selectedUser} 
             />
+
+            <div className="Imagen-footer">
+                <img src="/img/imagendepie.png" alt="fondo-perritos" className="card-img" />
+            </div>
 
         </div>
     );

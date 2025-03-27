@@ -51,10 +51,13 @@
   position:relative;  /*O absolute si prefieres */
   bottom: 0; /* Mejor que top: 65em */
   width: 100%;
+  height: auto;
   text-align: center; /* Centra la imagen horizontalmente */
-  top: 25em;
+  top: 6em;
   object-fit: cover;
   aspect-ratio: 5/3;
+  padding: 0;
+  margin: 0;
 }
 
 .Imagen-footer img{
@@ -1572,6 +1575,7 @@ body {
 
 .container select{
   margin-bottom: 2rem;
+  width: 50%;
 }
 
 .title {
@@ -1646,7 +1650,7 @@ body {
   cursor: pointer;
   border-radius: 5px;
   display: flex;
-  align-items: center;
+  justify-content: end;
   gap: 5px;
 }
 

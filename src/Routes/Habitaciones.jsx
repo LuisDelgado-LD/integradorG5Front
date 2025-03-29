@@ -63,7 +63,7 @@ const Habitaciones = () => {
       const habitacion = {
             id: habitacionResponse.data.id,
             nombre: habitacionResponse.data.nombre,
-            imagen: "/img/PalacioPeludo.png",
+            imagen: habitacionResponse.data.imagenes.length === 0 ? "/img/PalacioPeludo.png" : habitacionResponse.data.imagenes[0].url,
             descripcion: habitacionResponse.data.descripcion,
             categoria: habitacionResponse.data.categoria.nombre,
             categoriaId: habitacionResponse.data.categoria.id,
@@ -77,11 +77,11 @@ const Habitaciones = () => {
 
       console.log(`Llamada API: ${API_URL}/categorias/${habitacion.categoriaId}`);
       const categoriaResponse = await axios.get(`${API_URL}/categorias/${habitacion.categoriaId}`);
-      console.log(categoriaResponse)
+      console.log("Respuesta categoria:", categoriaResponse)
       const categoria = {
-        nombre: categoriaResponse.nombre,
-        icono: categoriaResponse.imagenUrl,
-        cantidad: categoriaResponse.patitas,
+        nombre: categoriaResponse.data.nombre,
+        icono: "/img/iconoPatita.png", // categoriaResponse.imagenUrl,
+        cantidad: categoriaResponse.data.patitas,
       };
       setCategoria(categoria); // Asignar el primer elemento
     } catch (error) {
@@ -153,10 +153,10 @@ const Habitaciones = () => {
           <p><strong>Características:</strong></p>
           <div style={{ display: "flex", gap: "1cm", flexWrap: "wrap" }}>
             {/* {caracteristicas.map((car, idx) => ( */}
-            {habitacion.caracteristicas.map((e, id) => (
+            {habitacion.caracteristicas.map((element, id) => (
               <div key={id} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <img src={e.icono} alt={e.nombre} width="32" />
-                <span style={{ fontWeight: 500 }}>{e.charAt(0).toUpperCase() + e.slice(1)}</span>
+                <img src={element.iconoUrl} alt={element.nombre} width="32" />
+                {/* <span style={{ fontWeight: 500 }}>{element.charAt(0).toUpperCase() + element.slice(1)}</span> */}
               </div>
             ))}
           </div>

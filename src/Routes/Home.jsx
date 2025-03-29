@@ -25,13 +25,14 @@ const Home = () => {
     const pageApi = pagina-1;
       axios.get(`${API_URL}/habitaciones/all?page=${pageApi}&size${habitacionesPorPagina}`)
       .then(response =>{
+        console.log("Respuesta:", response.data)
         // console.log("habitaciones:", response.data.totalElements);
         dispatch({ type: "SET_TOTAL_HABITACIONES", payload: response.data.totalElements });
         const total =[];
         const habitacionesCache = response.data.content.map(element => ({
           id: element.id,
           nombre: element.nombre,
-          imagen: "/img/PalacioPeludo.png",
+          imagen: element.imagenes.length === 0 ? "/img/PalacioPeludo.png" : element.imagenes[0].url, //,
           descripcion: element.descripcion,
           categoria: element.categoria.nombre,
           tipo: element.tamano

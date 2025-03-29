@@ -12,10 +12,10 @@ const GestionCaracteristicas = () => {
   const formDataBackend = new FormData();
   const [editando, setEditando] = useState(null);
   useEffect(() => {
-    axios.get(`{API_URL}/caracteristicas`)
+    axios.get(`${API_URL}/caracteristicas`)
     .then((response) => {
-      console.log("caracteristicas:", response.data.content);
-      setCaracteristicas(response.data.content);
+      console.log("caracteristicas:", response.data);
+      setCaracteristicas(response.data);
     })
     .catch((error) => {
       console.log(error);

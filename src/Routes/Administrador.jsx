@@ -93,7 +93,7 @@ const Administrador = () => {
       <h2>Panel de Administración</h2>
 
       <nav className="admin-nav">
-        <Link to="/administrador/gestion-maestro">Gestión de Maestro</Link>
+        <Link to="/administrador/gestion-caracteristicas">Gestión de Caracteristicas</Link>
         <Link to="/administrador/gestion-de-usuario">Gestión de Usuarios</Link>
       </nav>
 

@@ -60,16 +60,35 @@ const Login = ({ setUsuario }) => {
   const loginBackend = (e) => {
     e.preventDefault();
     console.log(formData)
-    axios.post(API_URL+"/auth/login", formData)
+    axios.post(API_URL+"/auth/login", formData, {
+      headers:{
+        auth: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNzQzMjczODE1LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.Ouwuq0ZAdUTEo3KK7yYe0YKw0KmQSIife209HJD7B0fIhak26N51OxPmCocsbdI9EZX6u9aoMd4uWKIxXs_Qrg"
+      }
+    })
     .then(response => {
       console.log('Login exitoso', response.data);
+      const token= response.data.accessToken
       alert("✅ Login exitoso");
-      dispatch({ type: "LOGIN", payload: { usuario: formData, token: response.data.accessToken } });
-      navigate("/");
+      console.log(token)
+      axios.get(API_URL+"/auth",  {
+        headers:{
+          Authorization : `Bearer ${token}`
+        }
+      })
+      .then(dataDelUsuarioresponse => {
+        console.log(dataDelUsuarioresponse)
+        const userData = {
+          nombre : dataDelUsuarioresponse.data.nombre,
+          apellido: dataDelUsuarioresponse.data.apellido
+        }
+        dispatch({ type: "LOGIN", payload: { usuario: userData, token: token } });
+        console.log(userData)
+        navigate("/");
+      })
     })
     .catch(error => {
-      console.error('Error al registrar usuario:', error);
-      alert("Ocurrio un error con el registro")
+      console.error('Error con el login del usuario:', error);
+      alert("Ocurrio un error con el login del usuario")
     });
 
   }

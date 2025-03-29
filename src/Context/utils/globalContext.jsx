@@ -69,7 +69,7 @@ const generarHabitacionesMock = () => {
 };
 
 const initialState = {
-  // usuario: JSON.parse(localStorage.getItem("usuario")) || MOCK_USER.usuario,
+  usuario: JSON.parse(localStorage.getItem("usuario")) || {},
   // token: localStorage.getItem("token") || MOCK_USER.token,
   API_URL: "https://petparadise.sytes.net/api",
   //  habitaciones: generarHabitacionesMock(),

@@ -22,12 +22,12 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={true ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : ""} />} >
+        <Route path="/" element={true ? <Layout /> : <Navigate to={usuario.rol === "ADMIN" ? "/administrador" : ""} />} >
           <Route index element={<Home />} />
           <Route path="habitacion/:id" element={<Habitaciones />} />
           <Route path="galeria/:id" element={<Galeria />} />
           <Route path="registro" element={<Registro />} />
-          <Route path="login" element={true? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : ""} />} />
+          <Route path="login" element={!usuario? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "ADMIN" ? "/administrador" : ""} />} />
         </Route>
 
         <Route element={<PrivateRoute />}>

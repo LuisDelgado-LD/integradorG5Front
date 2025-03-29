@@ -79,7 +79,8 @@ const Login = ({ setUsuario }) => {
         console.log(dataDelUsuarioresponse)
         const userData = {
           nombre : dataDelUsuarioresponse.data.nombre,
-          apellido: dataDelUsuarioresponse.data.apellido
+          apellido: dataDelUsuarioresponse.data.apellido,
+          rol: dataDelUsuarioresponse.data.rol
         }
         dispatch({ type: "LOGIN", payload: { usuario: userData, token: token } });
         console.log(userData)

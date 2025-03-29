@@ -5,7 +5,7 @@ import AdminLayout from "./Context/Layout/AdminLayout.jsx";
 import Home from "./Routes/Home.jsx";
 import Habitaciones from "./Routes/Habitaciones.jsx";
 import Registro from "./Routes/Registro.jsx";
-import Galeria2 from "./Routes/Galeria2.jsx";
+import Galeria from "./Routes/Galeria.jsx";
 import Administrador from "./Routes/Administrador.jsx";
 import GestionCaracteristicas from "./Routes/GestionCaracteristicas.jsx";
 import UserManagement from "./Routes/UserManagement.jsx";
@@ -25,6 +25,7 @@ function App() {
         <Route path="/" element={true ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : ""} />} >
           <Route index element={<Home />} />
           <Route path="habitacion/:id" element={<Habitaciones />} />
+          <Route path="galeria/:id" element={<Galeria />} />
           <Route path="registro" element={<Registro />} />
           <Route path="login" element={true? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : ""} />} />
         </Route>

@@ -3,27 +3,29 @@ import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import axios from "axios";
 
-const Galeria2 = () => {
+const Galeria = () => {
   const navigate = useNavigate();
   const { id } = useParams();
   const { state } = useContext(GlobalContext);
   const { API_URL } = state;
   const [habitacion, setHabitacion] = useState(null);
-
-  useEffect(() => {
-    axios.get(`${API_URL}/habitaciones/${id}`)
-    .then((response) => {
-      console.log("habitacion:", response.data.content);
-      const habitacion = response.data.content.map((element) => ({
-        nombre: element.nombre,
-        imagenPrincipal: element.imagenes[0],
-        imagenes: element.imagenes.slice(1)
-      }));
+  const fetchData = async () => {
+    try {
+      console.log(`Llamada API: ${API_URL}/habitaciones/${id}`);
+      const habitacionImagenesResponse = await axios.get(`${API_URL}/habitaciones/${id}`)
+      console.log("habitacion:", habitacionImagenesResponse.data);
+      const habitacion = {
+        nombre: habitacionImagenesResponse.data.nombre,
+        imagenPrincipal: {url: null}, //habitacionImagenesResponse.imagenes[0],
+        imagenes: [] //habitacionImagenesResponse.imagenes.slice(1)
+      };
       setHabitacion(habitacion);
-    })
-    .catch((error) => console.log(error));
-
-
+    }
+    catch (error) {console.log(error)};
+  }
+  
+  useEffect(() => {
+    fetchData();
     document.body.style.overflow = "hidden"; 
 
     return () => {
@@ -155,4 +157,4 @@ const Galeria2 = () => {
   );
 };
 
-export default Galeria2;
+export default Galeria;

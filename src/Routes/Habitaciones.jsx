@@ -156,7 +156,7 @@ const Habitaciones = () => {
             {habitacion.caracteristicas.map((element, id) => (
               <div key={id} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <img src={element.iconoUrl} alt={element.nombre} width="32" />
-                {/* <span style={{ fontWeight: 500 }}>{element.charAt(0).toUpperCase() + element.slice(1)}</span> */}
+                <span style={{ fontWeight: 500 }}>{element.nombre.charAt(0).toUpperCase() + element.nombre.slice(1)}</span>
               </div>
             ))}
           </div>

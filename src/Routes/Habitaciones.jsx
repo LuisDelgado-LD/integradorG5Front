@@ -1,6 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState, useContext } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
+import axios from "axios";
 
 const iconoPatita = "/img/iconoPatita.png";
 const iconosCategoria = {
@@ -33,16 +34,14 @@ const iconosCaracteristicas = {
 };
 
 const Habitaciones = () => {
+  console.log("Montando habitaciones")
   const { state } = useContext(GlobalContext);
   const { API_URL } = state;
   const { id } = useParams();
   const navigate = useNavigate();
   const [habitacion, setHabitacion] = useState(null);
   const [categoria, setCategoria] = useState(null);
-
-//   const navigate = useNavigate();
-//   const { state } = useContext(GlobalContext);
-//   const [habitacion, setHabitacion] = useState(null);
+  const [loading, setLoading] = useState(true); // Estado de carga
 
 //   useEffect(() => {
 //     const encontrada = state.habitaciones.find((h) => h.id === parseInt(id));
@@ -54,32 +53,47 @@ const Habitaciones = () => {
 //   const categoria = habitacion.categoria;
 //   const descripcion = descripcionesCategoria[categoria];
 //   const caracteristicas = caracteristicasPorCategoria[categoria] || [];
+  console.log("API_URL:", API_URL);
+  console.log("id:", id);
+  const fetchData = async () => {
+    try {
+      console.log(`Llamada API: ${API_URL}/habitaciones/${id}`);
+      const habitacionResponse = await axios.get(`${API_URL}/habitaciones/${id}`);
+      console.log(habitacionResponse)
+      const habitacion = {
+            id: habitacionResponse.data.id,
+            nombre: habitacionResponse.data.nombre,
+            imagen: "/img/PalacioPeludo.png",
+            descripcion: habitacionResponse.data.descripcion,
+            categoria: habitacionResponse.data.categoria.nombre,
+            categoriaId: habitacionResponse.data.categoria.id,
+            caracteristicas: habitacionResponse.data.caracteristicas, // posiblemente haya que mapear
+            tipo: habitacionResponse.data.tamano,
+            
+          };
+          setHabitacion(habitacion);
+          console.log(`variable local ${JSON.stringify(habitacion, null, 2)}`);
+      setHabitacion(habitacion); // Asignar el primer elemento
+
+      console.log(`Llamada API: ${API_URL}/categorias/${habitacion.categoriaId}`);
+      const categoriaResponse = await axios.get(`${API_URL}/categorias/${habitacion.categoriaId}`);
+      console.log(categoriaResponse)
+      const categoria = {
+        nombre: categoriaResponse.nombre,
+        icono: categoriaResponse.imagenUrl,
+        cantidad: categoriaResponse.patitas,
+      };
+      setCategoria(categoria); // Asignar el primer elemento
+    } catch (error) {
+      console.error("Error al obtener los datos:", error);
+    } finally {
+      setLoading(false); // Finalizar la carga
+    }
+  };
+
+  
   useEffect(() => {
-    axios.get(`${API_URL}/habitaciones/${id}`)
-    .then(response => {
-      console.log("habitacion:", response.data.content);
-      const habitacion = response.data.content.map(element => ({
-        id: element.id,
-        nombre: element.nombre,
-        imagen: "/img/PalacioPeludo.png",
-        descripcion: element.descripcion,
-        categoria: element.categoria.nombre,
-        caracteristicas: element.caracteristicas, // posiblemente haya que mapear
-        tipo: element.tamano,
-      }));
-      setHabitacion(habitacion);
-    })
-    .catch(error => console.log(error));
-    axios.get(`${API_URL}/categorias/${id}`)
-    .then(response => {
-      console.log("categoria:", response.data.content);
-      const categoria = response.data.content.map(element => ({
-        nombre: element.nombre,
-        icono: element.imagenUrl,
-        cantidad: element.cantidad
-      }));
-      setCategoria(categoria);
-    })
+    fetchData();
 }, []);
 
 // variables usadas
@@ -92,6 +106,9 @@ const Habitaciones = () => {
 //   <div key={idx} >
 //     <img src={iconosCaracteristicas[car]} alt={car} width="32" />
 //     <span style={{ fontWeight: 500 }}>{car.charAt(0).toUpperCase() + car.slice(1)}</span>
+  if (loading) return <p>Cargando habitación...</p>; // Mostrar mensaje de carga
+
+  if (!habitacion || !categoria) return <p>No se encontraron datos.</p>; // Validar datos
 
   return (
     <div className="habitacion-container" style={{ padding: "20px" }}>
@@ -129,17 +146,17 @@ const Habitaciones = () => {
             ))}
           </p>
           <p className="habitacion-title" style={{ marginTop: "1cm" }}>
-            <strong>Descripción:</strong> {descripcion}
+            <strong>Descripción:</strong> {habitacion.descripcion}
           </p>
         </div>
         <div style={{ marginTop: "1cm", textAlign: "left" }}>
           <p><strong>Características:</strong></p>
           <div style={{ display: "flex", gap: "1cm", flexWrap: "wrap" }}>
             {/* {caracteristicas.map((car, idx) => ( */}
-            {caracteristicas.map((e, id) => (
+            {habitacion.caracteristicas.map((e, id) => (
               <div key={id} style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                 <img src={e.icono} alt={e.nombre} width="32" />
-                <span style={{ fontWeight: 500 }}>{car.charAt(0).toUpperCase() + car.slice(1)}</span>
+                <span style={{ fontWeight: 500 }}>{e.charAt(0).toUpperCase() + e.slice(1)}</span>
               </div>
             ))}
           </div>

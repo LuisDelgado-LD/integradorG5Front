@@ -32,7 +32,7 @@ const Home = () => {
         const habitacionesCache = response.data.content.map(element => ({
           id: element.id,
           nombre: element.nombre,
-          imagen: element.imagenes.length === 0 ? "/img/PalacioPeludo.png" : element.imagenes[0].url, //,
+          imagen: element.imagenes.find(img => img.esPrincipal)?.url || "/img/not-found.jpg",
           descripcion: element.descripcion,
           categoria: element.categoria.nombre,
           tipo: element.tamano

@@ -16,10 +16,11 @@ const Galeria = () => {
       console.log("habitacion:", habitacionImagenesResponse.data);
       const habitacion = {
         nombre: habitacionImagenesResponse.data.nombre,
-        imagenPrincipal: {url: null}, //habitacionImagenesResponse.imagenes[0],
-        imagenes: [] //habitacionImagenesResponse.imagenes.slice(1)
+        imagenPrincipal: habitacionImagenesResponse.data.imagenes.find(img => img.esPrincipal)?.url || "/img/not-found.jpg",
+        imagenes: habitacionImagenesResponse.data.imagenes.filter(img => !img.esPrincipal)
       };
       setHabitacion(habitacion);
+      console.log(habitacion)
     }
     catch (error) {console.log(error)};
   }
@@ -117,7 +118,7 @@ const Galeria = () => {
         <div style={{ display: "flex", gap: "60px", alignItems: "center" }}>
           <div>
             <img
-              src={habitacion.imagenPrincipal.url}
+              src={habitacion.imagenPrincipal}
               alt={habitacion.nombre}
               style={{
                 width: "600px",

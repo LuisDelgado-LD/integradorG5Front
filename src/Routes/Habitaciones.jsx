@@ -63,7 +63,7 @@ const Habitaciones = () => {
       const habitacion = {
             id: habitacionResponse.data.id,
             nombre: habitacionResponse.data.nombre,
-            imagen: habitacionResponse.data.imagenes.length === 0 ? "/img/PalacioPeludo.png" : habitacionResponse.data.imagenes[0].url,
+            imagen: habitacionResponse.data.imagenes.find(img => img.esPrincipal)?.url || "/img/not-found.jpg",
             descripcion: habitacionResponse.data.descripcion,
             categoria: habitacionResponse.data.categoria.nombre,
             categoriaId: habitacionResponse.data.categoria.id,

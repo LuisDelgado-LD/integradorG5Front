@@ -60,11 +60,7 @@ const Login = ({ setUsuario }) => {
   const loginBackend = (e) => {
     e.preventDefault();
     console.log(formData)
-    axios.post(API_URL+"/auth/login", formData, {
-      headers:{
-        auth: "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiI3IiwiaWF0IjoxNzQzMjczODE1LCJleHAiOjkyMjMzNzIwMzY4NTQ3NzV9.Ouwuq0ZAdUTEo3KK7yYe0YKw0KmQSIife209HJD7B0fIhak26N51OxPmCocsbdI9EZX6u9aoMd4uWKIxXs_Qrg"
-      }
-    })
+    axios.post(API_URL+"/auth/login", formData)
     .then(response => {
       console.log('Login exitoso', response.data);
       const token= response.data.accessToken

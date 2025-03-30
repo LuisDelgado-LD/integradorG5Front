@@ -1,93 +1,143 @@
-import { useContext, useState } from "react";
-import { GlobalContext } from "../Context/utils/globalContext";
-import DynamicForm from "../Components/DynamicForm";
-import { FaTrash, FaEdit } from "react-icons/fa";
-
+import { useState, useEffect } from "react";
+import SoloEscritorio from "../Components/SoloEscritorio";
 const GestionMaestro = () => {
-  const { state, dispatch } = useContext(GlobalContext);
-  const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [maestroEditado, setMaestroEditado] = useState(null);
-  const [keyForm, setKeyForm] = useState(0);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [formData, setFormData] = useState({ id: null, nombre: "", tipo: "", descripcion: "" });
+  const [maestros, setMaestros] = useState(() => {
+    const guardados = localStorage.getItem("maestros");
+    return guardados ? JSON.parse(guardados) : [];
+  });
 
-  const handleAgregarOEditarMaestro = (formData, resetForm) => {
+  useEffect(() => {
+    localStorage.setItem("maestros", JSON.stringify(maestros));
+  }, [maestros]);
+
+  const abrirCrear = () => {
+    setModoEdicion(false);
+    setFormData({ id: null, nombre: "", tipo: "", descripcion: "" });
+    setModalOpen(true);
+  };
+
+  const abrirEditar = (maestro) => {
+    setModoEdicion(true);
+    setFormData(maestro);
+    setModalOpen(true);
+  };
+
+  const eliminarMaestro = (id) => {
+    const confirmar = window.confirm("¿Deseas eliminar este maestro?");
+    if (confirmar) {
+      const actualizados = maestros.filter((m) => m.id !== id);
+      setMaestros(actualizados);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleGuardar = (e) => {
+    e.preventDefault();
     if (!formData.nombre || !formData.tipo || !formData.descripcion) {
-      alert("❌ Todos los campos son obligatorios.");
+      alert("❗Completa todos los campos.");
       return;
     }
 
-    const nuevoMaestro = {
-      ...formData,
-      fechaModificacion: new Date().toLocaleString(),
-    };
-
-    if (maestroEditado) {
-      dispatch({ type: "EDITAR_MAESTRO", payload: nuevoMaestro });
-      setMaestroEditado(null);
+    let nuevos;
+    if (modoEdicion) {
+      nuevos = maestros.map((m) => (m.id === formData.id ? formData : m));
     } else {
-      dispatch({ type: "AGREGAR_MAESTRO", payload: nuevoMaestro });
+      nuevos = [...maestros, { ...formData, id: Date.now() }];
     }
 
-    setMostrarFormulario(false);
-    resetForm();
-    setKeyForm((prev) => prev + 1);
-  };
-
-  const handleEliminarMaestro = (nombre) => {
-    dispatch({ type: "ELIMINAR_MAESTRO", payload: nombre });
-  };
-
-  const handleEditarMaestro = (maestro) => {
-    setMaestroEditado(maestro);
-    setMostrarFormulario(true);
+    setMaestros(nuevos);
+    setModalOpen(false);
   };
 
   return (
-    <div className="admin-content">
-      <h2>Gestión de Maestro</h2>
+    <SoloEscritorio>
+      <div className="gestion-maestro-page">
+        <div className="container-gestion">
+          <h2 className="titulo-gestion">Gestión de Maestro</h2>
 
-      {state.maestros.length > 0 && (
-        <table className="maestro-table">
-          <thead>
-            <tr>
-              <th>Nombre</th>
-              <th>Tipo</th>
-              <th>Última Modificación</th>
-              <th>Acción</th>
-            </tr>
-          </thead>
-          <tbody>
-            {state.maestros.map((maestro, index) => (
-              <tr key={index}>
-                <td>{maestro.nombre}</td>
-                <td>{maestro.tipo}</td>
-                <td>{maestro.fechaModificacion}</td>
-                <td>
-                  <FaEdit className="edit-icon" onClick={() => handleEditarMaestro(maestro)} />
-                  <FaTrash className="delete-icon" onClick={() => handleEliminarMaestro(maestro.nombre)} />
-                </td>
+          <table className="tabla-maestros">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Tipo de Maestro</th>
+                <th>Última Modificación</th>
+                <th>Acciones</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {maestros.map((m) => (
+                <tr key={m.id}>
+                  <td>{m.nombre}</td>
+                  <td>{m.tipo}</td>
+                  <td>{new Date().toLocaleDateString()}</td>
+                  <td className="acciones">
+                    <span className="icono" onClick={() => abrirEditar(m)}>🖊️</span>
+                    <span className="icono" onClick={() => eliminarMaestro(m.id)}>🗑️</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
 
-      <button onClick={() => setMostrarFormulario(!mostrarFormulario)}>
-        {mostrarFormulario ? "Cerrar formulario" : "Añadir Maestro"}
-      </button>
+        <div className="boton-aniadir-container">
+          <button className="btn-aniadir" onClick={abrirCrear}>
+            ➕ Añadir Maestro
+          </button>
+        </div>
 
-      {mostrarFormulario && (
-        <DynamicForm
-          key={keyForm}
-          title={maestroEditado ? "Editar Maestro" : "Nuevo Maestro"}
-          fields={[
-            { name: "nombre", label: "Nombre", type: "text", required: true, defaultValue: maestroEditado?.nombre || "" },
-            { name: "tipo", label: "Tipo de Maestro", type: "text", required: true, defaultValue: maestroEditado?.tipo || "" },
-            { name: "descripcion", label: "Descripción", type: "text", required: true, defaultValue: maestroEditado?.descripcion || "" }
-          ]}
-          onSubmit={handleAgregarOEditarMaestro}
-        />
-      )}
-    </div>
+        {modalOpen && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <span className="cerrar-modal" onClick={() => setModalOpen(false)}>×</span>
+              <h3>{modoEdicion ? "Editar Maestro" : "Registrar Maestro"}</h3>
+              <form onSubmit={handleGuardar}>
+                <select name="tipo" value={formData.tipo} onChange={handleChange} required>
+                  <option value="">Selecciona tipo</option>
+                  <option value="Categoría">Categoría</option>
+                  <option value="Producto">Producto</option>
+                </select>
+
+                <input
+                  type="text"
+                  name="nombre"
+                  placeholder="Nombre del maestro"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  required
+                />
+
+                <textarea
+                  name="descripcion"
+                  placeholder="Añade la descripción del maestro"
+                  value={formData.descripcion}
+                  onChange={handleChange}
+                  required
+                />
+
+                {formData.tipo === "Producto" && (
+                  <button type="button" className="btn-agregar-imagenes">
+                    Agregar Imágenes Incluidas
+                  </button>
+                )}
+
+                <button type="submit" className="btn-guardar">Guardar</button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <div className="imagen-pie">
+          <img src="/img/imagendepie.png" alt="Imagen Pie" />
+        </div>
+      </div>
+    </SoloEscritorio>
   );
 };
 

@@ -7,10 +7,12 @@ import Habitaciones from "./Routes/Habitaciones.jsx";
 import Registro from "./Routes/Registro.jsx";
 import Galeria2 from "./Routes/Galeria2.jsx";
 import Administrador from "./Routes/Administrador.jsx";
+import GestionMaestro from './Routes/GestionMaestro'
 import GestionCaracteristicas from "./Routes/GestionCaracteristicas.jsx";
 import UserManagement from "./Routes/UserManagement.jsx";
 import Login from "./Routes/Login.jsx";
 import PrivateRoute from "./Routes/PrivateRoute"; 
+import Reserva from "./Routes/Reserva.jsx";
 
 function App() {
   const [usuario, setUsuario] = useState(null);
@@ -22,9 +24,11 @@ function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={!usuario ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} >
+        <Route path="/" element={!usuario ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/"} />} >
           <Route index element={<Home />} />
           <Route path="habitacion/:id" element={<Habitaciones />} />
+          <Route path="/reserva/:id" element={<Reserva />} />
+          <Route path="galeria/:id" element={<Galeria2 />} />
           <Route path="registro" element={<Registro />} />
           <Route path="login" element={!usuario ? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} />
         </Route>
@@ -33,6 +37,7 @@ function App() {
           <Route path="/administrador" element={<AdminLayout />}>
             <Route index element={<Administrador />} />
             <Route path="gestion-caracteristicas" element={<GestionCaracteristicas />} />
+            <Route path="gestion-maestro" element={<GestionMaestro />} />
             <Route path="gestion-de-usuario" element={<UserManagement />} />
           </Route>
         </Route>

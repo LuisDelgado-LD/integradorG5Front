@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import axios from 'axios';
@@ -11,6 +11,8 @@ const GestionCaracteristicas = () => {
   const [formData, setFormData] = useState({ nombre: "", icono: "" });
   const formDataBackend = new FormData();
   const [editando, setEditando] = useState(null);
+  const fileInputRef = useRef(null);
+  
   useEffect(() => {
     axios.get(`${API_URL}/caracteristicas`)
     .then((response) => {
@@ -24,24 +26,33 @@ const GestionCaracteristicas = () => {
   }, []);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, files } = e.target;
+    setFormData({ ...formData, [name]: files ? files[0] : value });
   };
 
   const handleSave = () => {
+    // const formDataBackend = new FormData();
     if (!formData.nombre || !formData.icono) return alert("❌ Campos requeridos");
   
     if (editando !== null) {
       // formDataBackend.append(formData.icono);
-      console.log("Post edit caracteristica",formData);
-      formDataBackend.append(formData);
-      axios.post(`${API_URL}/caracteristicas/${editando}`, {
-        formDataBackend, 
+      console.log("data",formData)
+      console.log("Put edit caracteristica",formData);
+      formDataBackend.append("nombre",formData.nombre);
+      formDataBackend.append("icono",formData.icono);
+      const idCaracteristica=caracteristicas[editando].id
+      axios.put(`${API_URL}/caracteristicas/${idCaracteristica}`, formDataBackend, 
+        { 
           headers: {
             'Content-Type': 'multipart/form-data'
           }
-      }
+        }
       ).then((response) => {
-        console.log("caracteristicas:", response.data.content);
+        console.log("caracteristica editada:", response.data);
+        const caracteristicasCopia = caracteristicas.slice()
+        caracteristicasCopia[editando] = response.data
+        setCaracteristicas(caracteristicasCopia)
+        resetForm()
       })
       .catch((error) => {
         console.log(error);
@@ -49,39 +60,53 @@ const GestionCaracteristicas = () => {
       setEditando(null);
     } else {
       console.log("Post nueva caracteristica",formData);
-      formDataBackend.append(formData);
-      axios.post(`${API_URL}/caracteristicas/`, {
-        formDataBackend, 
+      formDataBackend.append("nombre",formData.nombre);
+      formDataBackend.append("icono",formData.icono);
+      axios.post(`${API_URL}/caracteristicas`, formDataBackend, {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
       }
       ).then((response) => {
-        console.log("caracteristicas:", response.data.content);
+        console.log("caracteristicas:", response.data);
+        setCaracteristicas([...caracteristicas, response.data])
       })
       .catch((error) => {
         console.log(error);
       })
     }
   
-    setFormData({ nombre: "", icono: "" }); // reset
+    resetForm()
   };
 
   const handleEdit = (index) => {
     setEditando(index);
     setFormData(caracteristicas[index]);
+    // const idCaracteristica=caracteristicas[index].id
+    // axios.put(`${API_URL}/caracteristicas/${idCaracteristica}`)
   };
 
   const handleDelete = (index) => {
     // dispatch({ type: "ELIMINAR_CARACTERISTICA", payload: index });
-    axios.post(`${API_URL}/caracteristicas/${index}`)
+    const idCaracteristica=caracteristicas[index].id
+    console.log("indice de la variable:",index)
+    console.log("idCaracteristica", idCaracteristica)
+    axios.delete(`${API_URL}/caracteristicas/${idCaracteristica}`)
     .then((response) => {
-      console.log("caracteristicas:", response.data.content);
+      console.log("caracteristicas:", response.data);
+      setCaracteristicas(caracteristicas.filter((_, i) => i !== index));
     })
     .catch((error) => {
       console.log(error);
     })
   };
+  const resetForm = () => {
+    setFormData({ nombre: "", icono: "" }); // Restablecer el estado del formulario
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ""; // Limpiar el input de tipo file
+    }
+  };
+
 
   return (
     <div className="admin-container">
@@ -96,9 +121,9 @@ const GestionCaracteristicas = () => {
         />
         <input
           type="file"
+          ref={fileInputRef}
           name="icono"
           placeholder="URL del ícono"
-          value={formData.icono}
           onChange={handleChange}
         />
         {formData.icono && (

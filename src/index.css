@@ -1650,7 +1650,7 @@ body {
   cursor: pointer;
   border-radius: 5px;
   display: flex;
-  justify-content: end;
+  justify-content:start;
   gap: 5px;
 }
 

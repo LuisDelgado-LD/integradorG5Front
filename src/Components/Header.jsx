@@ -32,7 +32,7 @@ const Header = () => {
       </div>
 
       <div className="header-right">
-        {usuario ? (
+        {usuario.nombre ? (
           <div className="user-menu">
             <div className="user-info" onClick={() => setMenuAbierto(!menuAbierto)}>
               <span>Bienvenido, {usuario.nombre}</span>

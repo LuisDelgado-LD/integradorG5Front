@@ -74,6 +74,17 @@ const Habitaciones = () => {
       return;
     }
 
+    if (fechaInicio >= fechaFin) {
+      alert("❌ La fecha de inicio debe ser antes que la fecha de fin.");
+      return;
+    }
+
+    const fechasInvalidas = fechasOcupadas.some((fecha) => fecha >= fechaInicio && fecha <= fechaFin);
+    if (fechasInvalidas) {
+      alert("❌ Las fechas seleccionadas incluyen días no disponibles.");
+      return;
+    }
+
     dispatch({
       type: "SET_RESERVA",
       payload: {
@@ -92,9 +103,7 @@ const Habitaciones = () => {
   return (
     <div className="habitacion-container" style={{ padding: "20px" }}>
       <h2>{habitacion.nombre}</h2>
-      <button className="back-home" onClick={() => navigate("/")}>
-        <img src="/img/flecha.png" alt="Volver" />
-      </button>
+      <button className="back-home" onClick={() => navigate("/")}> <img src="/img/flecha.png" alt="Volver" /> </button>
 
       <div>
         <img className="habitacion-img" src={habitacion.imagen} alt={habitacion.nombre} style={{ width: "100%" }} />
@@ -114,8 +123,20 @@ const Habitaciones = () => {
       </ul>
 
       <p><strong>Selecciona tu rango de fechas:</strong></p>
-      <DatePicker selected={fechaInicio} onChange={setFechaInicio} placeholderText="Fecha de inicio" />
-      <DatePicker selected={fechaFin} onChange={setFechaFin} placeholderText="Fecha de fin" />
+      <DatePicker
+        selected={fechaInicio}
+        onChange={setFechaInicio}
+        placeholderText="Fecha de inicio"
+        minDate={new Date()}
+        excludeDates={fechasOcupadas}
+      />
+      <DatePicker
+        selected={fechaFin}
+        onChange={setFechaFin}
+        placeholderText="Fecha de fin"
+        minDate={fechaInicio || new Date()}
+        excludeDates={fechasOcupadas}
+      />
 
       <button onClick={reservar} disabled={!fechaInicio || !fechaFin} style={{ backgroundColor: "#30384D", color: "white" }}>
         Reservar ahora

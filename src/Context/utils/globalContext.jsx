@@ -14,7 +14,6 @@ const MOCK_USER = {
   token: "mocked_token",
 };
 
-//Habitaciones mockeadas
 const generarHabitacionesMock = () => {
   const pequenas = [
     "Chihuahua", "Pomerania", "Yorkshire", "Pinscher", "Maltés",
@@ -83,10 +82,9 @@ const initialState = {
   caracteristicas: [],
   tamanos: ["Grande", "Mediano", "Pequeño"],
   maestros: [],
-
-  // 🆕 NUEVO: fechas seleccionadas desde el navbar
   fechaInicio: null,
-  fechaFin: null
+  fechaFin: null,
+  reserva: null
 };
 
 const reducer = (state, action) => {
@@ -102,11 +100,7 @@ const reducer = (state, action) => {
       return { ...state, usuario: null, token: null };
 
     case "SET_FECHAS":
-      return {
-        ...state,
-        fechaInicio: action.payload.fechaInicio,
-        fechaFin: action.payload.fechaFin
-      };
+      return { ...state, fechaInicio: action.payload.fechaInicio, fechaFin: action.payload.fechaFin };
 
     case "SET_HABITACIONES":
       return { ...state, habitaciones: action.payload };
@@ -119,23 +113,6 @@ const reducer = (state, action) => {
 
     case "SET_CATEGORIAS":
       return { ...state, categorias: action.payload };
-
-    case "AGREGAR_CARACTERISTICA":
-      return { ...state, caracteristicas: [...state.caracteristicas, action.payload] };
-
-    case "EDITAR_CARACTERISTICA":
-      return {
-        ...state,
-        caracteristicas: state.caracteristicas.map((c, i) =>
-          i === action.payload.index ? action.payload.data : c
-        )
-      };
-
-    case "ELIMINAR_CARACTERISTICA":
-      return {
-        ...state,
-        caracteristicas: state.caracteristicas.filter((_, i) => i !== action.payload)
-      };
 
     case "SET_MAESTROS":
       return { ...state, maestros: action.payload };
@@ -156,6 +133,8 @@ const reducer = (state, action) => {
         ...state,
         maestros: state.maestros.filter((m) => m.id !== action.payload)
       };
+      case "SET_RESERVA": 
+      return { ...state, reserva: action.payload };
 
     default:
       return state;
@@ -164,7 +143,6 @@ const reducer = (state, action) => {
 
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-
   return (
     <GlobalContext.Provider value={{ state, dispatch }}>
       {children}

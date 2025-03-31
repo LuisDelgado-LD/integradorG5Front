@@ -2483,3 +2483,138 @@ html, body {
   padding: 20px;
 }
 
+
+
+
+
+.reserva-container {
+  display: flex;
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.reserva-left {
+  flex: 1;
+  padding: 20px;
+  border-right: 1px solid #ccc;
+}
+
+.reserva-right {
+  flex: 1;
+  padding: 20px;
+  text-align: center;
+}
+
+.reserva-titulo {
+  margin: 0;
+  font-size: 24px;
+}
+
+.section {
+  margin-bottom: 20px;
+}
+
+.edit-btn,
+.confirm-btn,
+.save-btn,
+.close-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.edit-btn {
+  background-color: #f0f0f0;
+}
+
+.confirm-btn {
+  background-color: #28a745;
+  color: white;
+  margin-top: 20px;
+}
+
+.habitacion-imagen {
+  width: 100%;
+  max-width: 300px;
+  height: auto;
+  margin-bottom: 10px;
+}
+
+.habitacion-nombre {
+  font-size: 20px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.habitacion-categoria {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 5px;
+}
+
+.paw-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+}
+
+.categoria-text {
+  font-size: 16px;
+  margin-left: 5px;
+}
+
+.caracteristicas {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.feature-icon {
+  width: 30px;
+  height: 30px;
+  margin: 0 5px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 400px;
+}
+
+.datepickers {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.close-btn {
+  background-color: #ccc;
+  color: #000;
+  margin-top: 10px;
+}
+
+.calendar-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 5px;
+}

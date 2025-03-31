@@ -18,34 +18,55 @@
   box-sizing: border-box;
 }
 
-/* .back-home { */
-  /* position: relative;
+.Encabezado{
+  position: relative; /* Define el contenedor como referencia para los hijos */
+  width: 100%;
+  height: 5em;
+}
+
+.Encabezado h2 {
+  position: absolute; /* Posiciona respecto al contenedor */
+  top: 0; /* Esquina superior izquierda */
+  left: 0; /* Esquina izquierda */
+}
+
+.Encabezado button {
+  position: absolute; /* Posiciona respecto al contenedor */
+  top: 0; /* Esquina superior derecha */
+  right: 0; /* Esquina derecha */
+}
+
+/*.back-home {
+  position: relative;
   top: 166px;
-  right: 50px; */
-  /* position: absolute;
+  right: 50px; 
+  position: absolute;
   top: 166px;
   right: 50px;
   position: absolute;
   top: -10px;
-  left: -10px; */
-/* } */
+  left: -10px;  
+  position: relative;
+  top: 166px;
+  right: 50px;
+} */
 /* 
 .back-home img {
   width: 50px;
   height: 50px;
   cursor: pointer;
-}
+}*/
 
 .back-home img {
   width: 40px;
   height: 40px;
-}
+} 
 
-.back-home img {
+/* .back-home img {
   width: 50px;
   height: 50px;
   cursor: pointer;
-} */
+}  */
 
 .Imagen-footer {
   position:relative;  /*O absolute si prefieres */
@@ -79,9 +100,21 @@
 }
 
 .habitacion-container {
-  position: relative;
-  padding: 0px 0px;
-  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.habitacion-container2{
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 .habitacion-content{
@@ -97,15 +130,19 @@
 }
 
 .habitacion-img {
-  width: 100%;
+  /* width: 100%;
   height: 100%;
   border-radius: 20px;
   display: grid;
-  place-items: center;
+  place-items: center; */
+  width: 100%;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out;
 }
 
 .habitacion-img-container{
-  width: 80%;
+  /* width: 80%;
   height: auto;
   display: block;
   border-radius: 20px;
@@ -113,7 +150,9 @@
   box-shadow: 0px 4px 4px 0px #00000040;
   object-fit: cover;
   aspect-ratio: 5/3;
-  align-items: center;
+  align-items: center; */
+  position: relative;
+  max-width: 400px;
 }
 
 .galeria-container {

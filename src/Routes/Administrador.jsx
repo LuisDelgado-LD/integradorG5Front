@@ -28,7 +28,10 @@ const Administrador = () => {
     tamano: "",
     isDisponible: false,
     precioUnitario: "",
-    imagen: null,
+    imagenPrincipal: null,
+    imagenSecundaria: null,
+    imagenAdicional1:null,
+    imagenAdicional2: null,
   });
 
   const handleChange = (e) => {
@@ -39,7 +42,13 @@ const Administrador = () => {
   const handleImageChange = (e) => {
     const { name, files } = e.target;
     if (files.length > 0) {
-      setFormData((prev) => ({ ...prev, [name]: URL.createObjectURL(files[0]) }));
+      const file = files[0];
+  
+      setFormData((prev) => ({
+        ...prev,
+        [name]: file, // Guarda el archivo real
+        [`${name}Preview`]: URL.createObjectURL(file), // Guarda la URL solo para la vista previa
+      }));
     }
   };
 
@@ -60,7 +69,11 @@ const Administrador = () => {
           isDisponible: data.isDisponible || "false",
           precioUnitario: data.precioUnitario || "",
           categoria: data.categoria.id || "",
-          imagen: null,
+          imagenPrincipal: null,
+          imagenSecundaria: null,
+          imagenAdicional1:null,
+          imagenAdicional2: null,
+          
         });
       } catch (error) {
         console.error("❌ Error al obtener datos:", error);
@@ -73,7 +86,10 @@ const Administrador = () => {
         tipoProducto: "",
         descripcion: "",
         categoria: "",
-        imagen: null,
+        imagenPrincipal: null,
+        imagenSecundaria: null,
+        imagenAdicional1:null,
+        imagenAdicional2: null,
       });
     }
     setMaestroEditado(maestro);
@@ -93,7 +109,7 @@ const Administrador = () => {
       return;
     }
 
-    if (!formData.imagen) {
+    if (!formData.imagenPrincipal || !formData.imagenSecundaria || !formData.imagenAdicional1 || !formData.imagenAdicional2) {
       setError("❌ Debes subir todas las imágenes.");
       return;
     }
@@ -116,7 +132,7 @@ const Administrador = () => {
     try {
       let maestroResponse;
       if (maestroEditado) {
-        // En modo edición, actualizamos directamente (suponiendo que el backend actualiza también imágenes)
+        
         maestroResponse = await axios.put(`${API_URL}/habitaciones/${maestroEditado.id}`, payload, {
           headers: { "Content-Type": "application/json" }
         });
@@ -127,6 +143,24 @@ const Administrador = () => {
         });
       }
 
+
+      const habitacionId = maestroResponse.data.id;
+
+      const uploadedImages = await handleUploadImages(habitacionId);
+      console.log("📸 Imágenes subidas:", uploadedImages);
+
+      if (uploadedImages.imagenPrincipal) {
+        await axios.put(`${API_URL}/imagenes/${uploadedImages.imagenPrincipal}/principal?habitacionId=${habitacionId}`, {
+          headers: { "Content-Type": "application/json" }
+        });
+        console.log("⭐ Imagen principal establecida.");
+      }
+
+      const imagenId = formData.imagenId;
+      const responseImage = await axios.put(`${API_URL}/imagenes/${imagenId}/principal?habitacionId=${habitacionId}`, {
+        headers: { "Content-Type": "application/json" }
+      });
+      console.log(responseImage)
 
       if (maestroEditado) {
         dispatch({ type: "EDITAR_MAESTRO", payload: maestroResponse.data });
@@ -150,18 +184,42 @@ const Administrador = () => {
       console.error("❌ Error al guardar:", error);
       setError("Ocurrió un error al guardar los datos.");
     }
-
-    // if (maestroEditado) {
-    //   dispatch({ type: "EDITAR_MAESTRO", payload: { id: maestroEditado.id, ...formData } });
-    // } else {
-    //   dispatch({
-    //     type: "AGREGAR_MAESTRO",
-    //     payload: { id: state.maestros.length + 1, ...formData },
-    //   });
-    // }
-
     handleCloseModal();
   };
+
+  const handleUploadImages = async (habitacionId) => {
+    const imageFiles = {
+      imagenPrincipal: formData.imagenPrincipal,
+      imagenSecundaria: formData.imagenSecundaria,
+      imagenAdicional1: formData.imagenAdicional1,
+      imagenAdicional2: formData.imagenAdicional2
+    };
+  
+    const uploadedImages = {}; // 📌 Almacenará los IDs de las imágenes subidas
+  
+    try {
+      for (const [key, file] of Object.entries(imageFiles)) {
+        if (file) {
+          const formDataImage = new FormData();
+          formDataImage.append("imagen", file);
+  
+          const response = await axios.post(`${API_URL}/imagenes/${habitacionId}`, formDataImage, {
+            headers: { "Content-Type": "multipart/form-data" }
+          });
+  
+          uploadedImages[key] = response.data.id;
+          console.log(`✅ ${key} subida con ID: ${response.data}`);
+        }
+      }
+    } catch (error) {
+      console.error("❌ Error al subir imágenes:", error);
+      setError("Ocurrió un error al subir las imágenes.");
+    }
+  
+    return uploadedImages;
+  };
+  
+  
 
   const handleDelete = (id) => { 
     const confirmDelete = window.confirm("¿Estás seguro de que deseas eliminar este elemento?");
@@ -377,7 +435,7 @@ useEffect(() => {
               
               </select> */}
 
-              <label>Imagen Principal:</label>
+              {/*<label>Imagen Principal:</label>
               <ImageSelect
                 options={imageList}
                 value={formData.imagenId} // Guarda el id seleccionado
@@ -389,12 +447,28 @@ useEffect(() => {
                   menuPortal: (base) => ({ ...base, zIndex: 9999 }),
                   menu: (base) => ({
                     ...base,
-                    maxHeight: '300px', // Limita la altura
+                    maxHeight: '300px',
                     overflowY: 'auto',
                   }),
                 }}
               />
-              {formData.imagen && <img src={formData.imagen} alt="Imagen seleccionada" className="preview-img" />}
+              {formData.imagen && <img src={formData.imagen} alt="Imagen seleccionada" className="preview-img" />}*/}
+              <label>Imagen Principal:</label>
+              <input type="file" name="imagenPrincipal" accept="image/*" onChange={handleImageChange} />
+              {formData.imagenPrincipal && <img src={formData.imagenPrincipal} alt="Imagen Principal" width="100" />}
+  
+              <label>Imagen Secundaria:</label>
+              <input type="file" name="imagenSecundaria" accept="image/*" onChange={handleImageChange} />
+              {formData.imagenSecundaria && <img src={formData.imagenSecundaria} alt="Imagen Secundaria" width="100" />}
+
+              <label>Imagen Principal:</label>
+              <input type="file" name="imagenAdicional1" accept="image/*" onChange={handleImageChange} />
+              {formData.imagenAdicional1 && <img src={formData.imagenAdicional1} alt="Imagen Principal" width="100" />}
+  
+              <label>Imagen Secundaria:</label>
+              <input type="file" name="imagenAdicional2" accept="image/*" onChange={handleImageChange} />
+              {formData.imagenAdicional2 && <img src={formData.imagenAdicional2} alt="Imagen Secundaria" width="100" />}
+
             </div>
 
             <div className="modal-buttons">

@@ -99,6 +99,28 @@
   height: auto;
 }
 
+.Textos-Descripcion{
+  /* margin-left: -8em;
+  padding: 10px 0px;
+  display: flex;
+  justify-content: space-around; */
+  position: relative;
+}
+
+.P1{
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.P2{
+  position: absolute;
+  top: 50%;
+  right: 30%;
+  transform: translateY(-50%);
+}
+
 .habitacion-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -109,16 +131,24 @@
 }
 
 .habitacion-container2{
-  max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
   display: flex;
-  align-items: flex-start;
+  justify-content: space-around;
   gap: 20px;
+}
+
+.contenido2{
+  margin-left: -10em;
+  /* padding: 20px; */
+  display: flex;
+  justify-content: space-around;
+  gap: 0px 10px;
 }
 
 .habitacion-content{
   align-content: flex-start;
+  padding: 2em;
 }
 
 .Contenido-Container{
@@ -152,7 +182,9 @@
   aspect-ratio: 5/3;
   align-items: center; */
   position: relative;
-  max-width: 400px;
+  max-width: 60%; /* Ajusta el ancho máximo a la anchura del contenedor */
+  height: auto; /* Mantiene la relación de aspecto */
+  object-fit: cover; /* Opcional: Cubre el área sin distorsionar */  
 }
 
 .galeria-container {

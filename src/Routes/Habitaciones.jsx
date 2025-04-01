@@ -103,25 +103,37 @@ const Habitaciones = () => {
         </div>
         
         <div className="habitacion-content">
-          <p><strong>Categoría:</strong> {habitacion.categoria}</p>
-          <p><strong>Descripción:</strong> {descripcionesCategoria[habitacion.categoria]}</p>
+            <p><strong>Categoría:</strong> {habitacion.categoria}</p>
+            <br />
+            <p><strong>Descripción:</strong></p>
+            <br />
+            <p> {descripcionesCategoria[habitacion.categoria]}</p>
         </div>
       </div>
       <button className="ver-mas" onClick={() => navigate(`/galeria/${habitacion.id}`)}>Ver más</button>
-
+      <br />
+      <br />
+      <br />
+      <div className="Textos-Descripcion">
+        <p className="P1"><strong>Características:</strong></p>
+        <p className="P2"><strong>Selecciona tu rango de fechas:</strong></p>
+      </div>
       <div className="habitacion-container2">
-        <p><strong>Características:</strong></p>
-        <ul>
-          {caracteristicasPorCategoria[habitacion.categoria].map((car, index) => (
-            <li key={index}>
-              <img src={iconosCaracteristicas[car]} alt={car} width="24" /> {car}
-            </li>
-          ))}
-        </ul>
+        <div className="contenido1">
+          
+          <ul>
+            {caracteristicasPorCategoria[habitacion.categoria].map((car, index) => (
+              <li key={index}>
+                <img src={iconosCaracteristicas[car]} alt={car} width="24" /> {car}
+              </li>
+            ))}
+          </ul>
+        </div>
 
-        <p><strong>Selecciona tu rango de fechas:</strong></p>
-        <DatePicker selected={fechaInicio} onChange={setFechaInicio} placeholderText="Fecha de inicio" />
-        <DatePicker selected={fechaFin} onChange={setFechaFin} placeholderText="Fecha de fin" />
+        <div className="contenido2">
+          <DatePicker selected={fechaInicio} onChange={setFechaInicio} placeholderText="Fecha de inicio" />
+          <DatePicker selected={fechaFin} onChange={setFechaFin} placeholderText="Fecha de fin" />
+        </div>
       </div>
       <button onClick={reservar} disabled={!fechaInicio || !fechaFin} style={{ backgroundColor: "#30384D", color: "white" }}>
           Reservar ahora

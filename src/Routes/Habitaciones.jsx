@@ -43,9 +43,9 @@ const Habitaciones = () => {
     setHabitacion(encontrada);
 
     setFechasOcupadas([
-      new Date("2025-03-22"),
-      new Date("2025-03-23"),
-      new Date("2025-03-24"),
+      new Date("2025-04-22"),
+      new Date("2025-04-23"),
+      new Date("2025-04-24"),
     ]);
 
     const favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];

@@ -27,7 +27,7 @@ function App() {
         <Route path="/" element={!usuario ? <Layout /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/"} />} >
           <Route index element={<Home />} />
           <Route path="habitacion/:id" element={<Habitaciones />} />
-          <Route path="/reserva/:id" element={<Reserva />} />
+          <Route path="reserva/:id" element={<Reserva />} />
           <Route path="galeria/:id" element={<Galeria2 />} />
           <Route path="registro" element={<Registro />} />
           <Route path="login" element={!usuario ? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "admin" ? "/administrador" : "/home"} />} />

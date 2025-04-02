@@ -32,6 +32,8 @@ const Administrador = () => {
     imagenSecundaria: null,
     imagenAdicional1:null,
     imagenAdicional2: null,
+    imagenAdicional3: null,
+    caracteristicas: [],
   });
 
   const handleChange = (e) => {
@@ -39,26 +41,48 @@ const Administrador = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  // const handleImageChange = (e) => {
+  //   const { name, files } = e.target;
+  //   if (files.length > 0) {
+  //     const file = files[0];
+  
+  //     setFormData((prev) => ({
+  //       ...prev,
+  //       [name]: file, // Guarda el archivo real
+  //       [`${name}Preview`]: URL.createObjectURL(file), // Guarda la URL solo para la vista previa
+  //     }));
+  //   }
+  // };
+
   const handleImageChange = (e) => {
     const { name, files } = e.target;
-    if (files.length > 0) {
-      const file = files[0];
   
-      setFormData((prev) => ({
-        ...prev,
-        [name]: file, // Guarda el archivo real
-        [`${name}Preview`]: URL.createObjectURL(file), // Guarda la URL solo para la vista previa
-      }));
+    // Si el usuario ha subido una nueva imagen
+    if (files && files[0]) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prevData) => ({
+          ...prevData,
+          [`${name}Preview`]: reader.result, // Esta es la vista previa de la imagen subida
+        }));
+      };
+      reader.readAsDataURL(files[0]); // Crear la vista previa de la imagen
     }
+  
+    // Actualizar el archivo real en el formulario (o mantener la imagen anterior si no hay una nueva)
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: files[0] || prevData[name], // Guarda la imagen seleccionada o mantiene la anterior
+    }));
   };
+  
 
   const handleOpenModal = async (maestro = null) => {
     if (maestro) {
-      console.log("🆔 ID seleccionado:", maestro.id);
       try {
         const response = await axios.get(`https://petparadise.sytes.net/api/habitaciones/${maestro.id}`);
         const data = response.data;
-
+        console.log(data);
   
         setFormData({
           id: data.id,
@@ -69,10 +93,17 @@ const Administrador = () => {
           isDisponible: data.isDisponible || "false",
           precioUnitario: data.precioUnitario || "",
           categoria: data.categoria.id || "",
-          imagenPrincipal: null,
-          imagenSecundaria: null,
-          imagenAdicional1:null,
-          imagenAdicional2: null,
+          imagenPrincipal: data.imagenes.find(img => img.esPrincipal)?.url || null,
+          imagenSecundaria: data.imagenes.find(img => !img.esPrincipal)?.url || null,
+          imagenAdicional1: data.imagenes[2]?.url || null,
+          imagenAdicional2: data.imagenes[3]?.url || null, 
+          imagenAdicional3: data.imagenes[4]?.url || null,
+          imagenPrincipalPreview: null,
+          imagenSecundariaPreview: null,
+          imagenAdicional1Preview: null,
+          imagenAdicional2Preview: null,
+          imagenAdicional3Preview: null,
+          caracteristicas: data.caracteristicas ||[],
           
         });
       } catch (error) {
@@ -90,6 +121,13 @@ const Administrador = () => {
         imagenSecundaria: null,
         imagenAdicional1:null,
         imagenAdicional2: null,
+        imagenAdicional3: null,
+        caracteristicas: [],
+        imagenPrincipalPreview: null,
+        imagenSecundariaPreview: null,
+        imagenAdicional1Preview: null,
+        imagenAdicional2Preview: null,
+        imagenAdicional3Preview: null,
       });
     }
     setMaestroEditado(maestro);
@@ -103,14 +141,18 @@ const Administrador = () => {
   };
 
   const handleSave = async () => {
-    console.log(formData);
     if (!formData.nombre || !formData.tipoProducto || !formData.descripcion || !formData.categoria) {
       setError("❌ Todos los campos son obligatorios.");
       return;
     }
 
-    if (!formData.imagenPrincipal || !formData.imagenSecundaria || !formData.imagenAdicional1 || !formData.imagenAdicional2) {
+    if (!formData.imagenPrincipal || !formData.imagenSecundaria || !formData.imagenAdicional1 || !formData.imagenAdicional2 || !formData.imagenAdicional3) {
       setError("❌ Debes subir todas las imágenes.");
+      return;
+    }
+
+    if (!formData.caracteristicas) {
+      setError("❌ Debes elegir las caracteristicas.");
       return;
     }
 
@@ -120,13 +162,14 @@ const Administrador = () => {
       nombre: formData.nombre,
       descripcion: formData.descripcion,
       imagen: { 
-        url: formData.imagen, 
+        url: "https://ejemplo.com/imagen.jpg", 
         esPrincipal: true 
       },
       categoria: { id: parseInt(formData.categoria) },
       tamano: formData.tamano,
       isDisponible: formData.isDisponible === "true" || formData.isDisponible === true,
-      precioUnitario: parseFloat(formData.precioUnitario)
+      precioUnitario: parseFloat(formData.precioUnitario),
+      caracteristicas: formData.caracteristicas,
     };
     console.log("📤 Payload a enviar:", payload);
     try {
@@ -136,31 +179,31 @@ const Administrador = () => {
         maestroResponse = await axios.put(`${API_URL}/habitaciones/${maestroEditado.id}`, payload, {
           headers: { "Content-Type": "application/json" }
         });
+
+        const updatedImages = await handleUpdateImages(maestroEditado.id, formData, maestroResponse.data.imagenes);
+        console.log("📸 Imágenes actualizadas:", updatedImages);
       } else {
  
         maestroResponse = await axios.post(`${API_URL}/habitaciones`, payload, {
           headers: { "Content-Type": "application/json" }
         });
-      }
 
+        const uploadedImages = await handleUploadImages(maestroResponse.data.id);
+        console.log("📸 Imágenes subidas:", uploadedImages);
+  
+        if (uploadedImages.imagenPrincipal) {
+          await axios.put(`${API_URL}/imagenes/${uploadedImages.imagenPrincipal}/principal?habitacionId=${maestroResponse.data.id}`, {
+            headers: { "Content-Type": "application/json" }
+          });
+          console.log("⭐ Imagen principal establecida.");
+        }
+      }
 
       const habitacionId = maestroResponse.data.id;
 
-      const uploadedImages = await handleUploadImages(habitacionId);
-      console.log("📸 Imágenes subidas:", uploadedImages);
-
-      if (uploadedImages.imagenPrincipal) {
-        await axios.put(`${API_URL}/imagenes/${uploadedImages.imagenPrincipal}/principal?habitacionId=${habitacionId}`, {
-          headers: { "Content-Type": "application/json" }
-        });
-        console.log("⭐ Imagen principal establecida.");
+      if(habitacionId){
+        await handleSaveCaracteristicas(habitacionId);
       }
-
-      const imagenId = formData.imagenId;
-      const responseImage = await axios.put(`${API_URL}/imagenes/${imagenId}/principal?habitacionId=${habitacionId}`, {
-        headers: { "Content-Type": "application/json" }
-      });
-      console.log(responseImage)
 
       if (maestroEditado) {
         dispatch({ type: "EDITAR_MAESTRO", payload: maestroResponse.data });
@@ -187,15 +230,39 @@ const Administrador = () => {
     handleCloseModal();
   };
 
+  const handleSaveCaracteristicas = async (habitacionId) => {
+    try {
+      const caracteristicasIds = formData.caracteristicas.map(caracteristica => caracteristica.id);
+      const response = await axios.put(`${API_URL}/habitaciones/${habitacionId}/caracteristicas`, caracteristicasIds, {
+        headers: { "Content-Type": "application/json" },
+      });
+  
+      console.log("✅ Características agregadas:", response.data);
+    } catch (error) {
+      console.error("❌ Error al agregar características:", error);
+    }
+  };
+  
+  const deleteImage = (imageId) => {
+    axios.delete(`${API_URL}/imagenes/${imageId}`)
+      .then(response => {
+        console.log("Imagen eliminada correctamente", response);
+      })
+      .catch(error => {
+        console.error("Error al eliminar imagen", error);
+      });
+  };
+
   const handleUploadImages = async (habitacionId) => {
     const imageFiles = {
       imagenPrincipal: formData.imagenPrincipal,
       imagenSecundaria: formData.imagenSecundaria,
       imagenAdicional1: formData.imagenAdicional1,
-      imagenAdicional2: formData.imagenAdicional2
+      imagenAdicional2: formData.imagenAdicional2,
+      imagenAdicional3: formData.imagenAdicional3,
     };
   
-    const uploadedImages = {}; // 📌 Almacenará los IDs de las imágenes subidas
+    const uploadedImages = {};
   
     try {
       for (const [key, file] of Object.entries(imageFiles)) {
@@ -208,7 +275,6 @@ const Administrador = () => {
           });
   
           uploadedImages[key] = response.data.id;
-          console.log(`✅ ${key} subida con ID: ${response.data}`);
         }
       }
     } catch (error) {
@@ -219,6 +285,65 @@ const Administrador = () => {
     return uploadedImages;
   };
   
+  const handleUpdateImages = async (habitacionId, formData, existingImages) => {
+    const imageFiles = {
+      imagenPrincipal: formData.imagenPrincipal,
+      imagenSecundaria: formData.imagenSecundaria,
+      imagenAdicional1: formData.imagenAdicional1,
+      imagenAdicional2: formData.imagenAdicional2,
+      imagenAdicional3: formData.imagenAdicional3,
+    };
+  
+    const updatedImages = { imagenPrincipal: null, imagenSecundaria: [], imagenAdicional: [] };
+  
+    // Recorrer las imágenes que se han subido
+    for (const [key, file] of Object.entries(imageFiles)) {
+      if (file) {
+        const existingImage = existingImages.find(img => img.url === file.url);
+        // Si la imagen no existe o si es diferente a la anterior, se debe eliminar y subir la nueva
+        if (!existingImage) {
+          const formDataImage = new FormData();
+          formDataImage.append("imagen", file);
+  
+          try {
+            const response = await axios.post(`${API_URL}/imagenes/${habitacionId}`, formDataImage, {
+              headers: { "Content-Type": "multipart/form-data" },
+            });
+  
+            updatedImages[key] = response.data.id;
+  
+            if (key === "imagenPrincipal") {
+              await axios.put(`${API_URL}/imagenes/${response.data.id}/principal?habitacionId=${habitacionId}`, {
+                headers: { "Content-Type": "application/json" },
+              });
+              console.log("⭐ Imagen principal actualizada.");
+            }
+          } catch (error) {
+            console.error("❌ Error al subir imagen:", error);
+          }
+        } else {
+          updatedImages[key] = existingImage.id;
+        }
+      }
+    }
+    const imagesToDelete = existingImages.filter(existingImage => {
+      // Si la imagen actual no está entre las nuevas imágenes, se debe eliminar
+      return !Object.values(updatedImages).includes(existingImage.id);
+    });
+
+    for (const image of imagesToDelete) {
+      try {
+        await axios.delete(`${API_URL}/imagenes/${image.id}`, {
+          headers: { "Content-Type": "application/json" },
+        });
+        console.log(`Imagen ${image.id} eliminada.`);
+      } catch (error) {
+        console.error("❌ Error al eliminar imagen:", error);
+      }
+    }
+  
+    return updatedImages;
+  };
   
 
   const handleDelete = (id) => { 
@@ -411,29 +536,31 @@ useEffect(() => {
                 required
               ></textarea>
 
-              {/* <label>Características:</label>
+              <label>Características:</label>
               <select
                 name="caracteristicas"
                 multiple
-                value={formData.caracteristicas || []}
-                onChange={(e) =>
+                value={formData.caracteristicas.map(car => car.id) || []}  // Mostrar los ids seleccionados
+                onChange={(e) => {
+                  const selectedIds = Array.from(e.target.selectedOptions, (option) => option.value);  // obtener solo los ids seleccionados
                   setFormData({
-                  ...formData,
-                  caracteristicas: Array.from(e.target.selectedOptions, (option) => option.value),
-                  })
-                  }
-                  className="multi-select">
-                  {dataFeature?.length > 0 ? (
-                    dataFeature.map((car, index) => (
-                      <option key={index} value={car.id}>
-                        {car.nombre}
-                      </option>
-                    ))
-                  ) : (
-                    <option disabled>Cargando opciones...</option>
-                  )}
-              
-              </select> */}
+                    ...formData,
+                    caracteristicas: selectedIds.map(id => ({ id }))  // actualizar el estado con los objetos completos
+                  });
+                }}
+                className="multi-select"
+              >
+                {dataFeature?.length > 0 ? (
+                  dataFeature.map((car, index) => (
+                    <option key={index} value={car.id}>
+                      {car.nombre}
+                    </option>
+                  ))
+                ) : (
+                  <option disabled>Cargando opciones...</option>
+                )}
+              </select>
+
 
               {/*<label>Imagen Principal:</label>
               <ImageSelect
@@ -453,21 +580,56 @@ useEffect(() => {
                 }}
               />
               {formData.imagen && <img src={formData.imagen} alt="Imagen seleccionada" className="preview-img" />}*/}
+              {maestroEditado && <p>Esta editando los datos, por favor vuelve a subir todas las imágenes</p>}
               <label>Imagen Principal:</label>
               <input type="file" name="imagenPrincipal" accept="image/*" onChange={handleImageChange} />
-              {formData.imagenPrincipal && <img src={formData.imagenPrincipal} alt="Imagen Principal" width="100" />}
+              {formData.imagenPrincipalPreview ? (
+                <img src={formData.imagenPrincipalPreview} alt="Imagen Principal" width="100" />
+              ) : formData.imagenPrincipal ? (
+                <img src={formData.imagenPrincipal} alt="Imagen Principal" width="100" />
+              ) : (
+                <p>No hay imagen</p>
+              )}
   
               <label>Imagen Secundaria:</label>
               <input type="file" name="imagenSecundaria" accept="image/*" onChange={handleImageChange} />
-              {formData.imagenSecundaria && <img src={formData.imagenSecundaria} alt="Imagen Secundaria" width="100" />}
+              {formData.imagenSecundariaPreview ? (
+                <img src={formData.imagenSecundariaPreview} alt="Imagen Secundaria" width="100" />
+              ) : formData.imagenSecundaria ? (
+                <img src={formData.imagenSecundaria} alt="Imagen Secundaria" width="100" />
+              ) : (
+                <p>No hay imagen</p>
+              )}
 
               <label>Imagen Principal:</label>
               <input type="file" name="imagenAdicional1" accept="image/*" onChange={handleImageChange} />
-              {formData.imagenAdicional1 && <img src={formData.imagenAdicional1} alt="Imagen Principal" width="100" />}
+              {formData.imagenAdicional1Preview ? (
+                <img src={formData.imagenAdicional1Preview} alt="Imagen Adicional 1" width="100" />
+              ) : formData.imagenAdicional1 ? (
+                <img src={formData.imagenAdicional1} alt="Imagen Adicional 1" width="100" />
+              ) : (
+                <p>No hay imagen</p>
+              )}
   
               <label>Imagen Secundaria:</label>
               <input type="file" name="imagenAdicional2" accept="image/*" onChange={handleImageChange} />
-              {formData.imagenAdicional2 && <img src={formData.imagenAdicional2} alt="Imagen Secundaria" width="100" />}
+              {formData.imagenAdicional2Preview ? (
+                <img src={formData.imagenAdicional2Preview} alt="Imagen Adicional 2" width="100" />
+              ) : formData.imagenAdicional2 ? (
+                <img src={formData.imagenAdicional2} alt="Imagen Adicional 2" width="100" />
+              ) : (
+                <p>No hay imagen</p>
+              )}
+
+              <label>Imagen Secundaria:</label>
+              <input type="file" name="imagenAdicional3" accept="image/*" onChange={handleImageChange} />
+              {formData.imagenAdicional3Preview ? (
+                <img src={formData.imagenAdicional3Preview} alt="Imagen Adicional 3" width="100" />
+              ) : formData.imagenAdicional3 ? (
+                <img src={formData.imagenAdicional3} alt="Imagen Adicional 3" width="100" />
+              ) : (
+                <p>No hay imagen</p>
+              )}
 
             </div>
 

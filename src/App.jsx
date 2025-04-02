@@ -11,6 +11,7 @@ import GestionCaracteristicas from "./Routes/GestionCaracteristicas.jsx";
 import UserManagement from "./Routes/UserManagement.jsx";
 import Login from "./Routes/Login.jsx";
 import PrivateRoute from "./Routes/PrivateRoute"; 
+import Search from "./Routes/Search.jsx";
 
 function App() {
   const [usuario, setUsuario] = useState(null);
@@ -27,6 +28,7 @@ function App() {
           <Route path="habitacion/:id" element={<Habitaciones />} />
           <Route path="galeria/:id" element={<Galeria />} />
           <Route path="registro" element={<Registro />} />
+          <Route path="busqueda" element={<Search />} />
           <Route path="login" element={!usuario? <Login setUsuario={setUsuario} /> : <Navigate to={usuario.rol === "ADMIN" ? "/administrador" : ""} />} />
         </Route>
 

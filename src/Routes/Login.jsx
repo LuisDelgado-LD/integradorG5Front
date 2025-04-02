@@ -1,97 +1,80 @@
-import { useState, useContext, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../Context/utils/globalContext";
+import usuariosService from "../services/usuariosService";
+import { setAuthToken } from "../services/api";
 
-const Login = ({ setUsuario }) => {
+const Login = () => {
   const { dispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
-  const location = useLocation();
-  const mensajeReserva = location.state?.mensaje || ""; 
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [errors, setErrors] = useState({});
 
-  useEffect(() => {
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("token");
-  }, []);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errores, setErrores] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
-  };
-
-  const handleSubmit = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
+    setErrores({});
+    setLoading(true);
 
-    const usuariosGuardados = JSON.parse(localStorage.getItem("usuarios")) || [];
-    const usuarioRegistrado = usuariosGuardados.find(
-      (u) => u.email === formData.email && u.password === formData.password
-    );
+    try {
+      const res = await usuariosService.login({ email, password });
+      const { accessToken } = res.data;
+      setAuthToken(accessToken);
 
-    let newErrors = {};
-    if (!usuarioRegistrado) {
-      newErrors.email = "Correo o contraseña inválidos";
-      newErrors.password = "Correo o contraseña inválidos";
-    }
+      const userRes = await usuariosService.getCurrentUser();
+      const usuario = userRes.data;
 
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setFormData({ email: "", password: "" });
-      return;
-    }
-    const token = "mocked_token";
-    localStorage.setItem("usuario", JSON.stringify(usuarioRegistrado));
-    localStorage.setItem("token", token);
-    setUsuario(usuarioRegistrado);
-    dispatch({ type: "LOGIN", payload: { usuario: usuarioRegistrado, token } });
+      dispatch({ type: "LOGIN", payload: { usuario, token: accessToken } });
 
-    alert("Inicio de sesión exitoso");
-
-    if (location.state?.redirectTo) {
-      navigate(location.state.redirectTo);
-    } else {
-      navigate(usuarioRegistrado.rol === "Administrador" ? "/administrador" : "/");
+      navigate(usuario.rol === "ADMIN" ? "/administrador" : "/");
+    } catch (error) {
+      const msg =
+        error.response?.data?.message || "Credenciales incorrectas o error de servidor";
+      setErrores({ general: msg });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-container">
-      <div className="login-box">
-        <img src="/img/imagendeinicio.png" alt="Inicio" className="login-image" />
-        <h2 className="login-title">¡Bienvenido nuevamente!</h2>
+      <img className="login-footer-image" src="/img/imagendepie.png" alt="pie" />
+      <form className="login-box" onSubmit={handleLogin}>
+        <img src="/img/imagendeinicio.png" alt="inicio" className="login-image" />
+        <h2 className="login-title">Iniciar sesión</h2>
 
-        {mensajeReserva && <p className="info-message">{mensajeReserva}</p>}
+        <input
+          className={`login-input ${errores.email ? "error" : ""}`}
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        {errores.email && <div className="error-message">{errores.email}</div>}
 
-        <form onSubmit={handleSubmit}>
-          <input
-            type="email"
-            name="email"
-            placeholder="Correo electrónico"
-            value={formData.email}
-            onChange={handleChange}
-            className={`login-input ${errors.email ? "error" : ""}`}
-          />
-          {errors.email && <p className="error-message">{errors.email}</p>}
+        <input
+          className={`login-input ${errores.password ? "error" : ""}`}
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {errores.password && <div className="error-message">{errores.password}</div>}
 
-          <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChange={handleChange}
-            className={`login-input ${errors.password ? "error" : ""}`}
-          />
-          {errors.password && <p className="error-message">{errors.password}</p>}
+        {errores.general && <div className="error-message">{errores.general}</div>}
 
-          <div className="login-buttons">
-            <button type="submit" className="login-btn primary">Iniciar Sesión</button>
-            <button type="button" className="login-btn secondary" onClick={() => setFormData({ email: "", password: "" })}>
-              Cancelar
-            </button>
-          </div>
-        </form>
-      </div>
-      <img src="/img/imagendepie.png" alt="Pie" className="login-footer-image" />
+        <div className="login-buttons">
+          <button
+            type="submit"
+            className="login-btn primary"
+            disabled={loading}
+          >
+            {loading ? "Cargando..." : "Entrar"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

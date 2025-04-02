@@ -1,78 +1,46 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import Card from "../Components/Card";
-
-const mezclar = (array) => {
-  return array
-    .map((item) => ({ item, sort: Math.random() }))
-    .sort((a, b) => a.sort - b.sort)
-    .map(({ item }) => item);
-};
+import habitacionesService from "../services/habitacionesService";
+import caracteristicasService from "../services/caracteristicasService";
 
 const Home = () => {
-  const { state, dispatch } = useContext(GlobalContext);
+  const { dispatch, state } = useContext(GlobalContext);
+
   const [habitaciones, setHabitaciones] = useState([]);
-  const [paginaActual, setPaginaActual] = useState(1);
-  const habitacionesPorPagina = 8;
+  const [paginaActual, setPaginaActual] = useState(0); // base 0
+  const [totalPaginas, setTotalPaginas] = useState(1);
+  const [loading, setLoading] = useState(true);
+
+  const cargarHabitaciones = async (pagina = 0) => {
+    setLoading(true);
+    try {
+      const res = await habitacionesService.getByPage(pagina);
+      setHabitaciones(res.content);
+      setTotalPaginas(res.totalPages);
+      setPaginaActual(res.number);
+    } catch (error) {
+      console.error("Error al cargar habitaciones:", error);
+      alert("Error al cargar habitaciones");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const cargarCaracteristicas = async () => {
+    try {
+      const res = await caracteristicasService.getAll();
+      dispatch({ type: "SET_CARACTERISTICAS", payload: res });
+    } catch (error) {
+      console.error("Error al cargar servicios:", error);
+    }
+  };
 
   useEffect(() => {
-    const pequenas = [
-      "Chihuahua", "Pomerania", "Yorkshire", "Pinscher", "Maltés",
-      "Pekinés", "Papillón", "Shih Tzu", "Bichón Frisé", "Toy Poodle"
-    ];
-    const medianas = [
-      "Beagle", "Cocker", "Border Collie", "Bulldog Francés", "Schnauzer",
-      "Staffordshire Bull Terrier", "Basenji", "Whippet", "Shetland Sheepdog",
-      "American Eskimo", "Shiba Inu", "Corgi", "Springer Spaniel", "Australian Shepherd", "Samoyedo"
-    ];
-    const grandes = [
-      "Labrador", "Golden Retriever", "Pastor Alemán", "Husky Siberiano", "Rottweiler"
-    ];
-
-    let todas = [];
-
-    pequenas.forEach((nombre, i) => {
-      todas.push({
-        id: i + 1,
-        nombre,
-        imagen: "/img/PalacioPeludo.png",
-        descripcion: "Espacio acogedor ideal para razas pequeñas.",
-        categoria: "Básico",
-        tipo: "Pequeña"
-      });
-    });
-
-    medianas.forEach((nombre, i) => {
-      todas.push({
-        id: i + 11,
-        nombre,
-        imagen: "/img/RefugioConfortable.png",
-        descripcion: "Ideal para razas medianas con energía y curiosidad.",
-        categoria: "Premium",
-        tipo: "Mediana"
-      });
-    });
-
-    grandes.forEach((nombre, i) => {
-      todas.push({
-        id: i + 26,
-        nombre,
-        imagen: "/img/CuevaAcogedora.png",
-        descripcion: "Amplio y cómodo para razas grandes.",
-        categoria: "VIP",
-        tipo: "Grande"
-      });
-    });
-
-    localStorage.setItem("habitacionesMock", JSON.stringify(todas));
-    setHabitaciones(mezclar(todas));
-    dispatch({ type: "SET_HABITACIONES", payload: todas });
+    cargarHabitaciones();
+    cargarCaracteristicas();
   }, []);
 
-  const totalPaginas = Math.ceil(habitaciones.length / habitacionesPorPagina);
-  const inicio = (paginaActual - 1) * habitacionesPorPagina;
-  const habitacionesPagina = habitaciones.slice(inicio, inicio + habitacionesPorPagina);
-  const servicios = state.privilegiosAlojamientos || [];
   const categorias = [
     { nombre: "Básico", icono: "/img/1patita.png" },
     { nombre: "Premium", icono: "/img/2patitas.png" },
@@ -96,31 +64,66 @@ const Home = () => {
 
       <div style={{ marginBottom: "3cm" }}>
         <h2 className="section-title">Habitaciones</h2>
-        <div className="card-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
-          {habitacionesPagina.map((habitacion) => (
-            <Card key={habitacion.id} {...habitacion} />
-          ))}
-        </div>
+        {loading ? (
+          <p>Cargando habitaciones...</p>
+        ) : (
+          <>
+            <div className="card-grid" style={{ gridTemplateColumns: "repeat(2, 1fr)" }}>
+              {habitaciones.map((hab) => (
+                <Card
+                  key={hab.id}
+                  id={hab.id}
+                  nombre={hab.nombre}
+                  imagen={
+                    hab.imagenes?.find((img) => img.esPrincipal)?.url ||
+                    hab.imagenes?.[0]?.url ||
+                    ""
+                  }
+                  precio={hab.precioUnitario}
+                  categoria={hab.categoria}
+                  caracteristicas={hab.caracteristicas}
+                />
+              ))}
+            </div>
 
-        <div className="paginacion-container">
-          <button disabled={paginaActual === 1} onClick={() => setPaginaActual(paginaActual - 1)}>Anterior</button>
-          <span style={{ margin: "0 10px" }}>
-            Página {paginaActual} de {totalPaginas}
-          </span>
-          <button disabled={paginaActual === totalPaginas} onClick={() => setPaginaActual(paginaActual + 1)}>Siguiente</button>
-        </div>
+            <div className="paginacion-container">
+              <button disabled={paginaActual === 0} onClick={() => cargarHabitaciones(paginaActual - 1)}>
+                Anterior
+              </button>
+              <span style={{ margin: "0 10px" }}>
+                Página {paginaActual + 1} de {totalPaginas}
+              </span>
+              <button
+                disabled={paginaActual + 1 === totalPaginas}
+                onClick={() => cargarHabitaciones(paginaActual + 1)}
+              >
+                Siguiente
+              </button>
+            </div>
+          </>
+        )}
       </div>
 
       <div>
         <h2 className="section-title">Servicios incluidos</h2>
-        <div style={{
-          display: "flex",
-          overflowX: "auto",
-          gap: "20px",
-          padding: "10px 0"
-        }}>
-          {servicios.map((servicio) => (
-            <Card key={servicio.id} {...servicio} />
+        <div
+          style={{
+            display: "flex",
+            overflowX: "auto",
+            gap: "20px",
+            padding: "10px 0",
+          }}
+        >
+          {state.caracteristicas?.map((car) => (
+            <div key={car.id} className="card servicio">
+              <img
+                src={car.icono}
+                alt={car.nombre}
+                className="card-img"
+                style={{ width: "64px", height: "64px", margin: "auto" }}
+              />
+              <h3 className="card-title">{car.nombre}</h3>
+            </div>
           ))}
         </div>
       </div>
@@ -129,4 +132,4 @@ const Home = () => {
   );
 };
 
-export default Home;      
+export default Home;

@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { GlobalContext } from "../Context/utils/globalContext";
 import { useSearchParams } from "react-router-dom";
 import Card from "../Components/Card"; // Asegúrate de que esta ruta sea correcta
+import axios from "axios";
 
 const options = [
     {id: "1" ,nombre: "Chihuahua", imagen: "/img/PalacioPeludo.png", "fecha_ingreso": "2024-04-22", "fecha_salida": "2024-06-06"},
@@ -36,6 +38,8 @@ const options = [
   ]
 
 const Search = () => {
+  const { state, dispatch } = useContext(GlobalContext);
+    const { API_URL } = state;
   const [searchParams] = useSearchParams();
   const [habitaciones, setHabitaciones] = useState([]);
 
@@ -79,30 +83,38 @@ const Search = () => {
 
 // comentar el siguiente useeffect cuando se tenga listo la api
 useEffect(() => {
-    setIsLoading(true);
-    setError(null);
-    const raza = searchParams.get("raza")?.toLowerCase() || "";
-    const fechaIngreso = searchParams.get("fecha_ingreso");
-    const fechaSalida = searchParams.get("fecha_salida");
+  setIsLoading(true);
+  setError(null);
 
-    let resultados = options;
+  const nombre = searchParams.get("nombre")?.toLowerCase() || "";
+  const fechaIngreso = searchParams.get("fecha_ingreso");
+  const fechaSalida = searchParams.get("fecha_salida");
 
-    if (raza) {
-      resultados = resultados.filter((perro) => perro.nombre.toLowerCase().includes(raza));
+  const fetchData = async () => {
+    try {
+      let response;
+      if (nombre) {
+        response = await axios.get(`${API_URL}/habitaciones/Nombre`, {
+          params: { nombre },
+        });
+        console.log(response)
+      } else {
+        response = await axios.get(`${API_URL}/habitaciones/disponibles`, {
+          params: { fechaEntrada: fechaIngreso, fechaSalida },
+        });
+      }
+
+      setHabitaciones(response.data);
+    } catch (error) {
+      console.error("Error al obtener habitaciones:", error);
+      setError("No se encontraron resultados.");
+    } finally {
       setIsLoading(false);
     }
+  };
 
-    if (fechaIngreso && fechaSalida) {
-      resultados = resultados.filter(
-        (perro) =>
-          new Date(perro.fecha_ingreso) <= new Date(fechaSalida) &&
-          new Date(perro.fecha_salida) >= new Date(fechaIngreso)
-      );
-      setIsLoading(false);
-    }
-
-    setHabitaciones(resultados);
-  }, [searchParams]);
+  fetchData();
+}, [searchParams]);
 
   return (
     <div>
@@ -112,7 +124,13 @@ useEffect(() => {
       <div style={styles.cardContainer}>    
         {habitaciones.length > 0 ? (
           habitaciones.map((habitacion) => (
-            <Card key={habitacion.id} {...habitacion} />
+            <Card 
+              key={habitacion.id} 
+              id={habitacion.id} 
+              nombre={habitacion.nombre} 
+              imagen={habitacion.imagenes.find(img => img.esPrincipal)?.url || "URL_IMAGEN_DEFAULT"} 
+              ruta={`/habitacion/${habitacion.id}`}
+            />
           ))
         ) : (
             !isLoading && <p>No se encontraron resultados.</p>

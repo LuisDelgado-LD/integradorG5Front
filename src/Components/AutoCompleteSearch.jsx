@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { GlobalContext } from "../Context/utils/globalContext";
 import Select from "react-select";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const options = [
   { value: "chihuahua", label: "Chihuahua" },
@@ -36,8 +38,11 @@ const options = [
 ];
 
 const AutocompleteSearch = ({ onSelect }) => {
+  const { state, dispatch } = useContext(GlobalContext);
+  const { API_URL } = state;
   const [selectedOption, setSelectedOption] = useState(null);
   const navigate = useNavigate();
+  const [habitaciones, setHabitaciones] = useState([]);
 
   const handleChange = (option) => {
     setSelectedOption(option);
@@ -46,14 +51,47 @@ const AutocompleteSearch = ({ onSelect }) => {
 
   const handleSearch = () => {
     if (selectedOption) {
-      navigate(`/busqueda?raza=${selectedOption.value}`);
+      navigate(`/busqueda?nombre=${selectedOption.label}`);
     }
   };
+
+  const obtenerHabitaciones = async () => {
+    try {
+        let todasLasHabitaciones = [];
+        let pagina = 0;
+        let totalPages = 1; // Inicializamos en 1 para entrar al bucle
+    
+        while (pagina < totalPages) {
+          const response = await axios.get(`${API_URL}/habitaciones/all`, {
+            params: { page: pagina, size: 10 }, // Aseguramos que se pagine correctamente
+          });
+    
+          const { content, totalPages: nuevasTotalPages } = response.data;
+          todasLasHabitaciones = [...todasLasHabitaciones, ...content];
+          totalPages = nuevasTotalPages; // Actualizamos el número total de páginas
+          pagina++; // Avanzamos a la siguiente página
+        }
+    
+        // Transformamos los datos para que sean compatibles con react-select
+        const habitacionesOptions = todasLasHabitaciones.map(habitacion => ({
+          label: habitacion.nombre,
+          value: habitacion.id,
+        }));
+    
+        setHabitaciones(habitacionesOptions);
+    } catch (error) {
+      console.error('Error al obtener las habitaciones:', error);
+    }
+  };
+
+  useEffect(() => {
+    obtenerHabitaciones();
+  }, []);
 
   return (
     <div style={styles.searchContainer}>
       <Select
-        options={options}
+        options={habitaciones}
         value={selectedOption}
         onChange={handleChange}
         placeholder="Busca una raza de perro..."

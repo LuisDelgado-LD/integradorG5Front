@@ -109,44 +109,52 @@ const GestionCaracteristicas = () => {
 
 
   return (
-    <div className="admin-container">
-      <h2>Administrar Características</h2>
-      <div className="form-container">
+    <div className="admin-container" style={styles.adminContainer}>
+      <h2 style={styles.title}>Administrar Características</h2>
+      <div style={styles.formContainer}>
         <input
           type="text"
           name="nombre"
           placeholder="Nombre de la característica"
           value={formData.nombre}
           onChange={handleChange}
+          style={styles.input}
         />
         <input
           type="file"
           ref={fileInputRef}
           name="icono"
-          placeholder="URL del ícono"
           onChange={handleChange}
+          style={styles.input}
         />
-        {formData.icono && (
-  <div style={{ margin: "10px 0" }}>
-    <strong>Vista previa del ícono:</strong>
-    <br />
-    <img src={formData.icono} alt="Ícono" style={{ width: "40px", height: "40px" }} />
-  </div>
-)}
-        <button onClick={handleSave}>{editando !== null ? "Actualizar" : "Guardar"}</button>
+        <button onClick={handleSave} style={styles.button}>
+          {editando !== null ? "Actualizar" : "Guardar"}
+        </button>
       </div>
-      <ul>
+      <ul style={styles.list}>
         {caracteristicas.map((car, i) => (
-          <li key={i}>
-            <img src={car.icono} alt={car.nombre} style={{ width: "30px" }} />
+          <li key={i} style={styles.listItem}>
+            <img src={car.icono} alt={car.nombre} style={styles.icon} />
             {car.nombre}
-            <FaEdit onClick={() => handleEdit(i)} style={{ cursor: "pointer", margin: "0 10px" }} />
-            <FaTrash onClick={() => handleDelete(i)} style={{ cursor: "pointer" }} />
+            <FaEdit onClick={() => handleEdit(i)} style={styles.iconButton} />
+            <FaTrash onClick={() => handleDelete(i)} style={styles.iconButton} />
           </li>
         ))}
       </ul>
     </div>
   );
+};
+
+const styles = {
+  adminContainer: { padding: "20px", maxWidth: "600px", margin: "auto", fontFamily: "Arial, sans-serif" },
+  title: { textAlign: "center", marginBottom: "20px" },
+  formContainer: { display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" },
+  input: { padding: "8px", border: "1px solid #ccc", borderRadius: "4px" },
+  button: { padding: "10px", background: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" },
+  list: { listStyle: "none", padding: 0 },
+  listItem: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px", borderBottom: "1px solid #ccc" },
+  icon: { width: "30px", height: "30px", borderRadius: "4px" },
+  iconButton: { cursor: "pointer", marginLeft: "10px" }
 };
 
 export default GestionCaracteristicas;

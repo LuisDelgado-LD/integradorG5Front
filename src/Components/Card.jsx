@@ -15,7 +15,7 @@ const Card = ({ id, nombre, imagen, ruta }) => {
   return (
     <div className="card" onClick={manejarClick}>
       <img
-        src={imagen}
+        src={imagen && imagen.trim() ? imagen : "/img/not-found.jpg"}
         alt={nombre}
         className="card-img clickable"
       />

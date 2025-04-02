@@ -2250,3 +2250,34 @@ textarea {
 
 
 /* FIN PAGINACION */
+
+
+.autocomplete-suggestions {
+  position: absolute;
+  width: 100%;
+  background: white;
+  border-radius: 6px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 5px;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.suggestion-item:hover {
+  background: #007bff;
+  color: white;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

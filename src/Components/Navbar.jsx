@@ -107,7 +107,6 @@ const Navbar = () => {
     if (startDate && date) {
       const formattedStart = startDate.toISOString().split("T")[0];
       const formattedEnd = date.toISOString().split("T")[0];
-
       navigate(`/busqueda?fecha_ingreso=${formattedStart}&fecha_salida=${formattedEnd}`);
     }
   };

@@ -114,13 +114,9 @@ const Habitaciones = () => {
       <br />
       <br />
       <br />
-      <div className="Textos-Descripcion">
-        <p className="P1"><strong>Características:</strong></p>
-        <p className="P2"><strong>Selecciona tu rango de fechas:</strong></p>
-      </div>
       <div className="habitacion-container2">
         <div className="contenido1">
-          
+        <p className="P1"><strong>Características:</strong></p>
           <ul>
             {caracteristicasPorCategoria[habitacion.categoria].map((car, index) => (
               <li key={index}>
@@ -131,13 +127,21 @@ const Habitaciones = () => {
         </div>
 
         <div className="contenido2">
-          <DatePicker selected={fechaInicio} onChange={setFechaInicio} placeholderText="Fecha de inicio" />
-          <DatePicker selected={fechaFin} onChange={setFechaFin} placeholderText="Fecha de fin" />
-        </div>
-      </div>
-      <button onClick={reservar} disabled={!fechaInicio || !fechaFin} style={{ backgroundColor: "#30384D", color: "white" }}>
+          <div>
+            <p className="P2"><strong>Selecciona tu rango de fechas:</strong></p>
+          </div>
+          <div>
+            <DatePicker selected={fechaInicio} onChange={setFechaInicio} placeholderText="Fecha de inicio" />
+            <DatePicker selected={fechaFin} onChange={setFechaFin} placeholderText="Fecha de fin" />
+          </div>
+          <div className="ReservarButtom">
+        <button onClick={reservar} disabled={!fechaInicio || !fechaFin} style={{ backgroundColor: "#30384D", color: "white" }}>
           Reservar ahora
         </button>
+      </div>
+        </div>
+      </div>
+      
     </div>
   );
 };

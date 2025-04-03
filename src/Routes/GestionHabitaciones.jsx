@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import habitacionesService from "../services/habitacionesService";
+import habitacionesService from "../services/HabitacionesService";
 
 const GestionHabitaciones = () => {
   const [habitaciones, setHabitaciones] = useState([]);

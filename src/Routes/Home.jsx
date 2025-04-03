@@ -1,14 +1,14 @@
 import { useEffect, useState, useContext } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import Card from "../Components/Card";
-import habitacionesService from "../services/habitacionesService";
-import caracteristicasService from "../services/caracteristicasService";
+import habitacionesService from "../services/HabitacionesService";
+import caracteristicasService from "../services/CaracteristicasService";
 
 const Home = () => {
   const { dispatch, state } = useContext(GlobalContext);
 
   const [habitaciones, setHabitaciones] = useState([]);
-  const [paginaActual, setPaginaActual] = useState(0); // base 0
+  const [paginaActual, setPaginaActual] = useState(0); 
   const [totalPaginas, setTotalPaginas] = useState(1);
   const [loading, setLoading] = useState(true);
 

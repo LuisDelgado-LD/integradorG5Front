@@ -22,6 +22,7 @@ const Login = () => {
       const res = await usuariosService.login({ email, password });
       const { accessToken } = res.data;
       setAuthToken(accessToken);
+      localStorage.setItem("token", accessToken); 
 
       const userRes = await usuariosService.getCurrentUser();
       const usuario = userRes.data;

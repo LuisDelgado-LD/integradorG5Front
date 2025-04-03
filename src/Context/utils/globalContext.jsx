@@ -20,6 +20,7 @@ const globalReducer = (state, action) => {
       };
 
     case "LOGOUT":
+      localStorage.removeItem("token");
       return {
         ...state,
         usuario: null,

@@ -1,198 +1,164 @@
-import { useContext, useState, useEffect } from "react";
-import { GlobalContext } from "../Context/utils/globalContext";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import reservasService from "../services/reservasService";
+import { GlobalContext } from "../Context/utils/globalContext";
+import usuariosService from "../services/UsuariosService";
+import { setAuthToken } from "../services/Api";
 
-const Reserva = () => {
-  const { state, dispatch } = useContext(GlobalContext);
+const Registro = () => {
+  const { dispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
-  const reserva = state.reserva;
-  const usuario = state.usuario;
 
-  const [fechaInicio, setFechaInicio] = useState(null);
-  const [fechaFin, setFechaFin] = useState(null);
-  const [modalCalendarOpen, setModalCalendarOpen] = useState(false);
-  const [modalConfirmationOpen, setModalConfirmationOpen] = useState(false);
-  const [confirmada, setConfirmada] = useState(false);
+  const [formData, setFormData] = useState({
+    nombre: "",
+    apellido: "",
+    email: "",
+    telefono: "",
+    direccion: "",
+    password: "",
+    confirmPassword: "",
+  });
 
-  useEffect(() => {
-    if (reserva?.fechaInicio && reserva?.fechaFin) {
-      try {
-        setFechaInicio(new Date(reserva.fechaInicio));
-        setFechaFin(new Date(reserva.fechaFin));
-      } catch (e) {
-        console.error("Error al convertir fechas de reserva:", e);
-        setFechaInicio(new Date());
-        setFechaFin(new Date());
-      }
-    } else {
-      setFechaInicio(new Date());
-      setFechaFin(new Date());
+  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const validate = () => {
+    const newErrors = {};
+    if (!formData.nombre.trim()) newErrors.nombre = "El nombre es requerido";
+    if (!formData.apellido.trim()) newErrors.apellido = "El apellido es requerido";
+    if (!formData.email.includes("@")) newErrors.email = "Correo inválido";
+    if (!formData.telefono.trim()) newErrors.telefono = "Teléfono requerido";
+    if (!formData.direccion.trim()) newErrors.direccion = "Dirección requerida";
+    if (formData.password.length < 8 || /^\d+$/.test(formData.password)) {
+      newErrors.password = "La contraseña debe tener al menos 8 caracteres y no ser solo números";
     }
-  }, [reserva]);
-
-  if (!reserva || !reserva.habitacionNombre) {
-    return <p>No hay reserva seleccionada.</p>;
-  }
-
-  const guardarFechas = () => {
-    dispatch({
-      type: "SET_RESERVA",
-      payload: {
-        ...reserva,
-        fechaInicio: fechaInicio.toISOString(),
-        fechaFin: fechaFin.toISOString(),
-      },
-    });
-    setModalCalendarOpen(false);
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Las contraseñas no coinciden";
+    }
+    return newErrors;
   };
 
-  const confirmarReserva = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrors({});
+    const validationErrors = validate();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
+    }
+
+    setLoading(true);
     try {
-      const response = await reservasService.create({
-        usuarioId: usuario.id,
-        habitacionId: reserva.habitacionId,
-        fechaEntrada: fechaInicio.toISOString().split("T")[0],
-        fechaSalida: fechaFin.toISOString().split("T")[0],
+      await usuariosService.register({
+        nombre: formData.nombre,
+        apellido: formData.apellido,
+        email: formData.email,
+        telefono: formData.telefono,
+        direccion: formData.direccion,
+        password: formData.password,
       });
-      console.log("Reserva confirmada:", response);
-      setConfirmada(true);
+
+      const res = await usuariosService.login({
+        email: formData.email,
+        password: formData.password,
+      });
+
+      const { accessToken } = res.data;
+      setAuthToken(accessToken);
+      localStorage.setItem("token", accessToken); 
+
+      const userRes = await usuariosService.getCurrentUser();
+      const usuario = userRes.data;
+
+      dispatch({ type: "LOGIN", payload: { usuario, token: accessToken } });
+      navigate(usuario.rol === "ADMIN" ? "/administrador" : "/");
     } catch (error) {
-      console.error("Error al confirmar reserva:", error);
+      setErrors({ general: "Error al registrar, revisá los campos e intentá de nuevo." });
+    } finally {
+      setLoading(false);
     }
-    setModalConfirmationOpen(true);
   };
-
-  const renderPaws = (categoria) => {
-    const count = categoria === "Básico" ? 1 : categoria === "Premium" ? 2 : 3;
-    return Array.from({ length: count }).map((_, i) => (
-      <img
-        key={i}
-        src="/img/iconoPatita.png"
-        alt="Paw icon"
-        className="paw-icon"
-      />
-    ));
-  };
-
-  const caracteristicas = reserva.habitacionCaracteristicas || [];
 
   return (
-    <div className="reserva-container">
-      <div className="reserva-left">
-        <h2 className="reserva-titulo">Confirmar Reserva</h2>
-
-        <div className="section" style={{ marginTop: "1cm" }}>
-          <h3>La estadía de tu mascota:</h3>
-          <p>
-            <strong>Desde:</strong> {fechaInicio?.toLocaleDateString?.() || "-"}
-          </p>
-          <p>
-            <strong>Hasta:</strong> {fechaFin?.toLocaleDateString?.() || "-"}
-          </p>
-          <button
-            className="edit-btn"
-            style={{ marginTop: "5mm" }}
-            onClick={() => setModalCalendarOpen(true)}
-          >
-            <img
-              src="/img/Calendario.png"
-              alt="Calendario"
-              className="calendar-icon"
-            /> Editar Fecha
-          </button>
-        </div>
-
-        <div className="section" style={{ marginTop: "1cm" }}>
-          <h3>Datos de Contacto:</h3>
-          <p>
-            <strong>Nombre:</strong> {usuario.nombre} {usuario.apellido}
-          </p>
-          <p>
-            <strong>Email:</strong> {usuario.email}
-          </p>
-          <p>
-            <strong>Teléfono:</strong> {usuario.telefono}
-          </p>
-        </div>
-
-        <div className="section" style={{ marginTop: "1cm" }}>
-          <h3>Políticas de Cancelación</h3>
-          <p>Cancelación gratuita hasta una semana antes de la fecha asignada.</p>
-        </div>
-
-        <button className="confirm-btn" onClick={confirmarReserva}>
-          Confirmar Reserva
-        </button>
-      </div>
-
-      <div className="reserva-right">
-        <img
-          src={reserva.habitacionImagen}
-          alt="Habitación"
-          className="habitacion-imagen"
+    <div className="registro-page">
+      <form className="form-container formulario-registro" onSubmit={handleSubmit}>
+        <h2 className="registro-titulo">Registrar usuario</h2>
+        <input
+          name="nombre"
+          placeholder="Nombre"
+          value={formData.nombre}
+          onChange={(e) => setFormData({ ...formData, nombre: e.target.value })}
+          className={errors.nombre ? "input-error" : ""}
         />
-        <p className="habitacion-nombre">{reserva.habitacionNombre}</p>
-        <div className="habitacion-categoria">
-          {renderPaws(reserva.habitacionCategoria)}
-          <span className="categoria-text">{reserva.habitacionCategoria}</span>
-        </div>
-        <div className="caracteristicas">
-          {caracteristicas.map((carac, index) => (
-            <div key={index}>
-              <img src={carac.iconoUrl} alt={carac.nombre} />
-              <span>{carac.nombre}</span>
-            </div>
-          ))}
-        </div>
+        {errors.nombre && <span className="error-msg">{errors.nombre}</span>}
+
+        <input
+          name="apellido"
+          placeholder="Apellido"
+          value={formData.apellido}
+          onChange={(e) => setFormData({ ...formData, apellido: e.target.value })}
+          className={errors.apellido ? "input-error" : ""}
+        />
+        {errors.apellido && <span className="error-msg">{errors.apellido}</span>}
+
+        <input
+          name="email"
+          type="email"
+          placeholder="Correo"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className={errors.email ? "input-error" : ""}
+        />
+        {errors.email && <span className="error-msg">{errors.email}</span>}
+
+        <input
+          name="telefono"
+          placeholder="Teléfono"
+          value={formData.telefono}
+          onChange={(e) => setFormData({ ...formData, telefono: e.target.value })}
+          className={errors.telefono ? "input-error" : ""}
+        />
+        {errors.telefono && <span className="error-msg">{errors.telefono}</span>}
+
+        <input
+          name="direccion"
+          placeholder="Dirección"
+          value={formData.direccion}
+          onChange={(e) => setFormData({ ...formData, direccion: e.target.value })}
+          className={errors.direccion ? "input-error" : ""}
+        />
+        {errors.direccion && <span className="error-msg">{errors.direccion}</span>}
+
+        <input
+          name="password"
+          type="password"
+          placeholder="Contraseña"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          className={errors.password ? "input-error" : ""}
+        />
+        {errors.password && <span className="error-msg">{errors.password}</span>}
+
+        <input
+          name="confirmPassword"
+          type="password"
+          placeholder="Confirmar contraseña"
+          value={formData.confirmPassword}
+          onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
+          className={errors.confirmPassword ? "input-error" : ""}
+        />
+        {errors.confirmPassword && <span className="error-msg">{errors.confirmPassword}</span>}
+
+        {errors.general && <p className="error-msg">{errors.general}</p>}
+
+        <button type="submit" disabled={loading}>
+          {loading ? "Registrando..." : "Registrarse"}
+        </button>
+      </form>
+      <div className="fondo-registro">
+        <img src="/img/imagendepie.png" alt="Decoración inferior" />
       </div>
-
-      {modalCalendarOpen && (
-        <div className="modal-overlay" onClick={() => setModalCalendarOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Editar Fechas</h3>
-            <div className="datepickers">
-              <div>
-                <label>Desde:</label>
-                <DatePicker
-                  selected={fechaInicio}
-                  onChange={(date) => setFechaInicio(date)}
-                />
-              </div>
-              <div>
-                <label>Hasta:</label>
-                <DatePicker
-                  selected={fechaFin}
-                  onChange={(date) => setFechaFin(date)}
-                  minDate={fechaInicio}
-                />
-              </div>
-            </div>
-            <button className="save-btn" onClick={guardarFechas}>Guardar</button>
-            <button className="close-btn" onClick={() => setModalCalendarOpen(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
-
-      {modalConfirmationOpen && (
-        <div className="modal-overlay" onClick={() => setModalConfirmationOpen(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>{confirmada ? "Confirmación" : "Error"}</h3>
-            <p>
-              {confirmada
-                ? "Se ha confirmado tu reserva."
-                : "Ocurrió un error al confirmar la reserva."}
-            </p>
-            <button className="close-btn" onClick={() => setModalConfirmationOpen(false)}>
-              Cerrar
-            </button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };
 
-export default Reserva;
+export default Registro;

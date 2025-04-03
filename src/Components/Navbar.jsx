@@ -89,6 +89,7 @@ import es from "date-fns/locale/es";
 import "react-datepicker/dist/react-datepicker.css";
 import AutocompleteSearch from "../Components/AutocompleteSearch";
 import { GlobalContext } from "../Context/utils/globalContext";
+import reservasService from "../services/ReservasService";
 
 registerLocale("es", es);
 
@@ -104,12 +105,28 @@ const Navbar = () => {
   const [resultado, setResultado] = useState(null);
   const [habitacionesDisponibles, setHabitacionesDisponibles] = useState([]);
 
-  if (location.pathname !== "/") return null;
+  const [fechasOcupadas, setFechasOcupadas] = useState({});
 
-  const fechasOcupadas = {
-    1: ["2025-03-25", "2025-03-26"],
-    2: ["2025-03-21", "2025-03-22"],
-    3: ["2025-03-24"],
+  const cargarFechasOcupadas = async () => {
+    const nuevas = {};
+    for (const h of state.habitaciones) {
+      try {
+        const res = await reservasService.getByHabitacion(h.id);
+        nuevas[h.id] = res.data.flatMap((r) => {
+          const fi = new Date(r.fechaInicio);
+          const ff = new Date(r.fechaFin);
+          const fechas = [];
+          while (fi <= ff) {
+            fechas.push(new Date(fi.toDateString()));
+            fi.setDate(fi.getDate() + 1);
+          }
+          return fechas;
+        });
+      } catch {
+        nuevas[h.id] = [];
+      }
+    }
+    setFechasOcupadas(nuevas);
   };
 
   const esDisponible = (id, start, end) => {
@@ -117,68 +134,70 @@ const Navbar = () => {
     const inicio = new Date(start);
     const fin = new Date(end);
 
-    return ocupadas.every(f => {
+    return !ocupadas.some((f) => {
       const ocupada = new Date(f);
-      return ocupada < inicio || ocupada > fin;
+      return ocupada >= inicio && ocupada <= fin;
     });
   };
 
-  const buscarDisponibilidad = () => {
+  const buscarDisponibilidad = async () => {
     setResultado(null);
     setHabitacionesDisponibles([]);
+    await cargarFechasOcupadas();
 
-    setTimeout(() => {
-      const inicio = startDate ? new Date(startDate) : null;
-      const fin = endDate ? new Date(endDate) : null;
+    const inicio = startDate ? new Date(startDate) : null;
+    const fin = endDate ? new Date(endDate) : null;
 
-      if (selectedBreed && !inicio && !fin) {
-        setResultado(fechasOcupadas[selectedBreed.value]?.length 
-          ? `❌ La habitación ${selectedBreed.label} tiene fechas reservadas.`
-          : `✅ La habitación ${selectedBreed.label} está disponible en general.`);
-        return;
+    if (selectedBreed && !inicio && !fin) {
+      const ocupadas = fechasOcupadas[selectedBreed.value] || [];
+      setResultado(ocupadas.length
+        ? `❌ La habitación ${selectedBreed.label} tiene fechas reservadas.`
+        : `✅ La habitación ${selectedBreed.label} está disponible en general.`);
+      return;
+    }
+
+    if (!selectedBreed && inicio && fin) {
+      const disponibles = state.habitaciones.filter(h => esDisponible(h.id, inicio, fin));
+
+      if (disponibles.length) {
+        setResultado("✅ Habitaciones disponibles:");
+        setHabitacionesDisponibles(disponibles);
+      } else {
+        setResultado("❌ No hay habitaciones disponibles en estas fechas.");
       }
+      return;
+    }
 
-      if (!selectedBreed && inicio && fin) {
-        const disponibles = state.habitaciones.filter(h => esDisponible(h.id, inicio, fin));
-
-        if (disponibles.length) {
-          setResultado("✅ Habitaciones disponibles:");
-          setHabitacionesDisponibles(disponibles);
-        } else {
-          setResultado("❌ No hay habitaciones disponibles en estas fechas.");
-        }
-        return;
+    if (selectedBreed && inicio && fin) {
+      if (esDisponible(selectedBreed.value, inicio, fin)) {
+        setResultado(`✅ ¡La habitación ${selectedBreed.label} está disponible!`);
+        dispatch({
+          type: "SET_RESERVA",
+          payload: {
+            habitacionId: selectedBreed.value,
+            habitacionNombre: selectedBreed.label,
+            fechaInicio: startDate.toISOString(),
+            fechaFin: endDate.toISOString(),
+          },
+        });
+      } else {
+        setResultado(`❌ La habitación ${selectedBreed.label} no está disponible en esas fechas.`);
       }
+      return;
+    }
 
-      if (selectedBreed && inicio && fin) {
-        if (esDisponible(selectedBreed.value, inicio, fin)) {
-          setResultado(`✅ ¡La habitación ${selectedBreed.label} está disponible!`);
-          dispatch({
-            type: "SET_RESERVA",
-            payload: {
-              habitacionId: selectedBreed.value,
-              habitacionNombre: selectedBreed.label,
-              fechaInicio: startDate.toISOString(),
-              fechaFin: endDate.toISOString(),
-            },
-          });
-        } else {
-          setResultado(`❌ La habitación ${selectedBreed.label} no está disponible en esas fechas.`);
-        }
-        return;
-      }
-
-      setResultado("❌ Por favor selecciona al menos una habitación o un rango de fechas.");
-    }, 1000);
+    setResultado("❌ Por favor selecciona al menos una habitación o un rango de fechas.");
   };
 
   const reservar = () => {
     if (!usuario) {
-      navigate("/login", { state: { mensaje: "Debes iniciar sesión para reservar. Si no tienes cuenta, regístrate aquí." } });
+      navigate("/login", { state: { mensaje: "Debes iniciar sesión para reservar." } });
       return;
     }
     navigate(`/reserva/${selectedBreed?.value}`);
   };
+
+  if (location.pathname !== "/") return null;
 
   return (
     <nav className="navbar">

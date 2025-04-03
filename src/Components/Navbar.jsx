@@ -87,7 +87,7 @@ import { useState, useContext } from "react";
 import DatePicker, { registerLocale } from "react-datepicker";
 import es from "date-fns/locale/es";
 import "react-datepicker/dist/react-datepicker.css";
-import AutocompleteSearch from "../Components/AutocompleteSearch";
+import AutocompleteSearch from "../Components/AutoCompleteSearch";
 import { GlobalContext } from "../Context/utils/globalContext";
 import reservasService from "../services/ReservasService";
 

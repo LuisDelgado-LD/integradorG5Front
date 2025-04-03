@@ -1,8 +1,8 @@
 import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../Context/utils/globalContext";
-import usuariosService from "../services/usuariosService";
-import { setAuthToken } from "../services/api";
+import usuariosService from "../services/UsuariosService";
+import { setAuthToken } from "../services/Api";
 
 const Login = () => {
   const { dispatch } = useContext(GlobalContext);

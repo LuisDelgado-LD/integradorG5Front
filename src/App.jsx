@@ -14,7 +14,7 @@ import Administrador from "./Routes/Administrador";
 import UserManagement from "./Routes/UserManagement";
 import GestionCaracteristicas from "./Routes/GestionCaracteristicas";
 import GestionMaestro from "./Routes/GestionHabitaciones";
-import Layout from "./Context/Layout/Layout";
+import Layout from "./Context/Layout/layout";
 
 const App = () => {
   const { state, dispatch } = useContext(GlobalContext);

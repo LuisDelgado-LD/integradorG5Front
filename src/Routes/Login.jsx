@@ -1,137 +1,81 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { GlobalContext } from "../Context/utils/globalContext";
-import axios from 'axios';
+import usuariosService from "../services/UsuariosService";
+import { setAuthToken } from "../services/Api";
 
-const Login = ({ setUsuario }) => {
-  const { state, dispatch } = useContext(GlobalContext);
-  const { API_URL } = state;
+const Login = () => {
+  const { dispatch } = useContext(GlobalContext);
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    // nombre: "",
-    email: "",
-    password: "",
-  });
-  const [errors, setErrors] = useState({});
-  useEffect(() => {
-    localStorage.removeItem("usuario");
-    localStorage.removeItem("token");
-  }, []);
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    setErrors({ ...errors, [e.target.name]: "" });
-  };
-  const handleSubmit = (e) => {
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errores, setErrores] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    const usuarioRegistrado = localStorage.getItem("usuario") ? JSON.parse(localStorage.getItem("usuario")) : null;
-    let newErrors = {};
-    // if (!formData.nombre.trim()) {
-    //   newErrors.nombre = "El nombre es obligatorio";
-    // }
-    if (
-      !usuarioRegistrado ||
-      usuarioRegistrado.email !== formData.email ||
-      usuarioRegistrado.password !== formData.password
-    ) {
-      newErrors.email = "Correo o contraseña inválidos";
-      newErrors.password = "Correo o contraseña inválidos";
-    }
-    if (Object.keys(newErrors).length > 0) {
-      setErrors(newErrors);
-      setFormData({ nombre: "", email: "", password: "" });
-      return;
-    }
-    const token = "mocked_token";
-    localStorage.setItem("usuario", JSON.stringify(usuarioRegistrado));
-    localStorage.setItem("token", token);
-    setUsuario(usuarioRegistrado); 
-    dispatch({
-      type: "LOGIN",
-      payload: { usuario: usuarioRegistrado, token },
-    });
-    alert(" Inicio de sesión exitoso");
-    if (usuarioRegistrado.rol === "admin") {
-      navigate("/administrador");
-    } else {
-      navigate("/");
+    setErrores({});
+    setLoading(true);
+
+    try {
+      const res = await usuariosService.login({ email, password });
+      const { accessToken } = res.data;
+      setAuthToken(accessToken);
+      localStorage.setItem("token", accessToken); 
+
+      const userRes = await usuariosService.getCurrentUser();
+      const usuario = userRes.data;
+
+      dispatch({ type: "LOGIN", payload: { usuario, token: accessToken } });
+
+      navigate(usuario.rol === "ADMIN" ? "/administrador" : "/");
+    } catch (error) {
+      const msg =
+        error.response?.data?.message || "Credenciales incorrectas o error de servidor";
+      setErrores({ general: msg });
+    } finally {
+      setLoading(false);
     }
   };
-
-  const loginBackend = (e) => {
-    e.preventDefault();
-    console.log(formData)
-    axios.post(API_URL+"/auth/login", formData)
-    .then(response => {
-      console.log('Login exitoso', response.data);
-      const token= response.data.accessToken
-      alert("✅ Login exitoso");
-      console.log(token)
-      axios.get(API_URL+"/auth",  {
-        headers:{
-          Authorization : `Bearer ${token}`
-        }
-      })
-      .then(dataDelUsuarioresponse => {
-        console.log(dataDelUsuarioresponse)
-        const userData = {
-          nombre : dataDelUsuarioresponse.data.nombre,
-          apellido: dataDelUsuarioresponse.data.apellido,
-          rol: dataDelUsuarioresponse.data.rol
-        }
-        dispatch({ type: "LOGIN", payload: { usuario: userData, token: token } });
-        console.log(userData)
-        navigate("/");
-      })
-    })
-    .catch(error => {
-      console.error('Error con el login del usuario:', error);
-      alert("Ocurrio un error con el login del usuario")
-    });
-
-  }
 
   return (
     <div className="login-container">
-      <div className="login-box">
-        <img src="/img/imagendeinicio.png" alt="Inicio" className="login-image" />
-        <h2 className="login-title">¡Bienvenido nuevamente!</h2>
-        <form onSubmit={loginBackend}>
-          {/* <input
-            type="text"
-            name="nombre"
-            placeholder="Nombre"
-            value={formData.nombre}
-            onChange={handleChange}
-            className={`login-input ${errors.nombre ? "error" : ""}`}
-          />
-          {errors.nombre && <p className="error-message">{errors.nombre}</p>} */}
-          <input
-            type="email"
-            name="email"
-            placeholder="Correo electrónico"
-            value={formData.email}
-            onChange={handleChange}
-            className={`login-input ${errors.email ? "error" : ""}`}
-          />
-          {errors.email && <p className="error-message">{errors.email}</p>}
-          <input
-            type="password"
-            name="password"
-            placeholder="Contraseña"
-            value={formData.password}
-            onChange={handleChange}
-            className={`login-input ${errors.password ? "error" : ""}`}
-          />
-          {errors.password && <p className="error-message">{errors.password}</p>}
-          <div className="login-buttons">
-            <button type="submit" className="login-btn primary">Iniciar Sesión</button>
-            <button type="button" className="login-btn secondary">
-              Cancelar
-            </button>
-          </div>
-        </form>
-      </div>
-      <img src="/img/imagendepie.png" alt="Pie" className="login-footer-image" />
+      <img className="login-footer-image" src="/img/imagendepie.png" alt="pie" />
+      <form className="login-box" onSubmit={handleLogin}>
+        <img src="/img/imagendeinicio.png" alt="inicio" className="login-image" />
+        <h2 className="login-title">Iniciar sesión</h2>
+
+        <input
+          className={`login-input ${errores.email ? "error" : ""}`}
+          type="email"
+          placeholder="Correo electrónico"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        {errores.email && <div className="error-message">{errores.email}</div>}
+
+        <input
+          className={`login-input ${errores.password ? "error" : ""}`}
+          type="password"
+          placeholder="Contraseña"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {errores.password && <div className="error-message">{errores.password}</div>}
+
+        {errores.general && <div className="error-message">{errores.general}</div>}
+
+        <div className="login-buttons">
+          <button
+            type="submit"
+            className="login-btn primary"
+            disabled={loading}
+          >
+            {loading ? "Cargando..." : "Entrar"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

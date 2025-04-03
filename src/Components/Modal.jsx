@@ -7,9 +7,9 @@ export default function Modal({ isOpen, onClose, onSave, initialData }) {
     initialData || {
       nombre: "",
       apellido: "",
-      email: "",
+      correo: "",
       rol: "General",
-      // estado: "Inactivo",
+      estado: "Inactivo",
     }
   );
 
@@ -22,6 +22,22 @@ export default function Modal({ isOpen, onClose, onSave, initialData }) {
     onSave(formData);
     onClose();
   };
+
+  const handleSave = (userData) => {
+    if (selectedUser) {
+      const updatedUsers = users.map(user =>
+        user.id === selectedUser.id ? { ...user, ...userData } : user
+      );
+      setUsers(updatedUsers);
+      localStorage.setItem("usuarios", JSON.stringify(updatedUsers));
+    } else {
+      const newUser = { id: users.length + 1, ...userData };
+      const updatedUsers = [...users, newUser];
+      setUsers(updatedUsers);
+      localStorage.setItem("usuarios", JSON.stringify(updatedUsers));
+    }
+    setModalOpen(false);
+  }
 
   return (
     <div className="modal-overlay">
@@ -49,29 +65,30 @@ export default function Modal({ isOpen, onClose, onSave, initialData }) {
             />
           </label>
           <label>
-            email electrónico:
+            Correo electrónico:
             <input
               type="email"
-              name="email"
-              value={formData.email}
+              name="correo"
+              value={formData.correo}
               onChange={handleChange}
               required
             />
           </label>
           <label>
-            Rol:
-            <select name="rol" value={formData.rol} onChange={handleChange}>
-              <option value="Administrador">Administrador</option>
-              <option value="General">General</option>
-            </select>
-          </label>
-          {/* <label>
-            Estado:
-            <select name="rol" value={formData.estado} onChange={handleChange}>
-              <option value="Activo">Activo</option>
-              <option value="Inactivo">Inactivo</option>
-            </select>
-          </label> */}
+  Rol:
+  <select name="rol" value={formData.rol} onChange={handleChange}>
+    <option value="Administrador">Administrador</option>
+    <option value="General">General</option>
+  </select>
+</label>
+
+<label>
+  Estado:
+  <select name="estado" value={formData.estado} onChange={handleChange}>  
+    <option value="Activo">Activo</option>
+    <option value="Inactivo">Inactivo</option>
+  </select>
+</label>
           <button type="submit" className="save-button">Guardar</button>
           <button type="button" className="close-button" onClick={onClose}>Cancelar</button>
         </form>
@@ -142,6 +159,17 @@ input, select {
 }
 .close-button:hover {
   background:rgb(145, 27, 27);
+}
+
+.user-management-page {
+  min-height: 100vh;
+  background-image:
+    url("/img/imagendepie.png"),
+    url("/img/fondoUsuarios.png"); /* si tienes una imagen general de fondo */
+  background-repeat: no-repeat, no-repeat;
+  background-position: bottom center, center center;
+  background-size: contain, cover;
+  padding-bottom: 180px;
 }
 `;
 

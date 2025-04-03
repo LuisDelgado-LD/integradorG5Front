@@ -1,10 +1,20 @@
-import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
+import { Navigate, Outlet } from "react-router-dom";
 import { GlobalContext } from "../Context/utils/globalContext";
 
-const PrivateRoute = () => {
+const PrivateRoute = ({ requiredRole }) => {
   const { state } = useContext(GlobalContext);
-  return state.usuario ? <Outlet /> : <Navigate to="/login" />;
+  const { usuario } = state;
+
+  if (!usuario) {
+    return <Navigate to="/login" state={{ mensaje: "Debes iniciar sesión" }} replace />;
+  }
+
+  if (requiredRole && usuario.rol !== requiredRole) {
+    return <Navigate to="/" replace />;
+  }
+
+  return <Outlet />;
 };
 
 export default PrivateRoute;

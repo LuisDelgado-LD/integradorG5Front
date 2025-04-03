@@ -1,160 +1,143 @@
-import { useContext, useEffect, useState, useRef } from "react";
-import { GlobalContext } from "../Context/utils/globalContext";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import axios from 'axios';
+import { useState, useEffect } from "react";
+import SoloEscritorio from "../Components/SoloEscritorio";
 
 const GestionCaracteristicas = () => {
-  // const { state, dispatch } = useContext(GlobalContext);
-  const { state } = useContext(GlobalContext);
-  const { API_URL } = state;
-  const [caracteristicas, setCaracteristicas] = useState([]);
-  const [formData, setFormData] = useState({ nombre: "", icono: "" });
-  const formDataBackend = new FormData();
-  const [editando, setEditando] = useState(null);
-  const fileInputRef = useRef(null);
-  
-  useEffect(() => {
-    axios.get(`${API_URL}/caracteristicas`)
-    .then((response) => {
-      console.log("caracteristicas:", response.data);
-      setCaracteristicas(response.data);
-    })
-    .catch((error) => {
-      console.log(error);
-    })
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modoEdicion, setModoEdicion] = useState(false);
+  const [formData, setFormData] = useState({ id: null, nombre: "", imagen: "" });
+  const [servicios, setServicios] = useState(() => {
+    const guardados = localStorage.getItem("caracteristicas");
+    return guardados ? JSON.parse(guardados) : [];
+  });
 
-  }, []);
+  useEffect(() => {
+    localStorage.setItem("caracteristicas", JSON.stringify(servicios));
+  }, [servicios]);
+
+  const abrirCrear = () => {
+    setModoEdicion(false);
+    setFormData({ id: null, nombre: "", imagen: "" });
+    setModalOpen(true);
+  };
+
+  const abrirEditar = (servicio) => {
+    setModoEdicion(true);
+    setFormData(servicio);
+    setModalOpen(true);
+  };
+
+  const eliminarServicio = (id) => {
+    const confirmar = window.confirm("¿Deseas eliminar esta característica?");
+    if (confirmar) {
+      const actualizados = servicios.filter((s) => s.id !== id);
+      setServicios(actualizados);
+    }
+  };
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    setFormData({ ...formData, [name]: files ? files[0] : value });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSave = () => {
-    // const formDataBackend = new FormData();
-    if (!formData.nombre || !formData.icono) return alert("❌ Campos requeridos");
-  
-    if (editando !== null) {
-      // formDataBackend.append(formData.icono);
-      console.log("data",formData)
-      console.log("Put edit caracteristica",formData);
-      formDataBackend.append("nombre",formData.nombre);
-      formDataBackend.append("icono",formData.icono);
-      const idCaracteristica=caracteristicas[editando].id
-      axios.put(`${API_URL}/caracteristicas/${idCaracteristica}`, formDataBackend, 
-        { 
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }
-      ).then((response) => {
-        console.log("caracteristica editada:", response.data);
-        const caracteristicasCopia = caracteristicas.slice()
-        caracteristicasCopia[editando] = response.data
-        setCaracteristicas(caracteristicasCopia)
-        resetForm()
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-      setEditando(null);
+  const handleGuardar = (e) => {
+    e.preventDefault();
+    if (!formData.nombre || !formData.imagen) {
+      alert("❗ Todos los campos son obligatorios.");
+      return;
+    }
+
+    let nuevos;
+    if (modoEdicion) {
+      nuevos = servicios.map((s) => (s.id === formData.id ? formData : s));
     } else {
-      console.log("Post nueva caracteristica",formData);
-      formDataBackend.append("nombre",formData.nombre);
-      formDataBackend.append("icono",formData.icono);
-      axios.post(`${API_URL}/caracteristicas`, formDataBackend, {
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-      }
-      ).then((response) => {
-        console.log("caracteristicas:", response.data);
-        setCaracteristicas([...caracteristicas, response.data])
-      })
-      .catch((error) => {
-        console.log(error);
-      })
+      nuevos = [...servicios, { ...formData, id: Date.now() }];
     }
-  
-    resetForm()
-  };
 
-  const handleEdit = (index) => {
-    setEditando(index);
-    setFormData(caracteristicas[index]);
-    // const idCaracteristica=caracteristicas[index].id
-    // axios.put(`${API_URL}/caracteristicas/${idCaracteristica}`)
+    setServicios(nuevos);
+    setModalOpen(false);
   };
-
-  const handleDelete = (index) => {
-    // dispatch({ type: "ELIMINAR_CARACTERISTICA", payload: index });
-    const idCaracteristica=caracteristicas[index].id
-    console.log("indice de la variable:",index)
-    console.log("idCaracteristica", idCaracteristica)
-    axios.delete(`${API_URL}/caracteristicas/${idCaracteristica}`)
-    .then((response) => {
-      console.log("caracteristicas:", response.data);
-      setCaracteristicas(caracteristicas.filter((_, i) => i !== index));
-    })
-    .catch((error) => {
-      console.log(error);
-    })
-  };
-  const resetForm = () => {
-    setFormData({ nombre: "", icono: "" }); // Restablecer el estado del formulario
-    if (fileInputRef.current) {
-      fileInputRef.current.value = ""; // Limpiar el input de tipo file
-    }
-  };
-
 
   return (
-    <div className="admin-container" style={styles.adminContainer}>
-      <h2 style={styles.title}>Administrar Características</h2>
-      <div style={styles.formContainer}>
-        <input
-          type="text"
-          name="nombre"
-          placeholder="Nombre de la característica"
-          value={formData.nombre}
-          onChange={handleChange}
-          style={styles.input}
-        />
-        <input
-          type="file"
-          ref={fileInputRef}
-          name="icono"
-          onChange={handleChange}
-          style={styles.input}
-        />
-        <button onClick={handleSave} style={styles.button}>
-          {editando !== null ? "Actualizar" : "Guardar"}
-        </button>
-      </div>
-      <ul style={styles.list}>
-        {caracteristicas.map((car, i) => (
-          <li key={i} style={styles.listItem}>
-            <img src={car.icono} alt={car.nombre} style={styles.icon} />
-            {car.nombre}
-            <FaEdit onClick={() => handleEdit(i)} style={styles.iconButton} />
-            <FaTrash onClick={() => handleDelete(i)} style={styles.iconButton} />
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
+    <SoloEscritorio>
+      <div className="gestion-maestro-page">
+        <div className="container-gestion">
+          <h2 className="titulo-gestion">Gestión de Características</h2>
 
-const styles = {
-  adminContainer: { padding: "20px", maxWidth: "600px", margin: "auto", fontFamily: "Arial, sans-serif" },
-  title: { textAlign: "center", marginBottom: "20px" },
-  formContainer: { display: "flex", flexDirection: "column", gap: "10px", marginBottom: "20px" },
-  input: { padding: "8px", border: "1px solid #ccc", borderRadius: "4px" },
-  button: { padding: "10px", background: "#007bff", color: "white", border: "none", borderRadius: "4px", cursor: "pointer" },
-  list: { listStyle: "none", padding: 0 },
-  listItem: { display: "flex", alignItems: "center", justifyContent: "space-between", padding: "10px", borderBottom: "1px solid #ccc" },
-  icon: { width: "30px", height: "30px", borderRadius: "4px" },
-  iconButton: { cursor: "pointer", marginLeft: "10px" }
+          <table className="tabla-maestros">
+            <thead>
+              <tr>
+                <th>Nombre del Servicio</th>
+                <th>Última modificación</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              {servicios.map((s) => (
+                <tr key={s.id}>
+                  <td>
+                    {s.nombre}
+                    {s.imagen && (
+                      <div>
+                        <img
+                          src={`/img/${s.imagen}`}
+                          alt="Servicio"
+                          style={{ width: "40px", marginTop: "5px" }}
+                        />
+                      </div>
+                    )}
+                  </td>
+                  <td>{new Date().toLocaleDateString()}</td>
+                  <td className="acciones">
+                    <span className="icono" onClick={() => abrirEditar(s)}>🖊️</span>
+                    <span className="icono" onClick={() => eliminarServicio(s.id)}>🗑️</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="boton-aniadir-container">
+          <button className="btn-aniadir" onClick={abrirCrear}>
+            ➕ Añadir Servicio
+          </button>
+        </div>
+
+        {modalOpen && (
+          <div className="modal-overlay">
+            <div className="modal">
+              <span className="cerrar-modal" onClick={() => setModalOpen(false)}>×</span>
+              <h3>{modoEdicion ? "Editar Servicio" : "Registrar Servicio"}</h3>
+              <form onSubmit={handleGuardar}>
+                <input
+                  type="text"
+                  name="nombre"
+                  placeholder="Nombre del servicio"
+                  value={formData.nombre}
+                  onChange={handleChange}
+                  required
+                />
+
+                <input
+                  type="text"
+                  name="imagen"
+                  placeholder="Nombre de imagen (ej: spa.png)"
+                  value={formData.imagen}
+                  onChange={handleChange}
+                  required
+                />
+
+                <button type="submit" className="btn-guardar">Guardar</button>
+              </form>
+            </div>
+          </div>
+        )}
+
+        <div className="imagen-pie">
+          <img src="/img/imagendepie.png" alt="Imagen Pie" />
+        </div>
+      </div>
+    </SoloEscritorio>
+  );
 };
 
 export default GestionCaracteristicas;

@@ -23,11 +23,11 @@ const GestionCaracteristicas = () => {
     } else {
       dispatch({ 
         type: "AGREGAR_CARACTERISTICA", 
-        payload: formData // <- Aquí es donde se guarda { nombre: "Wifi", icono: "url..." }
+        payload: formData
       });
     }
   
-    setFormData({ nombre: "", icono: "" }); // reset
+    setFormData({ nombre: "", icono: "" });
   };
 
   const handleEdit = (index) => {

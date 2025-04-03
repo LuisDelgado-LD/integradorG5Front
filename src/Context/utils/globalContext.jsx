@@ -50,10 +50,8 @@ const globalReducer = (state, action) => {
   }
 };
 
-// Crear contexto
 export const GlobalContext = createContext();
 
-// Proveedor de contexto
 export const GlobalProvider = ({ children }) => {
   const [state, dispatch] = useReducer(globalReducer, initialState);
 

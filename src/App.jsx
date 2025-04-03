@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "./Context/utils/globalContext";
 import usuariosService from "./services/UsuariosService";
 import { setAuthToken } from "./services/Api";
-
 import Home from "./Routes/Home";
 import Login from "./Routes/Login";
 import Registro from "./Routes/Registro";
@@ -13,8 +12,9 @@ import PrivateRoute from "./Routes/PrivateRoute";
 import Administrador from "./Routes/Administrador";
 import UserManagement from "./Routes/UserManagement";
 import GestionCaracteristicas from "./Routes/GestionCaracteristicas";
-import GestionMaestro from "./Routes/GestionHabitaciones";
 import Layout from "./Context/Layout/layout";
+import GestionHabitaciones from "./Routes/GestionHabitaciones";
+import BusquedaHabitaciones from "./Routes/BusquedaHabitaciones";
 
 const App = () => {
   const { state, dispatch } = useContext(GlobalContext);
@@ -31,7 +31,6 @@ const App = () => {
           dispatch({ type: "LOGIN", payload: { usuario: res.data, token } });
         })
         .catch(() => {
-          // token inválido o expirado, lo ignoramos y seguimos como no logueado
         })
         .finally(() => setLoading(false));
     } else {
@@ -56,15 +55,16 @@ const App = () => {
           <Route path="login" element={!usuario ? <Login /> : <Navigate to="/" />} />
           <Route path="registro" element={!usuario ? <Registro /> : <Navigate to="/" />} />
           <Route path="habitacion/:id" element={<Habitaciones />} />
+          <Route path="busqueda" element={<BusquedaHabitaciones />} />
 
           <Route element={<PrivateRoute />}>
             <Route path="reserva/:id" element={<Reserva />} />
           </Route>
 
-          <Route element={<PrivateRoute requiredRole="admin" />}>
+          <Route element={<PrivateRoute requiredRole="ADMIN" />}>
             <Route path="administrador" element={<Administrador />} />
             <Route path="administrador/gestion-usuarios" element={<UserManagement />} />
-            <Route path="administrador/gestion-habitaciones" element={<GestionMaestro />} />
+            <Route path="administrador/gestion-habitaciones" element={<GestionHabitaciones />} />
             <Route path="administrador/gestion-caracteristicas" element={<GestionCaracteristicas />} />
           </Route>
 

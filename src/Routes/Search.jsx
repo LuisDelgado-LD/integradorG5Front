@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import { useSearchParams } from "react-router-dom";
-import Card from "../Components/Card"; // Asegúrate de que esta ruta sea correcta
+import Card from "../Components/Card";
 import axios from "axios";
 
 const Search = () => {

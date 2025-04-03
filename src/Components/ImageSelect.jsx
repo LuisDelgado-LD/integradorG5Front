@@ -1,4 +1,3 @@
-import React from "react";
 import Select from "react-select";
 
 const ImageOption = ({ data }) => (
@@ -9,7 +8,6 @@ const ImageOption = ({ data }) => (
 );
 
 const ImageSelect = ({ options, value, onChange }) => {
-  // Define las opciones para react-select
   const formattedOptions = options.map((img) => ({
     value: img.id,
     label: <ImageOption data={img} />,

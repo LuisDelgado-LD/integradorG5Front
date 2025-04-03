@@ -1,15 +1,19 @@
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useContext, useState } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
+import SoloEscritorio from "./SoloEscritorio";
 
 const Header = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
   const { state, dispatch } = useContext(GlobalContext);
   const usuario = state.usuario;
-  const [menuAbierto, setMenuAbierto] = useState(false);
-  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  const navigate = useNavigate();
+
   const [mostrarSidebar, setMostrarSidebar] = useState(false);
+  const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
+  const [mostrarSinReserva, setMostrarSinReserva] = useState(false); 
+
+  const getInitials = (nombre, apellido) =>
+    `${nombre?.charAt(0) || ""}${apellido?.charAt(0) || ""}`.toUpperCase();
 
   const handleLogout = () => {
     setMostrarConfirmacion(false);
@@ -17,54 +21,74 @@ const Header = () => {
     navigate("/");
   };
 
-  const getInitials = (nombre, apellido) => {
-    return `${nombre?.charAt(0) || ""}${apellido?.charAt(0) || ""}`.toUpperCase();
-  };
+  const SidebarGeneral = () => (
+    <aside className="admin-sidebar">
+      <div className="avatar-large">{getInitials(usuario?.nombre, usuario?.apellido)}</div>
+      <p className="admin-name">{usuario?.nombre} {usuario?.apellido}</p>
 
-  const isAdmin = usuario?.rol === "Administrador" && location.pathname.startsWith("/administrador");
+      <div
+        className="admin-link"
+        onClick={() => {
+          if (state.reserva && state.reserva.reservaId) {
+            navigate("/reserva/confirmacion");
+          } else {
+            setMostrarSinReserva(true);
+          }
+        }}
+      >
+        <img src="/img/configuración.png" alt="Reservas" /> Lista de Reservas
+      </div>
+      <div className="admin-link" onClick={() => setMostrarConfirmacion(true)}>
+        <img src="/img/cerrarsecion.png" alt="Cerrar sesión" /> Cerrar sesión
+      </div>
+    </aside>
+  );
+
+  const SidebarAdmin = () => (
+    <SoloEscritorio>
+      <aside className="admin-sidebar">
+        <div className="avatar-large">{getInitials(usuario?.nombre, usuario?.apellido)}</div>
+        <p className="admin-name">{usuario?.nombre} {usuario?.apellido}</p>
+
+        <div className="admin-link" onClick={() => navigate("/administrador/gestion-usuarios")}>
+          <img src="/img/configuración.png" alt="Usuarios" /> Permisos de Usuarios
+        </div>
+        <div className="admin-link" onClick={() => navigate("/administrador/gestion-habitaciones")}>
+          <img src="/img/mas.png" alt="Habitaciones" /> Administrar Habitaciones
+        </div>
+        <div className="admin-link" onClick={() => navigate("/administrador/gestion-caracteristicas")}>
+          <img src="/img/mas.png" alt="Características" /> Administrar Características
+        </div>
+        <div className="admin-link" onClick={() => setMostrarConfirmacion(true)}>
+          <img src="/img/cerrarsecion.png" alt="Cerrar sesión" /> Cerrar sesión
+        </div>
+      </aside>
+    </SoloEscritorio>
+  );
 
   return (
     <header className="header">
-      <div className="header-left">
-        <Link to="/">
-          <img src="/img/logo.png" alt="Pet Paradise Logo" className="logo" />
-        </Link>
+      <div className="header-left" onClick={() => navigate("/")}>
+        <img src="/img/logo.png" alt="Pet Paradise Logo" className="logo" />
         <div className="header-text">
           <h1>Pet Paradise</h1>
-          <p>Mucho más que una guardería, un paraíso.</p>
+          <p>Mucho más que una guardería, un paraíso</p>
         </div>
       </div>
 
       <div className="header-right">
         {usuario ? (
-          isAdmin ? (
-            <>
-              <span className="admin-bienvenida">Bienvenido, Administrador</span>
-              <div className="avatar">{getInitials(usuario.nombre, usuario.apellido)}</div>
-              <img
-                src="/img/Group8.png"
-                alt="Abrir menú"
-                className="menu-icon"
-                onClick={() => setMostrarSidebar(!mostrarSidebar)}
-              />
-            </>
-          ) : (
-            <div className="user-menu">
-              <div className="user-info" onClick={() => setMenuAbierto(!menuAbierto)}>
-                <span>Bienvenido, {usuario.nombre}</span>
-                <div className="avatar">{getInitials(usuario.nombre, usuario.apellido)}</div>
-              </div>
-              {menuAbierto && (
-                <div className="dropdown-menu">
-                  <Link to="/administrador/gestion-maestro" className="admin-link">Gestión de Maestro</Link>
-                  <Link to="/administrador/gestion-de-usuario" className="admin-link">Gestión de Usuarios</Link>
-                </div>
-              )}
-              <div>
-                <button onClick={() => setMostrarConfirmacion(true)} className="logout-btn">Cerrar sesión</button>
-              </div>
+          <>
+            <span className="admin-bienvenida">
+              Bienvenido{usuario.rol === "ADMIN" ? ", Administrador" : `, ${usuario.nombre}`}
+            </span>
+            <div
+              className="avatar-circle"
+              onClick={() => setMostrarSidebar((prev) => !prev)}
+            >
+              {getInitials(usuario.nombre, usuario.apellido)}
             </div>
-          )
+          </>
         ) : (
           <>
             <Link to="/registro" className="btn">Crear Cuenta</Link>
@@ -73,24 +97,11 @@ const Header = () => {
         )}
       </div>
 
-      {mostrarSidebar && isAdmin && (
-        <aside className="admin-sidebar">
-          <div className="avatar-large">{getInitials(usuario.nombre, usuario.apellido)}</div>
-          <p className="admin-name">{usuario.nombre} {usuario.apellido}</p>
-
-          <div className="admin-link" onClick={() => navigate("/administrador/gestion-de-usuario")}>
-            <img src="/img/configuración.png" alt="Permisos" /> Permisos de Usuario
-          </div>
-          <div className="admin-link" style={{ marginTop: '5mm' }} onClick={() => navigate("/administrador/gestion-maestro")}>
-            <img src="/img/mas.png" alt="Maestro" /> Administrar Maestro
-          </div>
-          <div className="admin-link" style={{ marginTop: '5mm' }} onClick={() => navigate("/administrador/gestion-caracteristicas")}>
-            <img src="/img/mas.png" alt="Características" /> Administrar Características
-          </div>
-          <div className="admin-link" style={{ marginTop: '5mm' }} onClick={() => setMostrarConfirmacion(true)}>
-            <img src="/img/cerrarsecion.png" alt="Cerrar sesión" /> Cerrar sesión
-          </div>
-        </aside>
+      {mostrarSidebar && (
+        <>
+          <div className="sidebar-overlay" onClick={() => setMostrarSidebar(false)}></div>
+          {usuario?.rol === "ADMIN" ? <SidebarAdmin /> : <SidebarGeneral />}
+        </>
       )}
 
       {mostrarConfirmacion && (
@@ -101,6 +112,20 @@ const Header = () => {
             <div className="modal-buttons">
               <button onClick={handleLogout} className="btn-confirm">Sí, cerrar sesión</button>
               <button onClick={() => setMostrarConfirmacion(false)} className="btn-cancel">Cancelar</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {mostrarSinReserva && (
+        <div className="modal-overlay">
+          <div className="modal">
+            <img src="/img/campana.png" alt="Campana" />
+            <p>No tiene reserva activa</p>
+            <div className="modal-buttons">
+              <button onClick={() => setMostrarSinReserva(false)} className="btn-confirm">
+                Cerrar
+              </button>
             </div>
           </div>
         </div>

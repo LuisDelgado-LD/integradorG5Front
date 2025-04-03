@@ -5,6 +5,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import habitacionesService from "../services/HabitacionesService";
 import reservasService from "../services/ReservasService";
+import Galeria from "./Galeria";
 
 const Habitaciones = () => {
   const { id } = useParams();
@@ -234,18 +235,9 @@ const Habitaciones = () => {
         </div>
       )}
 
-      {modalGaleria && (
-        <div className="modal-overlay" onClick={() => setModalGaleria(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <iframe
-              src={`/galeria/${habitacion.id}`}
-              title="Galería"
-              style={{ width: "100%", height: "500px", border: "none" }}
-            />
-            <button className="close-btn" onClick={() => setModalGaleria(false)}>Cerrar</button>
-          </div>
-        </div>
-      )}
+{modalGaleria && (
+  <Galeria habitacion={habitacion} onClose={() => setModalGaleria(false)} />
+)}
     </div>
   );
 };

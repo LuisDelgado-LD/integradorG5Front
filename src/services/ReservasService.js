@@ -1,7 +1,7 @@
-import api from './api';
+import api from "./Api";
 
 const reservasService = {
-  create: (data) => api.post('/reservas', data),
+  create: (data) => api.post("/reservas", data),
 
   getByHabitacion: (habitacionId) =>
     api.get(`/reservas?habitacionId=${habitacionId}`),

@@ -1,13 +1,13 @@
-import api from './api';
+import api from "./Api";
 
 const caracteristicasService = {
-    getAll: async () => {
-        const res = await api.get('/caracteristicas');
-        return res.data;
-    },  
-    create: (data) => api.post('/caracteristicas', data),
-    update: (id, data) => api.put(`/caracteristicas/${id}`, data),
-    delete: (id) => api.delete(`/caracteristicas/${id}`),
+  getAll: async () => {
+    const res = await api.get("/caracteristicas");
+    return res.data;
+  },
+  create: (data) => api.post("/caracteristicas", data),
+  update: (id, data) => api.put(`/caracteristicas/${id}`, data),
+  delete: (id) => api.delete(`/caracteristicas/${id}`),
 };
 
 export default caracteristicasService;

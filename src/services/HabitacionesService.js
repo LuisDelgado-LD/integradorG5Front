@@ -1,4 +1,4 @@
-import api from './api';
+import api from "./Api";
 
 const habitacionesService = {
   getByPage: async (page = 0) => {
@@ -6,7 +6,7 @@ const habitacionesService = {
     return res.data;
   },
   getById: (id) => api.get(`/habitaciones/${id}`),
-  create: (data) => api.post('/habitaciones', data),
+  create: (data) => api.post("/habitaciones", data),
   update: (id, data) => api.put(`/habitaciones/${id}`, data),
   delete: (id) => api.delete(`/habitaciones/${id}`),
 };

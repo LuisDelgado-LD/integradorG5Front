@@ -15,6 +15,8 @@ import GestionCaracteristicas from "./Routes/GestionCaracteristicas";
 import Layout from "./Context/Layout/layout";
 import GestionHabitaciones from "./Routes/GestionHabitaciones";
 import BusquedaHabitaciones from "./Routes/BusquedaHabitaciones";
+import ReservasUsuario from "./Routes/ReservasUsuario";
+import ReservaDetail from "./Routes/ReservaDetail";
 
 const App = () => {
   const { state, dispatch } = useContext(GlobalContext);
@@ -58,7 +60,9 @@ const App = () => {
           <Route path="busqueda" element={<BusquedaHabitaciones />} />
 
           <Route element={<PrivateRoute />}>
+            <Route path="reservas" element={<ReservasUsuario />} />
             <Route path="reserva/:id" element={<Reserva />} />
+            <Route path="reserva-detail/:id" element={<ReservaDetail />} />
           </Route>
 
           <Route element={<PrivateRoute requiredRole="ADMIN" />}>

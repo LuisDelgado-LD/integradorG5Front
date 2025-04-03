@@ -129,8 +129,8 @@ const Habitaciones = () => {
   if (!habitacion) return <p className="cargando">Cargando habitación...</p>;
 
   return (
-    <div className="habitacion-container">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+    <div className="habitacion-container-Principal" style={{ padding: "20px" }}>
+      <div className="Encabezado">
         <h2 className="habitacion-title">{habitacion.nombre}</h2>
         <img
           src="/img/flecha.png"
@@ -140,79 +140,78 @@ const Habitaciones = () => {
         />
       </div>
 
-      <div style={{ display: "flex", gap: "1cm" }}>
-        <div>
+      <div className="habitacion-container">
           <div className="habitacion-img-container">
-            <img
-              src={
+            <img src={
                 habitacion.imagenes.find((img) => img.esPrincipal)?.url ||
-                habitacion.imagenes[0].url
-              }
+                habitacion.imagenes[0].url}
               alt={habitacion.nombre}
               className="habitacion-img"
             />
           </div>
-          <button className="ver-mas" onClick={() => setModalGaleria(true)}>Ver más</button>
-        </div>
 
-        <div>
-          <div style={{ marginBottom: "10px" }}>
+          <div className="habitacion-content">
             <h4>Categoría:</h4>
             {renderPatitas(habitacion.categoria?.nombre)}
+              <h4>Descripción:</h4>
+              <p>{habitacion.descripcion}</p>
+              <p>
+                <strong>Disponibilidad:</strong>{" "}
+                {habitacion.isDisponible ? "Disponible" : "No disponible"}
+              </p>
           </div>
+      </div>
+      <button className="ver-mas" onClick={() => setModalGaleria(true)}>Ver más</button>
+      <br />
+      <br />
+      <br />
+      <div className="habitacion-container2">
+        <div className="contenido1">
           <div>
-            <h4>Descripción:</h4>
-            <p>{habitacion.descripcion}</p>
-            <p>
-              <strong>Disponibilidad:</strong>{" "}
-              {habitacion.isDisponible ? "Disponible" : "No disponible"}
-            </p>
-          </div>
-
-          <div className="date-picker-container">
-            <div className="date-picker">
-              <label className="date-label">Fecha Inicio</label>
-              <DatePicker
-                selected={inicio}
-                onChange={(date) => setInicio(date)}
-                excludeDates={fechasOcupadas}
-                minDate={new Date()}
-                placeholderText="Selecciona fecha"
-                className="date-input"
-                renderDayContents={renderDayContents}
-              />
-            </div>
-            <div className="date-picker">
-              <label className="date-label">Fecha Fin</label>
-              <DatePicker
-                selected={fin}
-                onChange={(date) => setFin(date)}
-                excludeDates={fechasOcupadas}
-                minDate={inicio || new Date()}
-                placeholderText="Selecciona fecha"
-                className="date-input"
-                renderDayContents={renderDayContents}
-              />
+            <h4 style={{ marginBottom: "5mm" }}>Servicios:</h4>
+            <div className="caracteristicas">
+              {habitacion.caracteristicas?.map((car) => (
+                <div key={car.id} className="caracteristica-item">
+                  <img src={car.iconoUrl} alt={car.nombre} />
+                  <span>{car.nombre}</span>
+                </div>
+              ))}
             </div>
           </div>
-
-          <button className="search-button" onClick={handleReservar}>
-            Reservar
-          </button>
         </div>
-      </div>
-
-      <div style={{ marginTop: "2cm" }}>
-        <h4 style={{ marginBottom: "5mm" }}>Servicios:</h4>
-        <div className="caracteristicas">
-          {habitacion.caracteristicas?.map((car) => (
-            <div key={car.id} className="caracteristica-item">
-              <img src={car.iconoUrl} alt={car.nombre} />
-              <span>{car.nombre}</span>
+        
+          <div className="contenido2">
+            <div className="date-picker-container">
+              <div className="date-picker">
+                <label className="date-label">Fecha Inicio</label>
+                <DatePicker
+                  selected={inicio}
+                  onChange={(date) => setInicio(date)}
+                  excludeDates={fechasOcupadas}
+                  minDate={new Date()}
+                  placeholderText="Selecciona fecha"
+                  className="date-input"
+                  renderDayContents={renderDayContents}
+                />
+              </div>
+              <div className="date-picker">
+                <label className="date-label">Fecha Fin</label>
+                <DatePicker
+                  selected={fin}
+                  onChange={(date) => setFin(date)}
+                  excludeDates={fechasOcupadas}
+                  minDate={inicio || new Date()}
+                  placeholderText="Selecciona fecha"
+                  className="date-input"
+                  renderDayContents={renderDayContents}
+                />
+              </div>
             </div>
-          ))}
+            <button className="search-button" onClick={handleReservar}>
+              Reservar
+            </button>
+          </div>
         </div>
-      </div>
 
       {modalMensaje && (
         <div className="modal-overlay" onClick={() => setModalMensaje(null)}>

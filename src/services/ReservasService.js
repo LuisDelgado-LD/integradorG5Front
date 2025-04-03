@@ -15,7 +15,7 @@ const reservasService = {
       },
     }),
 
-  cancel: (reservaId) => api.delete(`/reservas/${reservaId}`), // 👈 NUEVO
+  cancel: (reservaId) => api.delete(`/reservas/${reservaId}`),
 };
 
 export default reservasService;

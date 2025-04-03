@@ -83,12 +83,9 @@ const Reserva = () => {
       if (reserva.reservaId) {
         await reservasService.cancel(reserva.reservaId);
       }
-      const nuevaReserva = {
-        ...reserva,
-        reservaId: null,
-      };
-      dispatch({ type: "SET_RESERVA", payload: nuevaReserva });
-      localStorage.setItem("reserva", JSON.stringify(nuevaReserva));
+      dispatch({ type: "SET_RESERVA", payload: null });
+      localStorage.removeItem("reserva");
+      navigate("/");
     } catch (error) {
       console.error("Error al cancelar reserva:", error);
       alert("No se pudo cancelar la reserva.");

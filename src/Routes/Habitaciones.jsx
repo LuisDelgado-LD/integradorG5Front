@@ -83,7 +83,8 @@ const Habitaciones = () => {
 
     const habitacionPrincipal =
       habitacion?.imagenes?.find((img) => img.esPrincipal)?.url ||
-      habitacion?.imagenes?.[0]?.url || "";
+      habitacion?.imagenes?.[0]?.url ||
+      "/img/default-room.jpg";
 
     const nuevaReserva = {
       habitacionId: habitacion.id,
@@ -151,7 +152,11 @@ const Habitaciones = () => {
       <div className="habitacion-container">
         <div className="habitacion-img-container">
           <img
-            src={habitacion.imagenes.find((img) => img.esPrincipal)?.url || habitacion.imagenes[0].url}
+            src={
+              habitacion.imagenes?.find((img) => img.esPrincipal)?.url ||
+              habitacion.imagenes?.[0]?.url ||
+              "/img/default-room.jpg"
+            }
             alt={habitacion.nombre}
             className="habitacion-img"
           />

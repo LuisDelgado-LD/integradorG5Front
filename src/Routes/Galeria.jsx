@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const Galeria = ({ habitacion, onClose }) => {
+  const navigate = useNavigate();
   const imagenPrincipal = habitacion.imagenes.find((img) => img.esPrincipal)?.url || "";
   const imagenesExtra = habitacion.imagenes.filter((img) => !img.esPrincipal);
+  const imagenes = [...imagenesExtra.map((img) => img.url), imagenPrincipal];
 
   const [imagenActiva, setImagenActiva] = useState(imagenPrincipal);
 
@@ -21,87 +24,112 @@ const Galeria = ({ habitacion, onClose }) => {
       className="galeria-container"
       style={{
         position: "fixed",
-        inset: 0,
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        width: "100vw",
+        height: "100vh",
         zIndex: 1000,
-        backgroundColor: "rgba(0, 0, 0, 0.9)",
         display: "flex",
-        flexDirection: "column",
+        justifyContent: "center",
         alignItems: "center",
-        padding: "40px",
       }}
     >
-      
-      <button
-        onClick={onClose}
+      <div
+        style={{
+          position: "absolute",
+          inset: -400,
+          backgroundImage: `url(${habitacion.imagenes?.[0]?.url || imagenPrincipal})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: 1,
+          filter: "blur(12px)",
+        }}
+      ></div>
+
+      <div
+        style={{
+          position: "absolute",
+          inset: -400,
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 2,
+        }}
+      ></div>
+
+      <img
+        src="/img/flecha.png"
+        alt="Volver"
+        onClick={() => {
+          onClose ? onClose() : navigate(`/habitacion/${habitacion.id}`);
+        }}
         style={{
           position: "absolute",
           top: "20px",
           right: "30px",
-          fontSize: "28px",
-          background: "transparent",
-          border: "none",
-          color: "white",
           cursor: "pointer",
-          zIndex: 2,
+          width: "40px",
+          zIndex: 4,
         }}
-        aria-label="Cerrar galería"
-      >
-        ❌
-      </button>
-
-      <h2 style={{ color: "white", fontSize: "28px", marginBottom: "30px" }}>
-        Galería de {habitacion.nombre}
-      </h2>
+      />
 
       <div
         style={{
+          position: "relative",
+          zIndex: 3,
           display: "flex",
-          gap: "40px",
-          justifyContent: "center",
+          flexDirection: "column",
           alignItems: "center",
-          width: "100%",
-          maxWidth: "1100px",
+          justifyContent: "center",
+          gap: "40px",
+          padding: "40px",
         }}
       >
-        <div style={{ flex: "1" }}>
-          <img
-            src={imagenActiva}
-            alt="Imagen destacada"
-            style={{
-              width: "100%",
-              height: "400px",
-              borderRadius: "20px",
-              objectFit: "cover",
-              boxShadow: "0 0 20px rgba(255,255,255,0.3)",
-            }}
-          />
-        </div>
+        <h2 style={{ color: "white", textAlign: "center", fontSize: "28px" }}>
+          Galería de {habitacion.nombre}
+        </h2>
 
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: "20px",
-            width: "280px",
-            flexShrink: 0,
-          }}
-        >
-          {[...imagenesExtra, { url: imagenPrincipal }].map((img, idx) => (
+        <div style={{ display: "flex", gap: "60px", alignItems: "center" }}>
+          <div>
             <img
-              key={idx}
-              src={img.url}
-              alt={`Miniatura ${idx + 1}`}
-              onClick={() => setImagenActiva(img.url)}
+              src={imagenActiva}
+              alt="Imagen activa"
               style={{
-                width: "100%",
-                height: "120px",
-                borderRadius: "12px",
+                width: "600px",
+                height: "400px",
+                borderRadius: "20px",
                 objectFit: "cover",
-                cursor: "pointer",
-                border: img.url === imagenActiva ? "3px solid white" : "none",
+                boxShadow: "0 0 20px rgba(255,255,255,0.3)",
               }}
             />
-          ))}
+          </div>
+
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap: "20px",
+              width: "260px",
+            }}
+          >
+            {imagenes.map((img, idx) => (
+              <img
+                key={idx}
+                src={img}
+                alt={`Miniatura ${idx + 1}`}
+                onClick={() => setImagenActiva(img)}
+                style={{
+                  width: "100%",
+                  height: "120px",
+                  objectFit: "cover",
+                  borderRadius: "12px",
+                  cursor: "pointer",
+                  border: img === imagenActiva ? "3px solid white" : "none",
+                }}
+                draggable={false}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </div>

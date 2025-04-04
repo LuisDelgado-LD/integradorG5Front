@@ -11,6 +11,7 @@ const GestionHabitaciones = () => {
   const [datos, setDatos] = useState([]);
   const [filtroTipo, setFiltroTipo] = useState("Todos");
   const [modalOpen, setModalOpen] = useState(false);
+  const [confirmModal, setConfirmModal] = useState({ visible: false, item: null });
   const [modoEdicion, setModoEdicion] = useState(false);
   const [errorMensaje, setErrorMensaje] = useState("");
 
@@ -31,15 +32,35 @@ const GestionHabitaciones = () => {
 
   const fetchTodo = async () => {
     try {
-      const habitaciones = await habitacionesService.getByPage(0);
       const categoriasRes = await habitacionesService.getCategorias();
-      const categorias = categoriasRes.data.map((c) => ({ ...c, tipoMaestro: "Categoría" }));
-      const habitacionesFormatted = (habitaciones.content || []).map((h) => ({ ...h, tipoMaestro: "Habitación" }));
+      const categorias = categoriasRes.data.map((c) => ({
+        ...c,
+        tipoMaestro: "Categoría",
+      }));
+  
+      let todasLasHabitaciones = [];
+      let page = 0;
+      let totalPages = 1;
+  
+      do {
+        const res = await habitacionesService.getByPage(page);
+        const pageHabitaciones = res.content || [];
+        todasLasHabitaciones = [...todasLasHabitaciones, ...pageHabitaciones];
+        totalPages = res.totalPages;
+        page++;
+      } while (page < totalPages);
+  
+      const habitacionesFormatted = todasLasHabitaciones.map((h) => ({
+        ...h,
+        tipoMaestro: "Habitación",
+      }));
+  
       setDatos([...categorias, ...habitacionesFormatted]);
     } catch (err) {
       console.error("Error al obtener datos:", err);
     }
   };
+  
 
   useEffect(() => {
     fetchTodo();
@@ -85,21 +106,28 @@ const GestionHabitaciones = () => {
     setModalOpen(true);
   };
 
-  const eliminarItem = async (item) => {
-    const confirmar = window.confirm(`¿Eliminar ${item.tipoMaestro.toLowerCase()} "${item.nombre}"?`);
-    if (!confirmar) return;
+  const solicitarEliminacion = (item) => {
+    setConfirmModal({ visible: true, item });
+  };
 
+  const confirmarEliminacion = async () => {
+    const { item } = confirmModal;
     try {
       if (item.tipoMaestro === "Habitación") {
         await habitacionesService.delete(item.id);
       } else {
         await habitacionesService.deleteCategoria(item.id);
       }
+      setConfirmModal({ visible: false, item: null });
       fetchTodo();
     } catch (err) {
       console.error("Error al eliminar:", err);
       alert("Error al eliminar el registro");
     }
+  };
+
+  const cancelarEliminacion = () => {
+    setConfirmModal({ visible: false, item: null });
   };
 
   const handleChange = (e) => {
@@ -147,21 +175,16 @@ const GestionHabitaciones = () => {
         return;
       }
 
-      const categoriaObj = {
-        id: parseInt(formData.categoriaId),
-      };
-
       const habitacionBody = {
         nombre: formData.nombre,
         tipo: formData.tipo,
         descripcion: formData.descripcion,
         precioUnitario: parseFloat(formData.precioUnitario),
-        categoria: categoriaObj,
+        categoria: { id: parseInt(formData.categoriaId) },
         tamano: formData.tamano,
         isDisponible: formData.isDisponible,
       };
 
-      console.log(habitacionBody)
       if (modoEdicion) {
         await habitacionesService.update(formData.id, habitacionBody);
       } else {
@@ -219,7 +242,7 @@ const GestionHabitaciones = () => {
                   <td>{item.descripcion}</td>
                   <td>
                     <span className="icono" onClick={() => abrirEditar(item)}>🖊️</span>
-                    <span className="icono" onClick={() => eliminarItem(item)}>🗑️</span>
+                    <span className="icono" onClick={() => solicitarEliminacion(item)}>🗑️</span>
                   </td>
                 </tr>
               ))}
@@ -230,24 +253,33 @@ const GestionHabitaciones = () => {
             <button className="btn-aniadir" onClick={abrirCrear}>Añadir</button>
           </div>
 
+          {confirmModal.visible && (
+            <div className="modal-overlay">
+              <div className="modal center-modal">
+                <p>¿Seguro que deseas eliminar <strong>{confirmModal.item?.nombre}</strong>?</p>
+                <div style={{ display: "flex", justifyContent: "center", gap: "10px", marginTop: "1rem" }}>
+                  <button className="btn-guardar" onClick={confirmarEliminacion}>Eliminar</button>
+                  <button className="btn-cancelar" onClick={cancelarEliminacion}>Cancelar</button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {modalOpen && (
             <div className="modal-overlay">
               <div className="modal" style={{ maxHeight: "90vh", overflowY: "auto" }}>
                 <h3>{modoEdicion ? "Editar" : `Nueva ${formData.tipoMaestro}`}</h3>
                 <form onSubmit={handleGuardar}>
                   {errorMensaje && <p className="error-text">{errorMensaje}</p>}
-
                   <select name="tipoMaestro" value={formData.tipoMaestro} onChange={handleChange}>
                     <option value="Categoría">Categoría</option>
                     <option value="Habitación">Habitación</option>
                   </select>
-
                   <input type="text" name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleChange} required />
                   <textarea name="descripcion" placeholder="Descripción" value={formData.descripcion} onChange={handleChange} required />
-
                   {formData.tipoMaestro === "Categoría" ? (
                     <>
-                      <input type="number" name="patitas" min="1" max="5" placeholder="Cantidad de patitas" value={formData.patitas} onChange={handleChange} required />
+                      <input type="number" name="patitas" min="1" max="5" value={formData.patitas} onChange={handleChange} required />
                       <label>Imagen:</label>
                       <input type="file" accept="image/*" onChange={handleFileChange} />
                     </>
@@ -277,7 +309,6 @@ const GestionHabitaciones = () => {
                       <input type="file" multiple accept="image/*" onChange={handleMultipleFileChange} />
                     </>
                   )}
-
                   <button type="submit" className="btn-guardar">Guardar</button>
                   <button type="button" className="btn-cancelar" onClick={() => setModalOpen(false)}>Cancelar</button>
                 </form>

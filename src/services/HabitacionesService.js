@@ -8,6 +8,11 @@ const habitacionesService = {
     return res.data;
   },
 
+  getAll: async () => {
+    const res = await api.get("/habitaciones");
+    return res.data;
+  },
+
   getById: (id) => api.get(`/habitaciones/${id}`),
 
   create: (data, isFormData = false) =>

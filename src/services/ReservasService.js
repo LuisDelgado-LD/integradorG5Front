@@ -16,6 +16,9 @@ const reservasService = {
     }),
 
   cancel: (reservaId) => api.delete(`/reservas/${reservaId}`),
+
+  getById: (id) => api.get(`/reservas/${id}`),
+  getByUsuario: (usuarioId) => api.get(`/reservas/usuario/${usuarioId}`),
 };
 
 export default reservasService;

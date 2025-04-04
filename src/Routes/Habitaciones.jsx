@@ -101,14 +101,22 @@ const Habitaciones = () => {
 
   const renderPatitas = (categoria) => {
     const cantidad = categoria === "Básico" ? 1 : categoria === "Premium" ? 2 : 3;
-    return Array.from({ length: cantidad }, (_, i) => (
-      <img
-        key={i}
-        src="/img/iconoPatita.png"
-        alt="Patita"
-        style={{ width: "24px", marginRight: "4px" }}
-      />
-    ));
+    const texto = cantidad === 1 ? "Básico" : cantidad === 2 ? "Premium" : "VIP";
+    return (
+      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "2cm" }}>
+        <strong style={{ fontSize: "16px", color: "#616676" }}>{texto}</strong>
+        <div style={{ display: "flex", gap: "5px" }}>
+          {Array.from({ length: cantidad }, (_, i) => (
+            <img
+              key={i}
+              src="/img/iconoPatita.png"
+              alt="Patita"
+              style={{ width: "24px" }}
+            />
+          ))}
+        </div>
+      </div>
+    );
   };
 
   const isDateOccupied = (date) => {
@@ -141,30 +149,59 @@ const Habitaciones = () => {
       </div>
 
       <div className="habitacion-container">
-          <div className="habitacion-img-container">
-            <img src={
-                habitacion.imagenes.find((img) => img.esPrincipal)?.url ||
-                habitacion.imagenes[0].url}
-              alt={habitacion.nombre}
-              className="habitacion-img"
-            />
-          </div>
+        <div className="habitacion-img-container">
+          <img
+            src={habitacion.imagenes.find((img) => img.esPrincipal)?.url || habitacion.imagenes[0].url}
+            alt={habitacion.nombre}
+            className="habitacion-img"
+          />
+        </div>
 
-          <div className="habitacion-content">
-            <h4>Categoría:</h4>
-            {renderPatitas(habitacion.categoria?.nombre)}
-              <h4>Descripción:</h4>
-              <p>{habitacion.descripcion}</p>
-              <p>
-                <strong>Disponibilidad:</strong>{" "}
-                {habitacion.isDisponible ? "Disponible" : "No disponible"}
-              </p>
+        <div className="habitacion-content">
+          <h4 style={{ marginBottom: "2cm" }}>Categoría:</h4>
+          {renderPatitas(habitacion.categoria?.nombre)}
+
+          <h4 style={{ marginBottom: "2cm" }}>Descripción:</h4>
+          <p>{habitacion.descripcion}</p>
+
+          <h4 style={{ marginBottom: "2cm" }}>Disponibilidad:</h4>
+          <p>
+            <strong>{habitacion.isDisponible ? "Disponible" : "No disponible"}</strong>
+          </p>
+
+          <h4 style={{ marginBottom: "2cm" }}>Filtros para tu peludito:</h4>
+          <div className="date-picker-container">
+            <div className="date-picker">
+              <label className="date-label">Fecha Inicio</label>
+              <DatePicker
+                selected={inicio}
+                onChange={(date) => setInicio(date)}
+                excludeDates={fechasOcupadas}
+                minDate={new Date()}
+                placeholderText="Selecciona fecha"
+                className="date-input"
+                renderDayContents={renderDayContents}
+              />
+            </div>
+            <div className="date-picker">
+              <label className="date-label">Fecha Fin</label>
+              <DatePicker
+                selected={fin}
+                onChange={(date) => setFin(date)}
+                excludeDates={fechasOcupadas}
+                minDate={inicio || new Date()}
+                placeholderText="Selecciona fecha"
+                className="date-input"
+                renderDayContents={renderDayContents}
+              />
+            </div>
           </div>
+          <button className="search-button" onClick={handleReservar}>Reservar</button>
+        </div>
       </div>
+
       <button className="ver-mas" onClick={() => setModalGaleria(true)}>Ver más</button>
-      <br />
-      <br />
-      <br />
+
       <div className="habitacion-container2">
         <div className="contenido1">
           <div>
@@ -179,39 +216,7 @@ const Habitaciones = () => {
             </div>
           </div>
         </div>
-        
-          <div className="contenido2">
-            <div className="date-picker-container">
-              <div className="date-picker">
-                <label className="date-label">Fecha Inicio</label>
-                <DatePicker
-                  selected={inicio}
-                  onChange={(date) => setInicio(date)}
-                  excludeDates={fechasOcupadas}
-                  minDate={new Date()}
-                  placeholderText="Selecciona fecha"
-                  className="date-input"
-                  renderDayContents={renderDayContents}
-                />
-              </div>
-              <div className="date-picker">
-                <label className="date-label">Fecha Fin</label>
-                <DatePicker
-                  selected={fin}
-                  onChange={(date) => setFin(date)}
-                  excludeDates={fechasOcupadas}
-                  minDate={inicio || new Date()}
-                  placeholderText="Selecciona fecha"
-                  className="date-input"
-                  renderDayContents={renderDayContents}
-                />
-              </div>
-            </div>
-            <button className="search-button" onClick={handleReservar}>
-              Reservar
-            </button>
-          </div>
-        </div>
+      </div>
 
       {modalMensaje && (
         <div className="modal-overlay" onClick={() => setModalMensaje(null)}>
@@ -234,9 +239,7 @@ const Habitaciones = () => {
         </div>
       )}
 
-{modalGaleria && (
-  <Galeria habitacion={habitacion} onClose={() => setModalGaleria(false)} />
-)}
+      {modalGaleria && <Galeria habitacion={habitacion} onClose={() => setModalGaleria(false)} />}
     </div>
   );
 };

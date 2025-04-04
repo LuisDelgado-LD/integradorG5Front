@@ -10,7 +10,6 @@ const Header = () => {
 
   const [mostrarSidebar, setMostrarSidebar] = useState(false);
   const [mostrarConfirmacion, setMostrarConfirmacion] = useState(false);
-  const [mostrarSinReserva, setMostrarSinReserva] = useState(false); 
 
   const getInitials = (nombre, apellido) =>
     `${nombre?.charAt(0) || ""}${apellido?.charAt(0) || ""}`.toUpperCase();
@@ -29,11 +28,8 @@ const Header = () => {
       <div
         className="admin-link"
         onClick={() => {
-          if (state.reserva && state.reserva.reservaId) {
-            navigate("/reserva/confirmacion");
-          } else {
-            setMostrarSinReserva(true);
-          }
+          setMostrarSidebar(false); // Cierra el sidebar
+          navigate("/reservas");    // Va siempre a la lista de reservas
         }}
       >
         <img src="/img/configuración.png" alt="Reservas" /> Lista de Reservas
@@ -112,20 +108,6 @@ const Header = () => {
             <div className="modal-buttons">
               <button onClick={handleLogout} className="btn-confirm">Sí, cerrar sesión</button>
               <button onClick={() => setMostrarConfirmacion(false)} className="btn-cancel">Cancelar</button>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {mostrarSinReserva && (
-        <div className="modal-overlay">
-          <div className="modal">
-            <img src="/img/campana.png" alt="Campana" />
-            <p>No tiene reserva activa</p>
-            <div className="modal-buttons">
-              <button onClick={() => setMostrarSinReserva(false)} className="btn-confirm">
-                Cerrar
-              </button>
             </div>
           </div>
         </div>

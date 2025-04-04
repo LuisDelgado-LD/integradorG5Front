@@ -8,9 +8,10 @@ const Home = () => {
   const { dispatch, state } = useContext(GlobalContext);
 
   const [habitaciones, setHabitaciones] = useState([]);
-  const [paginaActual, setPaginaActual] = useState(0); 
+  const [paginaActual, setPaginaActual] = useState(0);
   const [totalPaginas, setTotalPaginas] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [categorias, setCategorias] = useState([]);
 
   const cargarHabitaciones = async (pagina = 0) => {
     setLoading(true);
@@ -36,26 +37,37 @@ const Home = () => {
     }
   };
 
+  const cargarCategorias = async () => {
+    try {
+      const res = await habitacionesService.getCategorias();
+      setCategorias(res.data);
+    } catch (error) {
+      console.error("Error al cargar categorías:", error);
+    }
+  };
+
   useEffect(() => {
     cargarHabitaciones();
     cargarCaracteristicas();
+    cargarCategorias();
   }, []);
-
-  const categorias = [
-    { nombre: "Básico", icono: "/img/1patita.png" },
-    { nombre: "Premium", icono: "/img/2patitas.png" },
-    { nombre: "VIP", icono: "/img/3patitas.png" },
-  ];
 
   return (
     <div className="home">
-
       <div style={{ marginBottom: "3cm" }}>
         <h2 className="section-title">Categoría</h2>
         <div className="card-grid">
           {categorias.map((cat, idx) => (
             <div key={idx} className="card categoria">
-              <img src={cat.icono} alt={cat.nombre} className="card-img" />
+              <img
+                src={
+                  localStorage.getItem(`cat-img-${cat.nombre}`)
+                    ? localStorage.getItem(`cat-img-${cat.nombre}`)
+                    : `/img/${cat.patitas}patita${cat.patitas > 1 ? "s" : ""}.png`
+                }
+                alt={cat.nombre}
+                className="card-img"
+              />
               <h3 className="card-title">{cat.nombre}</h3>
             </div>
           ))}
@@ -87,7 +99,10 @@ const Home = () => {
             </div>
 
             <div className="paginacion-container">
-              <button disabled={paginaActual === 0} onClick={() => cargarHabitaciones(paginaActual - 1)}>
+              <button
+                disabled={paginaActual === 0}
+                onClick={() => cargarHabitaciones(paginaActual - 1)}
+              >
                 Anterior
               </button>
               <span style={{ margin: "0 10px" }}>
@@ -127,7 +142,6 @@ const Home = () => {
           ))}
         </div>
       </div>
-
     </div>
   );
 };

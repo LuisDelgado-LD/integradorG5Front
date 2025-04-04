@@ -1,116 +1,205 @@
 import { useState, useEffect, useContext } from "react";
 import { GlobalContext } from "../Context/utils/globalContext";
 import SoloEscritorio from "../Components/SoloEscritorio";
+import habitacionesService from "../services/HabitacionesService";
+import api from "../services/Api";
 
 const GestionHabitaciones = () => {
   const { state } = useContext(GlobalContext);
   const token = state.token;
 
+  const [datos, setDatos] = useState([]);
+  const [filtroTipo, setFiltroTipo] = useState("Todos");
   const [modalOpen, setModalOpen] = useState(false);
   const [modoEdicion, setModoEdicion] = useState(false);
-  const [formData, setFormData] = useState({ id: null, nombre: "", tipo: "", descripcion: "" });
-  const [habitaciones, setHabitaciones] = useState([]);
+  const [errorMensaje, setErrorMensaje] = useState("");
+
+  const [formData, setFormData] = useState({
+    id: null,
+    tipoMaestro: "Categoría",
+    nombre: "",
+    descripcion: "",
+    tipo: "",
+    precioUnitario: "",
+    categoriaId: "",
+    tamano: "",
+    isDisponible: true,
+    patitas: 1,
+    imagenPrincipal: null,
+    imagenesSecundarias: [],
+  });
+
+  const fetchTodo = async () => {
+    try {
+      const habitaciones = await habitacionesService.getByPage(0);
+      const categoriasRes = await habitacionesService.getCategorias();
+      const categorias = categoriasRes.data.map((c) => ({ ...c, tipoMaestro: "Categoría" }));
+      const habitacionesFormatted = (habitaciones.content || []).map((h) => ({ ...h, tipoMaestro: "Habitación" }));
+      setDatos([...categorias, ...habitacionesFormatted]);
+    } catch (err) {
+      console.error("Error al obtener datos:", err);
+    }
+  };
 
   useEffect(() => {
-    const fetchHabitaciones = async () => {
-      try {
-        const res = await fetch("https://petparadise.sytes.net/api/habitaciones", {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          const data = await res.json();
-          setHabitaciones(Array.isArray(data) ? data : []);
-        } else {
-          console.error("Error al obtener habitaciones: " + res.status);
-        }
-      } catch (err) {
-        console.error("Error de red al obtener habitaciones:", err);
-      }
-    };
-    fetchHabitaciones();
-  }, [token]);
+    fetchTodo();
+  }, []);
 
   const abrirCrear = () => {
     setModoEdicion(false);
-    setFormData({ id: null, nombre: "", tipo: "", descripcion: "" });
+    setFormData({
+      id: null,
+      tipoMaestro: "Categoría",
+      nombre: "",
+      descripcion: "",
+      tipo: "",
+      precioUnitario: "",
+      categoriaId: "",
+      tamano: "",
+      isDisponible: true,
+      patitas: 1,
+      imagenPrincipal: null,
+      imagenesSecundarias: [],
+    });
+    setErrorMensaje("");
     setModalOpen(true);
   };
 
-  const abrirEditar = (habitacion) => {
+  const abrirEditar = (item) => {
     setModoEdicion(true);
-    setFormData(habitacion);
+    setFormData({
+      id: item.id,
+      tipoMaestro: item.tipoMaestro,
+      nombre: item.nombre,
+      descripcion: item.descripcion,
+      tipo: item.tipo || "",
+      precioUnitario: item.precioUnitario || "",
+      categoriaId: item.categoria?.id || "",
+      tamano: item.tamano || "",
+      isDisponible: item.isDisponible ?? true,
+      patitas: item.patitas || 1,
+      imagenPrincipal: null,
+      imagenesSecundarias: [],
+    });
+    setErrorMensaje("");
     setModalOpen(true);
   };
 
-  const eliminarHabitacion = async (id) => {
-    if (window.confirm("¿Deseas eliminar esta habitación?")) {
-      try {
-        const res = await fetch(`https://petparadise.sytes.net/api/habitaciones/${id}`, {
-          method: "DELETE",
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        if (res.ok) {
-          setHabitaciones(habitaciones.filter(h => h.id !== id));
-        } else {
-          alert("Error al eliminar habitación");
-        }
-      } catch {
-        alert("Error de red al eliminar habitación");
+  const eliminarItem = async (item) => {
+    const confirmar = window.confirm(`¿Eliminar ${item.tipoMaestro.toLowerCase()} "${item.nombre}"?`);
+    if (!confirmar) return;
+
+    try {
+      if (item.tipoMaestro === "Habitación") {
+        await habitacionesService.delete(item.id);
+      } else {
+        await habitacionesService.deleteCategoria(item.id);
       }
+      fetchTodo();
+    } catch (err) {
+      console.error("Error al eliminar:", err);
+      alert("Error al eliminar el registro");
     }
   };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type, checked } = e.target;
+    const val = type === "checkbox" ? checked : value;
+    setFormData((prev) => ({ ...prev, [name]: val }));
+  };
+
+  const handleFileChange = (e) => {
+    setFormData((prev) => ({ ...prev, imagenPrincipal: e.target.files[0] }));
+  };
+
+  const handleMultipleFileChange = (e) => {
+    setFormData((prev) => ({ ...prev, imagenesSecundarias: Array.from(e.target.files) }));
   };
 
   const handleGuardar = async (e) => {
     e.preventDefault();
-
-    const url = modoEdicion
-      ? `https://petparadise.sytes.net/api/habitaciones/${formData.id}`
-      : "https://petparadise.sytes.net/api/habitaciones";
-
-    const method = modoEdicion ? "PUT" : "POST";
+    setErrorMensaje("");
 
     try {
-      const res = await fetch(url, {
-        method,
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
+      if (formData.tipoMaestro === "Categoría") {
+        const categoriaBody = {
           nombre: formData.nombre,
-          tipo: formData.tipo,
           descripcion: formData.descripcion,
-        }),
-      });
+          patitas: parseInt(formData.patitas),
+          imagenUrl: formData.imagenPrincipal ? `/img/${formData.imagenPrincipal.name}` : "",
+        };
 
-      if (res.ok) {
-        const data = await res.json();
         if (modoEdicion) {
-          setHabitaciones(habitaciones.map(h => h.id === data.id ? data : h));
+          await api.put(`/categorias/${formData.id}`, categoriaBody);
         } else {
-          setHabitaciones([...habitaciones, data]);
+          await api.post("/categorias", categoriaBody);
         }
+
+        if (formData.imagenPrincipal) {
+          localStorage.setItem(
+            `cat-img-${categoriaBody.nombre}`,
+            URL.createObjectURL(formData.imagenPrincipal)
+          );
+        }
+
         setModalOpen(false);
-      } else {
-        const errorText = await res.text();
-        console.error("Error al guardar habitación:", errorText);
-        alert("Error al guardar habitación");
+        fetchTodo();
+        return;
       }
+
+      const categoriaObj = {
+        id: parseInt(formData.categoriaId),
+      };
+
+      const habitacionBody = {
+        nombre: formData.nombre,
+        tipo: formData.tipo,
+        descripcion: formData.descripcion,
+        precioUnitario: parseFloat(formData.precioUnitario),
+        categoria: categoriaObj,
+        tamano: formData.tamano,
+        isDisponible: formData.isDisponible,
+      };
+
+      if (modoEdicion) {
+        await habitacionesService.update(formData.id, habitacionBody);
+      } else {
+        await habitacionesService.create(habitacionBody);
+      }
+
+      if (formData.imagenPrincipal) {
+        localStorage.setItem(
+          `habitacion-img-${formData.nombre}`,
+          URL.createObjectURL(formData.imagenPrincipal)
+        );
+      }
+
+      setModalOpen(false);
+      fetchTodo();
     } catch (err) {
-      console.error("Error de red al guardar habitación", err);
-      alert("Error de red al guardar habitación");
+      console.error("Error al guardar:", err);
+      setErrorMensaje("Error al guardar: revisa los campos o intenta más tarde.");
     }
   };
+
+  const datosFiltrados = datos.filter((item) =>
+    filtroTipo === "Todos" ? true : item.tipoMaestro === filtroTipo
+  );
 
   return (
     <SoloEscritorio>
       <div className="gestion-maestro-page">
         <div className="container-gestion">
-          <h2 className="titulo-gestion">Gestión de Habitaciones</h2>
+          <h2 className="titulo-gestion">Gestión de Habitaciones y Categorías</h2>
+
+          <div style={{ marginBottom: "1rem" }}>
+            <label>Filtrar por tipo:&nbsp;</label>
+            <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+              <option value="Todos">Todos</option>
+              <option value="Categoría">Categoría</option>
+              <option value="Habitación">Habitación</option>
+            </select>
+          </div>
 
           <table className="tabla-maestros">
             <thead>
@@ -122,14 +211,14 @@ const GestionHabitaciones = () => {
               </tr>
             </thead>
             <tbody>
-              {habitaciones.map((h) => (
-                <tr key={h.id}>
-                  <td>{h.nombre}</td>
-                  <td>{h.tipo}</td>
-                  <td>{h.descripcion}</td>
+              {datosFiltrados.map((item) => (
+                <tr key={`${item.tipoMaestro}-${item.id}`}>
+                  <td>{item.nombre}</td>
+                  <td>{item.tipoMaestro}</td>
+                  <td>{item.descripcion}</td>
                   <td>
-                    <span className="icono" onClick={() => abrirEditar(h)}>🖊️</span>
-                    <span className="icono" onClick={() => eliminarHabitacion(h.id)}>🗑️</span>
+                    <span className="icono" onClick={() => abrirEditar(item)}>🖊️</span>
+                    <span className="icono" onClick={() => eliminarItem(item)}>🗑️</span>
                   </td>
                 </tr>
               ))}
@@ -137,37 +226,57 @@ const GestionHabitaciones = () => {
           </table>
 
           <div className="boton-aniadir-container">
-            <button className="btn-aniadir" onClick={abrirCrear}>Añadir Habitación</button>
+            <button className="btn-aniadir" onClick={abrirCrear}>Añadir</button>
           </div>
 
           {modalOpen && (
             <div className="modal-overlay">
-              <div className="modal">
-                <h3>{modoEdicion ? "Editar Habitación" : "Nueva Habitación"}</h3>
+              <div className="modal" style={{ maxHeight: "90vh", overflowY: "auto" }}>
+                <h3>{modoEdicion ? "Editar" : `Nueva ${formData.tipoMaestro}`}</h3>
                 <form onSubmit={handleGuardar}>
-                  <input
-                    type="text"
-                    name="nombre"
-                    placeholder="Nombre"
-                    value={formData.nombre}
-                    onChange={handleChange}
-                    required
-                  />
-                  <input
-                    type="text"
-                    name="tipo"
-                    placeholder="Tipo (Pequeño, Mediano...)"
-                    value={formData.tipo}
-                    onChange={handleChange}
-                    required
-                  />
-                  <textarea
-                    name="descripcion"
-                    placeholder="Descripción"
-                    value={formData.descripcion}
-                    onChange={handleChange}
-                    required
-                  />
+                  {errorMensaje && <p className="error-text">{errorMensaje}</p>}
+
+                  <select name="tipoMaestro" value={formData.tipoMaestro} onChange={handleChange}>
+                    <option value="Categoría">Categoría</option>
+                    <option value="Habitación">Habitación</option>
+                  </select>
+
+                  <input type="text" name="nombre" placeholder="Nombre" value={formData.nombre} onChange={handleChange} required />
+                  <textarea name="descripcion" placeholder="Descripción" value={formData.descripcion} onChange={handleChange} required />
+
+                  {formData.tipoMaestro === "Categoría" ? (
+                    <>
+                      <input type="number" name="patitas" min="1" max="5" placeholder="Cantidad de patitas" value={formData.patitas} onChange={handleChange} required />
+                      <label>Imagen:</label>
+                      <input type="file" accept="image/*" onChange={handleFileChange} />
+                    </>
+                  ) : (
+                    <>
+                      <input type="text" name="tipo" placeholder="Tipo" value={formData.tipo} onChange={handleChange} required />
+                      <input type="number" name="precioUnitario" placeholder="Precio Unitario" value={formData.precioUnitario} onChange={handleChange} required />
+                      <select name="categoriaId" value={formData.categoriaId} onChange={handleChange} required>
+                        <option value="">Selecciona categoría</option>
+                        <option value="1">Básico</option>
+                        <option value="2">Premium</option>
+                        <option value="3">VIP</option>
+                      </select>
+                      <select name="tamano" value={formData.tamano} onChange={handleChange} required>
+                        <option value="">Selecciona tamaño</option>
+                        <option value="PEQUENO">Pequeño</option>
+                        <option value="MEDIANO">Mediano</option>
+                        <option value="GRANDE">Grande</option>
+                      </select>
+                      <label>
+                        Disponible:
+                        <input type="checkbox" name="isDisponible" checked={formData.isDisponible} onChange={handleChange} />
+                      </label>
+                      <label>Imagen principal:</label>
+                      <input type="file" accept="image/*" onChange={handleFileChange} />
+                      <label>Imágenes secundarias:</label>
+                      <input type="file" multiple accept="image/*" onChange={handleMultipleFileChange} />
+                    </>
+                  )}
+
                   <button type="submit" className="btn-guardar">Guardar</button>
                   <button type="button" className="btn-cancelar" onClick={() => setModalOpen(false)}>Cancelar</button>
                 </form>

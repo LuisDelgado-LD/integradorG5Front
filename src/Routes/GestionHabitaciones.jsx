@@ -161,6 +161,7 @@ const GestionHabitaciones = () => {
         isDisponible: formData.isDisponible,
       };
 
+      console.log(habitacionBody)
       if (modoEdicion) {
         await habitacionesService.update(formData.id, habitacionBody);
       } else {
@@ -262,8 +263,8 @@ const GestionHabitaciones = () => {
                       </select>
                       <select name="tamano" value={formData.tamano} onChange={handleChange} required>
                         <option value="">Selecciona tamaño</option>
-                        <option value="PEQUENO">Pequeño</option>
-                        <option value="MEDIANO">Mediano</option>
+                        <option value="PEQUENA">Pequeña</option>
+                        <option value="MEDIANA">Mediana</option>
                         <option value="GRANDE">Grande</option>
                       </select>
                       <label>

@@ -116,9 +116,11 @@
 }
 
 .habitacion-content {
-  align-content: flex-start;
   padding-left: 2em;
   padding-top: 2em;
+  display: flex;
+  justify-content: space-between; /* Distribución horizontal */
+  align-items: stretch;
 }
 
 .Contenido-Container {
@@ -384,7 +386,7 @@ body {
   font-size: 14px;
   color: #616676;
   text-align: start;
-  margin-bottom: 2px;
+  margin-bottom: 6px;
 }
 
 .calendar-box {
@@ -402,6 +404,12 @@ body {
   display: inline;
   border-style: hidden;
   width: 100%;
+  padding-left: 2px;
+}
+
+.react-datepicker-wrapper {
+  border: 0.6px solid #616676;
+  border-radius: 6px;
 }
 
 .calendar-icon {

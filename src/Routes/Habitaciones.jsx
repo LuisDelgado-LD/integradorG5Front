@@ -104,7 +104,7 @@ const Habitaciones = () => {
     const cantidad = categoria === "Básico" ? 1 : categoria === "Premium" ? 2 : 3;
     const texto = cantidad === 1 ? "Básico" : cantidad === 2 ? "Premium" : "VIP";
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "2cm" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "10px"}}>
         <strong style={{ fontSize: "16px", color: "#616676" }}>{texto}</strong>
         <div style={{ display: "flex", gap: "5px" }}>
           {Array.from({ length: cantidad }, (_, i) => (
@@ -163,18 +163,35 @@ const Habitaciones = () => {
         </div>
 
         <div className="habitacion-content">
-          <h4 style={{ marginBottom: "2cm" }}>Categoría:</h4>
-          {renderPatitas(habitacion.categoria?.nombre)}
+          <h4 className="CategoriaHabitacion" style={{ marginBottom: "1cm" }}>Categoría: {renderPatitas(habitacion.categoria?.nombre)}</h4>
+          <h4 style={{ marginBottom: "1cm" }}>Descripción:</h4>
+          <p style={{ marginBottom: "1cm" }}>{habitacion.descripcion}</p>
 
-          <h4 style={{ marginBottom: "2cm" }}>Descripción:</h4>
-          <p>{habitacion.descripcion}</p>
-
-          <h4 style={{ marginBottom: "2cm" }}>Disponibilidad:</h4>
-          <p>
+          <h4 style={{ marginBottom: "1cm" }}>Disponibilidad:</h4>
+          <p style={{ marginBottom: "1cm" }}>
             <strong>{habitacion.isDisponible ? "Disponible" : "No disponible"}</strong>
           </p>
+        </div>
+      </div>
 
-          <h4 style={{ marginBottom: "2cm" }}>Filtros para tu peludito:</h4>
+      <button className="ver-mas" onClick={() => setModalGaleria(true)}>Ver más</button>
+
+      <div className="habitacion-container2">
+        <div className="contenido1">
+          <div>
+            <h4 style={{ marginBottom: "3mm" }}>Servicios:</h4>
+            <div className="caracteristicas">
+              {habitacion.caracteristicas?.map((car) => (
+                <div key={car.id} className="caracteristica-item">
+                  <img src={car.iconoUrl} alt={car.nombre} />
+                  <span>{car.nombre}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        <div className="contenido2">
+        <h4 style={{ marginBottom: "0.5cm" }}>Filtros para tu peludito:</h4>
           <div className="date-picker-container">
             <div className="date-picker">
               <label className="date-label">Fecha Inicio</label>
@@ -205,24 +222,6 @@ const Habitaciones = () => {
         </div>
       </div>
 
-      <button className="ver-mas" onClick={() => setModalGaleria(true)}>Ver más</button>
-
-      <div className="habitacion-container2">
-        <div className="contenido1">
-          <div>
-            <h4 style={{ marginBottom: "5mm" }}>Servicios:</h4>
-            <div className="caracteristicas">
-              {habitacion.caracteristicas?.map((car) => (
-                <div key={car.id} className="caracteristica-item">
-                  <img src={car.iconoUrl} alt={car.nombre} />
-                  <span>{car.nombre}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-
       {modalMensaje && (
         <div className="modal-overlay" onClick={() => setModalMensaje(null)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -250,3 +249,5 @@ const Habitaciones = () => {
 };
 
 export default Habitaciones;
+
+

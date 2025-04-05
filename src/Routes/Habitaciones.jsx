@@ -104,7 +104,7 @@ const Habitaciones = () => {
     const cantidad = categoria === "Básico" ? 1 : categoria === "Premium" ? 2 : 3;
     const texto = cantidad === 1 ? "Básico" : cantidad === 2 ? "Premium" : "VIP";
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: "10px"}}>
+      <div className="Categoria-Patitas" style={{ display: "flex", alignItems: "center", gap: "10px"}}>
         <strong style={{ fontSize: "16px", color: "#616676" }}>{texto}</strong>
         <div style={{ display: "flex", gap: "5px" }}>
           {Array.from({ length: cantidad }, (_, i) => (

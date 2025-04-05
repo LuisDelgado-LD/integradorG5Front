@@ -21,7 +21,7 @@
 .CategoriaHabitacion{
   display: flex;
   flex-direction: row;
- gap: 1em;
+  gap: 1em;
 }
 
 .contenido1{
@@ -1064,6 +1064,10 @@ td {
     display: none;
   } */
 
+  .Categoria-Patitas{
+    margin-left: 11.5rem;
+  }
+
   .header {
     padding: 0.2em 0.5em;
   }
@@ -1098,24 +1102,22 @@ td {
   }
 
   .ver-mas {
-    position: relative;
-    align-self: flex-end; 
-    margin: auto 20rem;
+    display: block;
+    margin: 0 auto; /* Centrado horizontal */
+    width: fit-content; /* O un ancho específico ej: 200px */
   }
 
-  .navbar{
-    flex-direction: column;
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 5px;
-    padding: 0.5em 0;
-    top: 9rem;
-    height: 30%;
+  .react-datepicker{
+    width: 2em;
   }
 
 }
 
 @media (max-width: 899px) {
+
+  .Categoria-Patitas{
+    margin-left: 11.5rem;
+  }
 
   .CategoriaHabitacion{
     display: block;
@@ -1155,6 +1157,17 @@ td {
 
   .galeria-secundaria {
     display: none;
+  }
+
+  .habitacion-img-container{
+    height: auto;
+    display: block;
+    border-radius: 20px;
+    border: 1px solid #9195a1;
+    box-shadow: 0px 4px 4px 0px #00000040;
+    object-fit: cover;
+    aspect-ratio: 3 / 1.9;
+    align-items: center;
   }
 
   .imagen-principal {
@@ -1216,6 +1229,8 @@ td {
 
   .calendar-box {
     height: 25px;
+    font-size: 12px;
+    width: 12em;
   }
 
   .search-button {
@@ -1286,6 +1301,12 @@ td {
   .category-img {
     width: 100%;
     height: auto;
+  }
+
+  .ver-mas {
+    display: block;
+    margin: 0 auto; /* Centrado horizontal */
+    width: fit-content; /* O un ancho específico ej: 200px */
   }
 }
 
@@ -1385,6 +1406,20 @@ td {
   display: none;
   } */
 
+  navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #616676;
+    height: 70px;
+    padding: 15px 46px;
+    position: fixed;
+    top: 151px;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+}
+
   .habitacion-container2{
     flex-direction: column;
     justify-content: center;
@@ -1402,7 +1437,6 @@ td {
   .search-button{
     margin-left: 0px;
     align-self: center;
-    margin-top: 1em;
   }
 
   .user-table th,
@@ -1417,6 +1451,21 @@ td {
 
   .add-user {
     font-size: 14px;
+  }
+
+  .habitacion-img-container{
+    height: auto;
+    display: block;
+    border-radius: 20px;
+    border: 1px solid #9195a1;
+    box-shadow: 0px 4px 4px 0px #00000040;
+    object-fit: cover;
+    aspect-ratio: 4/3;
+    align-items: center;
+  }
+
+  .imagen-principal{
+    width: 100%;
   }
 }
 
@@ -1527,6 +1576,29 @@ td {
     display: none;
   } */
 
+  .Categoria-Patitas{
+    margin-left: 11.5rem;
+  }
+
+  .habitacion-container2{
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .contenido2{
+    margin-left: 0px;
+  }
+
+  .date-picker-container{
+    margin-left: 0px;
+    align-self: center;
+  }
+
+  .search-button{
+    margin-left: 0px;
+    align-self: center;
+  }
+
   .galeria-grid {
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 1.4fr 0.8fr 0.8fr;
@@ -1534,6 +1606,30 @@ td {
       "img1 img1"
       "img2 img3"
       "img4 img5";
+  }
+
+  .habitacion-img-container{
+    /*
+    object-fit: cover;
+    align-items: center; */
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    border-radius: 20px;
+    border: 1px solid #9195a1;
+    box-shadow: 0px 4px 4px 0px #00000040;
+    /* aspect-ratio: 3 / 1.9; */
+    overflow: hidden;
+    aspect-ratio: 1; /* 1:1 para móviles (opcional) */
+    max-height: 300px;
+    object-fit: contain;
+  }
+
+  .ver-mas {
+    display: block;
+    margin: 0 auto; /* Centrado horizontal */
+    width: fit-content; /* O un ancho específico ej: 200px */
   }
 }
 

@@ -8,6 +8,7 @@ const UserManagement = () => {
   const fetchUsuarios = async () => {
     try {
       const res = await usuariosService.getAll();
+      console.log('Usuario obtenido:', res.data);
       setUsuarios(res.data);
     } catch (error) {
       alert("Error al obtener usuarios");
@@ -18,6 +19,7 @@ const UserManagement = () => {
 
   const eliminarUsuario = async (id) => {
     if (window.confirm("¿Eliminar este usuario?")) {
+      console.log('Usuario eliminado: ',id);
       try {
         await usuariosService.deleteUser(id);
         setUsuarios(usuarios.filter(u => u.id !== id));

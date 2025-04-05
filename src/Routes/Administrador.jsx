@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext } from "react"; 
 import { GlobalContext } from "../Context/utils/globalContext";
 import SoloEscritorio from "../Components/SoloEscritorio";
 import Home from "./Home"; // importar el home para reutilizarlo

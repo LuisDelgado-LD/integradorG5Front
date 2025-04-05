@@ -6,7 +6,7 @@ const initialState = {
   habitaciones: [],
   caracteristicas: [],
   reserva: null,
-  categorias: ["Básica", "Premium", "VIP"],
+  categorias: [],
   tamanos: ["Pequeño", "Mediano", "Grande"],
 };
 
@@ -37,6 +37,12 @@ const globalReducer = (state, action) => {
       return {
         ...state,
         caracteristicas: action.payload,
+      };
+
+    case "SET_CATEGORIAS":
+      return {
+        ...state,
+        categorias: action.payload,
       };
 
     case "SET_RESERVA":

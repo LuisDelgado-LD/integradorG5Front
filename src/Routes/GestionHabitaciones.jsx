@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext } from "react"; 
 import { GlobalContext } from "../Context/utils/globalContext";
 import SoloEscritorio from "../Components/SoloEscritorio";
 import habitacionesService from "../services/HabitacionesService";
@@ -37,11 +37,11 @@ const GestionHabitaciones = () => {
         ...c,
         tipoMaestro: "Categoría",
       }));
-  
+
       let todasLasHabitaciones = [];
       let page = 0;
       let totalPages = 1;
-  
+
       do {
         const res = await habitacionesService.getByPage(page);
         const pageHabitaciones = res.content || [];
@@ -49,18 +49,17 @@ const GestionHabitaciones = () => {
         totalPages = res.totalPages;
         page++;
       } while (page < totalPages);
-  
+
       const habitacionesFormatted = todasLasHabitaciones.map((h) => ({
         ...h,
         tipoMaestro: "Habitación",
       }));
-  
+
       setDatos([...categorias, ...habitacionesFormatted]);
     } catch (err) {
       console.error("Error al obtener datos:", err);
     }
   };
-  
 
   useEffect(() => {
     fetchTodo();
@@ -317,6 +316,7 @@ const GestionHabitaciones = () => {
           )}
         </div>
       </div>
+      <img src="/img/imagendepie.png" alt="Fondo" style={{ width: "100%", marginTop: "-2rem" }} />
     </SoloEscritorio>
   );
 };

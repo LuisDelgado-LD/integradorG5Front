@@ -173,27 +173,8 @@ const Habitaciones = () => {
           <p>
             <strong>{habitacion.isDisponible ? "Disponible" : "No disponible"}</strong>
           </p>
-        </div>
-      </div>
 
-      <button className="ver-mas" onClick={() => setModalGaleria(true)}>Ver más</button>
-
-      <div className="habitacion-container2">
-        <div className="contenido1">
-          <div>
-            <h4 style={{ marginBottom: "5mm" }}>Servicios:</h4>
-            <div className="caracteristicas">
-              {habitacion.caracteristicas?.map((car) => (
-                <div key={car.id} className="caracteristica-item">
-                  <img src={car.iconoUrl} alt={car.nombre} />
-                  <span>{car.nombre}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-        <div className="contenido2">
-        <h4 style={{ marginBottom: "2cm" }}>Filtros para tu peludito:</h4>
+          <h4 style={{ marginBottom: "2cm" }}>Filtros para tu peludito:</h4>
           <div className="date-picker-container">
             <div className="date-picker">
               <label className="date-label">Fecha Inicio</label>
@@ -221,6 +202,24 @@ const Habitaciones = () => {
             </div>
           </div>
           <button className="search-button" onClick={handleReservar}>Reservar</button>
+        </div>
+      </div>
+
+      <button className="ver-mas" onClick={() => setModalGaleria(true)}>Ver más</button>
+
+      <div className="habitacion-container2">
+        <div className="contenido1">
+          <div>
+            <h4 style={{ marginBottom: "5mm" }}>Servicios:</h4>
+            <div className="caracteristicas">
+              {habitacion.caracteristicas?.map((car) => (
+                <div key={car.id} className="caracteristica-item">
+                  <img src={car.iconoUrl} alt={car.nombre} />
+                  <span>{car.nombre}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
 

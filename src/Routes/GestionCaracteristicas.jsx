@@ -133,7 +133,7 @@ const GestionCaracteristicas = () => {
         )}
 
         <div className="imagen-pie">
-          <img src="/img/imagendepie.png" alt="Imagen Pie" />
+        <img src="/img/imagendepie.png" alt="Fondo" style={{ width: "100%", marginTop: "-2rem" }} />
         </div>
       </div>
     </SoloEscritorio>

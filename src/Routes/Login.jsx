@@ -74,9 +74,12 @@ const Login = () => {
           >
             {loading ? "Cargando..." : "Entrar"}
           </button>
+          
         </div>
+        
       </form>
     </div>
+    
   );
 };
 

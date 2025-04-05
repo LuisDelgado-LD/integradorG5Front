@@ -18,35 +18,6 @@
   box-sizing: border-box;
 }
 
-/* .back-home { */
-/* position: relative;
-  top: 166px;
-  right: 50px; */
-/* position: absolute;
-  top: 166px;
-  right: 50px;
-  position: absolute;
-  top: -10px;
-  left: -10px; */
-/* } */
-/* 
-.back-home img {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-}
-
-.back-home img {
-  width: 40px;
-  height: 40px;
-}
-
-.back-home img {
-  width: 50px;
-  height: 50px;
-  cursor: pointer;
-} */
-
 .CategoriaHabitacion{
   display: flex;
   flex-direction: row;
@@ -1087,89 +1058,6 @@ td {
   object-fit: contain;
 }
 
-@media (max-width: 1024px) {
-  /* .navbar {
-    flex-direction: column;
-    height: auto;
-    padding: 10px;
-  }
-
-  .navbar-text {
-    text-align: center;
-    width: auto;
-    font-size: 18px;
-  } */
-
-  /* .date-picker-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-  } */
-
-  /* .calendar-box {
-    width: 90%;
-  }
-
-  .search-button {
-    width: 90px;
-  }
-
-  .navbar-text {
-    font-size: 16px;
-  }
-
-  .date-box {
-    width: 100%;
-    align-items: center;
-  }
-
-  .calendar-box {
-    width: 90%;
-  }
-
-  .search-button {
-    width: 100px;
-  }
-
-  .refugio-content,
-  .cueva-content {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .refugio-title,
-  .cueva-title {
-    position: static;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .refugio-img,
-  .cueva-img {
-    position: static;
-    width: 100%;
-    height: auto;
-    margin-bottom: 20px;
-  }
-
-  .refugio-description,
-  .cueva-description,
-  .refugio-services,
-  .cueva-services {
-    position: static;
-    width: 100%;
-    height: auto;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  .back-home {
-    position: static;
-    text-align: center;
-    margin-top: 20px;
-  } */
-}
-
 @media (max-width: 570px) {
 
   /* .content div{
@@ -1496,6 +1384,26 @@ td {
   /* .content div{
   display: none;
   } */
+
+  .habitacion-container2{
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .contenido2{
+    margin-left: 0px;
+  }
+
+  .date-picker-container{
+    margin-left: 0px;
+    align-self: center;
+  }
+
+  .search-button{
+    margin-left: 0px;
+    align-self: center;
+    margin-top: 1em;
+  }
 
   .user-table th,
   .user-table td {
